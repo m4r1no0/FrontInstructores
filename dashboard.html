@@ -64,14 +64,14 @@ if (!localStorage.getItem("access_token")) {
 
             <!-- Nav Item - Pages Collapse Menu -->
             <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
+                <a class="nav-link collapsed"  href="#" data-toggle="collapse" data-target="#collapseTwo"
                     aria-expanded="true" aria-controls="collapseTwo">
                     <i class="fas fa-fw fa-cog"></i>
                     <span>Instructores</span>
                 </a>
                 <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <a href="#" class="collapse-item">Instructores</a>
+                        <a href="#" data-page="tabla.html" class="collapse-item" id="btn-instructores">Instructores</a>
                         <a class="collapse-item">Direccion</a>
                         <a class="collapse-item" href="buttons.html">Contacto</a>
                         <a class="collapse-item" href="cards.html">Poliza</a>
@@ -277,7 +277,7 @@ if (!localStorage.getItem("access_token")) {
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
                         <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
                         <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                                class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
+                            class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
                     </div>
 
                     <div class="row">
@@ -291,7 +291,7 @@ if (!localStorage.getItem("access_token")) {
                                 </div>
                                 <!-- Card Body -->
                                 <div class="card-body">
-                                    <div class="chart-area">
+                                    <div id="contenido">
                                         <h2>Estoy aqui</h2>
                                     </div>
                                 </div>
@@ -381,93 +381,27 @@ if (!localStorage.getItem("access_token")) {
     <!-- Page level plugins -->
     <script src="vendor/chart.js/Chart.min.js"></script>
 
-</body>
+    <script>
 
-<script>
+        document.addEventListener("click", function(e) {
+    if (e.target.matches("a[data-page]")) {
+        e.preventDefault();
 
-    const boton = document.getElementById("login");
+        let page = e.target.getAttribute("data-page");
 
-    boton.addEventListener("click", (event) => {
-        event.preventDefault(); //Evita que el formulario se envie de la forma 
-        // lo que que quiero que se ejecute cuando en el boton hagan click
-        // URL del endpoint de autenticación en el servidor
-        const loginUrl = "localhost:8000";
-
-        let correo = document.getElementById("signin-email").value;
-        let contrasenia = document.getElementById("signin-password").value;
-
-        // Crear objeto URLSearchParams para enviar datos como formulario
-        const formData = new URLSearchParams(); //limpia los datos que pongamos ahi dentro y lps envia como formulario
-
-        // Agregar credenciales al formulario
-        formData.append("username", correo);  // Email del usuario
-        formData.append("password", contrasenia);       // Contraseña del usuario
-
-        // Realizar petición HTTP POST al servidor
-        fetch(loginUrl, {
-            method: "POST",  // Método HTTP para enviar datos
-            headers: {
-                // Especifica que enviamos datos de formulario codificados en URL
-                "Content-Type": "application/x-www-form-urlencoded",
-                // Especifica que esperamos recibir JSON como respuesta
-                "accept": "application/json"
-            },
-            body: formData  // Datos del formulario a enviar
-        })
-            .then(response => {
-                // Verificar si la respuesta fue exitosa (status 200-299)
-                if (!response.ok) {
-                    // Si hay error, convertir respuesta a JSON y lanzar excepción
-                    return response.json().then(err => { throw err });
-                }
-                // Si todo está bien, convertir respuesta a JSON
-                return response.json();
-            })
-            .then(data => {
-                // Manejar respuesta exitosa del servidor
-                console.log("Login exitoso:", data);
-
-                // Guardar token de acceso en localStorage del navegador
-                localStorage.setItem("access_token", data.access_token);
-
-                // Guardar información del usuario en localStorage (convertida a JSON)
-                localStorage.setItem("user", JSON.stringify(data.user));
-
-                // REDIRECCIÓN DESPUÉS DEL LOGIN EXITOSO
-                // Opción 1: Redirección inmediata
-                window.location.href = "dashboard.html";
-
-                // Opción 2: Reemplazar la página actual (no permite volver atrás)
-                // window.location.replace("dashboard.html");
-            })
-            .catch(error => {
-                // Manejar cualquier error que ocurra durante el proceso
-                console.error("Error en login:", error);
-                const mensaje = document.getElementById('error-message');
-                mensaje.innerHTML = error.detail;
+        fetch(page)
+            .then(res => res.text())
+            .then(html => {
+                document.getElementById("contenido").innerHTML = html;
             });
-    });
-
-    // Toggle password visibility
-    const togglePassword = document.getElementById('togglePassword');
-    const passwordInput = document.getElementById('signin-password');
-    const eyeIcon = document.getElementById('eyeIcon');
-
-    togglePassword.addEventListener('click', function () {
-        const type = passwordInput.type === 'password' ? 'text' : 'password';
-        passwordInput.type = type;
-
-        // Cambiar icono
-        if (type === 'password') {
-            eyeIcon.classList.remove('fa-eye-slash');
-            eyeIcon.classList.add('fa-eye');
-        } else {
-            eyeIcon.classList.remove('fa-eye');
-            eyeIcon.classList.add('fa-eye-slash');
         }
     });
 
-</script>
-<script src="./assets/js/main.js"></script>
+    
+    </script>
+    
+
+
+</body>
 
 </html>

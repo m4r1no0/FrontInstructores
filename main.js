@@ -26,8 +26,8 @@ const loadContent = async (page) => {
       import("../pages/users.js").then((module) => module.init());
     }
 
-    if (page === "roles") {
-      import("../pages/roles.js").then((module) => module.init());
+    if (page === "tabla") {
+      import("./js/instructores.js").then((module) => module.init());
     }
 
     if (page === "tareas") {

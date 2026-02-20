@@ -1,44 +1,42 @@
 import { request } from './apiClient.js';
 
-export const produccionHuevosService = {
+export const InstructorService = {
 
-  CreateProduccionHuevos: (data) => {
-    return request('/produccion-huevos/crear', {
+  create_instructor: (data) => {
+    return request('/instructores', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
   },
 
-  GetProduccionHuevosById: (produccion_id) => {
-    return request(`/produccion-huevos/by-id/${produccion_id}`);
+  get_user_by_email: (email) => {
+    return request(`/instructores/email/${email}`);
   },
 
-  UpdateProduccionHuevos: (id, data) => {
-    return request(`/produccion-huevos/by-id/${id}`, {
+  get_user_by_id: (id) => {
+    return request(`/instructores/${id}`);
+  },
+
+  get_instructor_with_contactos: (id) => {
+    return request(`/instructores/${id}/contactos`);
+  },
+
+  get_instructores_by_supervisor: (id) => {
+    return request(`/instructores/supervisor/${id}`);
+  },
+
+  update_user_by_id: (id, data) => {
+    return request(`/instructores/by-id/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
   },
 
-  GetProduccionHuevosAll: ({ page = 1, limit = 10, fecha_inicio = null, fecha_fin = null } = {}) => {
-
-    // Si solo viene una fecha → usar la misma para ambas
-    if (fecha_inicio && !fecha_fin) fecha_fin = fecha_inicio;
-    if (!fecha_inicio && fecha_fin) fecha_inicio = fecha_fin;
-
-    const offset = (page - 1) * limit;
-
-    const qs = `limit=${limit}&offset=${offset}&fecha_inicio=${fecha_inicio || ""}&fecha_fin=${fecha_fin || ""}`;
-
-    return request(`/produccion-huevos/all?${qs}`);
-  },
-
-  DeleteProduccionHuevos: (produccion_id) => {
-    return request(`/produccion-huevos/by-id/${produccion_id}`, {
-      method: 'DELETE'
-    });
+  get_all_instructores_paginated: (page = 1, size = 10) => {
+    return request(`/instructores?page=${page}&size=${size}`)
   }
 
-};
+}
+
