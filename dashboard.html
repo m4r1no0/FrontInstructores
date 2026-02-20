@@ -71,7 +71,7 @@ if (!localStorage.getItem("access_token")) {
                 </a>
                 <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <a href="#" data-page="tabla.html" class="collapse-item" id="btn-instructores">Instructores</a>
+                        <a href="#" data-page="pages/tabla.html" class="collapse-item" id="btn-instructores">Instructores</a>
                         <a class="collapse-item">Direccion</a>
                         <a class="collapse-item" href="buttons.html">Contacto</a>
                         <a class="collapse-item" href="cards.html">Poliza</a>
@@ -368,38 +368,26 @@ if (!localStorage.getItem("access_token")) {
         </div>
     </div>
 
-    <!-- Bootstrap core JavaScript-->
+    <!-- jQuery -->
     <script src="vendor/jquery/jquery.min.js"></script>
+
+    <!-- Bootstrap -->
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Core plugin JavaScript-->
+    <!-- jQuery Easing -->
     <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
-    <!-- Custom scripts for all pages-->
+    <!-- SB Admin -->
     <script src="js/sb-admin-2.min.js"></script>
 
-    <!-- Page level plugins -->
-    <script src="vendor/chart.js/Chart.min.js"></script>
+    <!-- DataTables -->
+    <script src="vendor/datatables/jquery.dataTables.min.js"></script>
+    <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
 
-    <script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-        document.addEventListener("click", function(e) {
-    if (e.target.matches("a[data-page]")) {
-        e.preventDefault();
-
-        let page = e.target.getAttribute("data-page");
-
-        fetch(page)
-            .then(res => res.text())
-            .then(html => {
-                document.getElementById("contenido").innerHTML = html;
-            });
-        }
-    });
-
-    
-    </script>
-    
+    <!-- TU SCRIPT (SIEMPRE AL FINAL) -->
+    <script type="module" src="js/main.js"></script>
 
 
 </body>
