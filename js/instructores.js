@@ -1,6 +1,7 @@
 // js/instructor.js
 import { InstructorService } from './instructor.service.js';
 
+
 export async function init() {
 
     const tabla = document.querySelector(".cuerpoTabla");
@@ -22,7 +23,7 @@ export async function init() {
                 <td>${inst.apellidos}</td>
                 <td>${inst.fecha_nacimiento}</td>
                 <td>${inst.fecha_expedicion}</td>
-                <td>${inst.arl}</td>
+                <td><button class="btn btn-primary">+</button></td>
             </tr>
         `;
     });
