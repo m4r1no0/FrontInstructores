@@ -25,7 +25,6 @@ if (!localStorage.getItem("access_token")) {
 
     <!-- Custom styles for this template-->
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
-
 </head>
 
 <body id="page-top">
@@ -72,17 +71,16 @@ if (!localStorage.getItem("access_token")) {
                 <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <a href="#" data-page="pages/tabla.html" class="collapse-item" id="btn-instructores">Instructores</a>
-                        <a class="collapse-item">Direccion</a>
-                        <a class="collapse-item" href="buttons.html">Contacto</a>
-                        <a class="collapse-item" href="cards.html">Poliza</a>
+                        <a class="collapse-item" data-page="pages/direccion.html">Direccion</a>
+                        <a class="collapse-item" data-page="pages/contacto.html"  href="#">Contacto</a>
+                        <a class="collapse-item" data-page="pages/poliza.html">Poliza</a>
                     </div>
                 </div>
             </li>
 
             <!-- Nav Item - Utilities Collapse Menu -->
             <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
-                    aria-expanded="true" aria-controls="collapseUtilities">
+                <a class="nav-link collapsed" href="#" data-page="pages/contrato.html">
                     <i class="fas fa-fw fa-wrench"></i>
                     <span>Contrato</span>
                 </a>

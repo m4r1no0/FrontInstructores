@@ -7,7 +7,6 @@ export async function init() {
     if (!tabla) return;
 
     const instructores = await InstructorService.get_all_instructores_paginated();
-
     tabla.innerHTML = "";
 
     console.log(instructores)

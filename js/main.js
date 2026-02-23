@@ -14,7 +14,7 @@ document.addEventListener("click", function (e) {
             .then(res => res.text())
             .then(html => {
 
-                document.getElementById("content").innerHTML = html;
+                document.getElementById("contenido").innerHTML = html;
 
                 // 🔥 AQUÍ ES DONDE SE LLAMA
                 if (pagina.includes("tabla.html")) {
