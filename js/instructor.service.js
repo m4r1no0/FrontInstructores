@@ -3,7 +3,7 @@ import { request } from './apiClient.js';
 export const InstructorService = {
 
   create_instructor: (data) => {
-    return request('/instructores', {
+    return request('/instructores/create', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),

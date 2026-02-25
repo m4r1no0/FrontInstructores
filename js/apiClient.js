@@ -85,10 +85,23 @@ export async function request(endpoint, options = {}) {
             return;
         }
 
-        if (!response.ok) {
-            const errorData = await response.json().catch(() => ({ detail: 'Ocurrió un error en la petición.' }));
-            throw new Error(errorData.detail);
-        }
+       if (!response.ok) {
+    const errorData = await response.json().catch(() => ({
+        detail: 'Ocurrió un error en la petición.'
+    }));
+
+    let errorMessage = 'Error en la petición';
+
+    if (Array.isArray(errorData.detail)) {
+        errorMessage = errorData.detail
+            .map(err => `${err.loc?.join('.')} - ${err.msg}`)
+            .join(' | ');
+    } else if (typeof errorData.detail === 'string') {
+        errorMessage = errorData.detail;
+    }
+
+    throw new Error(errorMessage);
+}
         
         // Si la respuesta no tiene contenido (ej. status 204), devolvemos un objeto vacío.
         return response.status === 204 ? {} : await response.json();

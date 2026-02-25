@@ -1,4 +1,5 @@
 import { init } from "./instructores.js";
+import { initSupervisor } from "./supervisor.js";
 
 document.addEventListener("click", function (e) {
 
@@ -19,6 +20,10 @@ document.addEventListener("click", function (e) {
                 // 🔥 AQUÍ ES DONDE SE LLAMA
                 if (pagina.includes("tabla.html")) {
                     init();
+                    initSupervisor();
+                }
+                if (pagina.includes("supervisor.html")){
+                    initSupervisor();
                 }
 
             });

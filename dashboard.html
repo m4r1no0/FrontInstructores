@@ -8,7 +8,6 @@ if (!localStorage.getItem("access_token")) {
 </script>
 
 <head>
-
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -24,7 +23,7 @@ if (!localStorage.getItem("access_token")) {
         rel="stylesheet">
 
     <!-- Custom styles for this template-->
-     <link rel="stylesheet" href="/DataTables/datatables.css" />
+     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
 
 </head>
@@ -98,8 +97,7 @@ if (!localStorage.getItem("access_token")) {
 
             <!-- Nav Item - Pages Collapse Menu -->
             <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
-                    aria-expanded="true" aria-controls="collapsePages">
+                <a class="nav-link collapsed" href="#" data-page="pages/supervisor.html">
                     <i class="fas fa-fw fa-folder"></i>
                     <span>Supervisores</span>
                 </a>
@@ -291,8 +289,8 @@ if (!localStorage.getItem("access_token")) {
                                 </div>
                                 <!-- Card Body -->
                                 <div class="card-body">
+                                    <div class="botones"></div>
                                     <div id="contenido">
-                                        <h2>Estoy aqui</h2>
                                     </div>
                                 </div>
                             </div>
@@ -380,11 +378,15 @@ if (!localStorage.getItem("access_token")) {
     <!-- SB Admin -->
     <script src="js/sb-admin-2.min.js"></script>
 
-    <!-- DataTables -->
-    <script src="vendor/datatables/jquery.dataTables.min.js"></script>
-    <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- TU SCRIPT (SIEMPRE AL FINAL) -->
     <script type="module" src="js/main.js"></script>
