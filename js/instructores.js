@@ -8,8 +8,7 @@ export async function init() {
     const tabla = document.querySelector(".cuerpoTabla");
     if (!tabla) return;
 
-    const instructores = await InstructorService.get_all_instructores_paginated();
-
+    const instructores = await InstructorService.get_all_instructores_paginated(1, 50);
 
 
     tabla.innerHTML = "";
