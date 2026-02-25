@@ -1,10 +1,8 @@
     <div class="card-body">
         <div class="col my-3">
-            <button class="btn btn-primary" data-bs-toggle="modal"                data-bs-target="#ModalAgregar">
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ModalAgregar">
                     Agregar 
             </button>
-            <button class="btn btn-warning">Actualizar</button>
-            <button class="btn btn-danger">Eliminar</button>
         </div>
         <div class="table-responsive">
             <table class="table table-bordered" id="dataTableInstru" width="100%" cellspacing="0">
@@ -16,9 +14,7 @@
                         <th>Numero documento</th>
                         <th>Nombres</th>
                         <th>Apellidos</th>
-                        <th>fecha_nacimiento</th>
-                        <th>fecha_expedicion</th>
-                        <th>+</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody class="cuerpoTabla">
@@ -27,7 +23,6 @@
         </div>
     </div>
  
-
 <div class="modal fade" id="ModalAgregar" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -85,6 +80,123 @@
           </div>
 
         </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            Cancelar
+          </button>
+          <button type="submit" class="btn btn-primary">
+            Guardar
+          </button>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+</div>
+
+<!-- modal Actualizar -->
+
+<div class="modal fade" id="ModalActualizar" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      
+      <form id="formInstructorActualizar">
+
+        <div class="modal-header">
+          <h5 class="modal-title">Actualizar Instructor</h5>
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">X</button>
+        </div>
+
+        <div class="modal-body">
+
+          <div class="row">
+            <div class="col">
+              <label>Nombre</label>
+              <input class="form-control" type="text" id="nombre" required>
+            </div>
+            <div class="col">
+              <label>Apellido</label>
+              <input class="form-control" type="text" id="apellido" required>
+            </div>
+          </div>
+
+          <div class="row mt-2">
+            <div class="col">
+              <label>Tipo documento</label>
+              <select id="tipo_documento" class="form-control" required>
+                <option value="CC">CC</option>
+                <option value="CE">CE</option>
+                <option value="TI">TI</option>
+              </select>
+            </div>
+            <div class="col">
+              <label>Número documento</label>
+              <input class="form-control" type="number" id="documento" required>
+            </div>
+          </div>
+
+          <div class="row mt-2">
+            <div class="col">
+              <label>Fecha nacimiento</label>
+              <input class="form-control" type="date" id="fecha_nacimiento" required>
+            </div>
+            <div class="col">
+              <label>Fecha expedición</label>
+              <input class="form-control" type="date" id="fecha_expedicion" required>
+            </div>
+          </div>
+          <div class="row mt-2">
+            <div class="col">
+                <select name="" id="selectSupervisor" class="form-control"></select>
+            </div>
+            </select>
+          </div>
+
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            Cancelar
+          </button>
+          <button type="submit" class="btn btn-primary">
+            Guardar
+          </button>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="ModalFecha" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      
+      <form id="formInstructorActualizar">
+
+        <div class="modal-header">
+          <h5 class="modal-title">Actualizar Instructor</h5>
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">X</button>
+        </div>
+
+        <div class="modal-body">
+
+          <table>
+            <thead>
+              <th>
+                <tr>No.Documento</tr>
+                <tr>Fecha Nacimiento</tr>
+                <tr>Fecha expedición</tr>
+              </th>
+            </thead>
+            <tbody class="cuerpoFecha">
+
+            </tbody>
+          </table>
+            
 
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
