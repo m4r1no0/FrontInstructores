@@ -100,7 +100,7 @@ function renderTable() {
     tabla.innerHTML += `
       <tr>
         <td>
-          <button class="btn btn-success">
+          <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#ModalContratoNuevo">
             📄
           </button>
         </td>
