@@ -25,6 +25,79 @@
 
     
 
+<div class="modal fade" id="ModalContratoNuevo" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Contrato y pagos</h5>
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">X</button>
+        </div>
+
+        <div class="modal-body">
+          <div class="row">
+            <div class="col">
+              <table class="table table-bordered">
+            <thead>
+              <tr>
+                <td>Instructro</td>
+                <td>No.contrato</td>
+                <td>Estado</td>
+                <td>fecha inicio</td>
+                <td>fecha fin</td>
+              </tr>
+            </thead>
+            <tbody class="cuerpoFecha">
+            </tbody>
+          </table>  
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <table class="table table-bordered">
+            <thead>
+              <tr>
+                <td>CDP</td>
+                <td>CRP</td>
+                <td>Rubro</td>
+                <td>Dependencia</td>
+              </tr>
+            </thead>
+            <tbody class="cuerpoFecha">
+            </tbody>
+          </table>  
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <td>Valor contrato</td>
+                  <td>Valor mes</td>
+                  <td>Valor Ad/Di</td>
+                  <td>Valor pagado</td>
+                  <td>Saldo</td>
+                </tr>
+              </thead>
+              <tbody class="cuerpoFecha">
+              </tbody>
+          </table>  
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer text-center">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+            Plan de pagos
+          </button>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+</div>
+
+
 <!-- modal agregar -->
 
 <div class="modal fade" id="ModalAgregar" tabindex="-1">
@@ -80,7 +153,15 @@
             <div class="col">
                 <select name="" id="selectSupervisor" class="form-control"></select>
             </div>
-            </select>
+            <div class="col">
+              <select name="" id="selectArl" class="form-control">
+                <option value=""selected disabled>Seleccione ARL</option>
+                <option value="">Positiva</option>
+                <option value="">Sura</option>
+                <option value="">Colmena</option>
+                <option value="">Otra</option>
+              </select>
+            </div>
           </div>
 
         </div>
@@ -118,18 +199,18 @@
           <div class="row">
             <div class="col">
               <label>Nombre</label>
-              <input class="form-control" type="text" id="nombre" required>
+              <input class="form-control" type="text" id="nombreActualizar" required>
             </div>
             <div class="col">
               <label>Apellido</label>
-              <input class="form-control" type="text" id="apellido" required>
+              <input class="form-control" type="text" id="apellidoActualizar" required>
             </div>
           </div>
 
           <div class="row mt-2">
             <div class="col">
               <label>Tipo documento</label>
-              <select id="tipo_documento" class="form-control" required>
+              <select id="tipo_documentoActualizar" class="form-control" required>
                 <option value="CC">CC</option>
                 <option value="CE">CE</option>
                 <option value="TI">TI</option>
@@ -137,25 +218,25 @@
             </div>
             <div class="col">
               <label>Número documento</label>
-              <input class="form-control" type="number" id="documento" required>
+              <input class="form-control" type="number" id="numero_documentoActualizar" required>
             </div>
           </div>
 
           <div class="row mt-2">
             <div class="col">
               <label>Fecha nacimiento</label>
-              <input class="form-control" type="date" id="fecha_nacimiento" required>
+              <input class="form-control" type="date" id="fecha_nacimientoActualizar" required>
             </div>
             <div class="col">
               <label>Fecha expedición</label>
-              <input class="form-control" type="date" id="fecha_expedicion" required>
+              <input class="form-control" type="date" id="fecha_expedicionActualizar" required>
             </div>
           </div>
           <div class="row mt-2">
             <div class="col">
-                <select name="" id="selectSupervisor" class="form-control"></select>
+                <select name="" id="selectActualizar" class="form-control"></select>
+                <input type="hidden" name="" id="instructorId">
             </div>
-            </select>
           </div>
 
         </div>
@@ -192,7 +273,7 @@
 
           <table class="table table-bordered">
             <thead>
-              <t>
+              <tr>
                 <td>No.Documento</td>
                 <td>Fecha Nacimiento</td>
                 <td>Fecha expedición</td>
@@ -218,3 +299,7 @@
     </div>
   </div>
 </div>
+
+
+
+
