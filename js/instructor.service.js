@@ -27,7 +27,7 @@ export const InstructorService = {
   },
 
   update_user_by_id: (id, data) => {
-    return request(`/instructores/by-id/${id}`, {
+    return request(`/instructores/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
