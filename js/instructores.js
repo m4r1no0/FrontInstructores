@@ -125,12 +125,12 @@ function renderTable() {
           <button 
             class="btn btn-danger botonEliminar"
             data-id="${inst.id_instructor}">
-            🗑
+            <i class="bi bi-trash"></i>
           </button>
 
           <button 
   class="btn btn-warning botonActualizar"
-  data-id="${inst.id_instructor}">
+  data-id="${inst.id_instructor}"><i class="bi bi-repeat"></i></button>
         </td>
       </tr>
     `;
