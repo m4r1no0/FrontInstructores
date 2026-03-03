@@ -235,6 +235,8 @@ async function openEditModal(id) {
   try {
 
     const instructor = await InstructorService.get_user_by_id(id);
+    console.log(supervisoresGlobal);
+
 
     // 🔥 GUARDAR ID REAL
     document.getElementById('idInstructorActualizar').value = instructor.id_instructor;
