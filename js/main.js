@@ -1,5 +1,6 @@
 import { init } from "./instructores.js";
 import { initSupervisor } from "./supervisor.js";
+import { initContrato } from "./contrato.js";
 
 document.addEventListener("click", function (e) {
 
@@ -21,6 +22,7 @@ document.addEventListener("click", function (e) {
                 if (pagina.includes("tabla.html")) {
                     init();
                     initSupervisor();
+                    initContrato()
                 }
                 if (pagina.includes("supervisor.html")){
                     initSupervisor();

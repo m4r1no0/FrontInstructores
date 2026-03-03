@@ -1,6 +1,7 @@
 // js/instructor.js
 import { InstructorService } from './instructor.service.js';
 import { SupervisorService } from './supervisor.service.js';
+import { ContratoService } from './contrato.service.js';
 
 let instructoresGlobal = [];
 let supervisoresGlobal = [];
@@ -18,6 +19,50 @@ export async function init() {
     instructoresGlobal = response.data;
 
     supervisoresGlobal = await SupervisorService.get_all_supervisores();
+    const contratosGlobal = await ContratoService.get_all_contratos();
+
+    console.log(contratosGlobal);
+
+    let cuerpoContratoDos = document.querySelector('.cuerpoContratoDos');
+    let cuerpoFechaContrato = document.querySelector('.cuerpoFechaContrato');
+    let cuerpoContrato = document.querySelector('.cuerpoContrato');
+
+    contratosGlobal.forEach(item =>{
+      cuerpoContratoDos.innerHTML = `
+                                    <tr>
+                                      <td>${item.valor_contrato}</td>
+                                      <td>${item.valor_mes}</td>
+                                      <td>${item.valorAdDi}</td>
+                                      <td>0</td>
+                                      <td>0</td>
+                                    </tr>
+                                    `
+
+      cuerpoContrato.innerHTML = 
+                                  `
+                                  <tr>
+                                    <td>${item.cdp}</td>
+                                    <td>${item.crp}</td>
+                                    <td>${item.rubro}</td>
+                                    <td>${item.dependencia}</td>
+                                  </tr>
+                                  `
+      cuerpoFechaContrato =
+                            `
+                            <tr>
+                              <td>${item.id_instructor}</td>
+                              <td>${item.numero_contrato}</td>
+                              <td>${item.estado}</td>
+                              <td>${item.fecha_inicio}</td>
+                              <td>${item.fecha_fin}</td>
+                            </tr>
+                            `
+    }
+  )
+
+
+
+
 
     // 🔵 Renderizar select supervisores
     renderSupervisorSelect();
@@ -100,7 +145,7 @@ function renderTable() {
     tabla.innerHTML += `
       <tr>
         <td>
-          <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#ModalContratoNuevo">
+          <button class="btn btn-success boton-contrato" data-bs-toggle="modal" data-bs-target="#ModalContratoNuevo" data-id="id">
             📄
           </button>
         </td>
@@ -139,11 +184,14 @@ function renderTable() {
 
 function handleTableClick(event) {
 
+  const botonContrato = event.target.closest('.boton-contrato');
+
   // 🔵 Botón FECHA
   const fechaButton = event.target.closest('.btn-fecha');
   if (fechaButton) {
 
     const numeroDocumento = fechaButton.dataset.documento;
+
 
     const instructor = instructoresGlobal.find(
       i => i.numero_documento == numeroDocumento
