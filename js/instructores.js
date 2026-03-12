@@ -76,6 +76,92 @@ export async function init() {
     }
 
     $('#dataTableInstru').DataTable();
+    // ... código anterior ...
+
+$('#dataTableInstru').DataTable();
+
+// 🔥 Destruir DataTable si ya existe
+if ($.fn.DataTable.isDataTable('#dataTableInstru')) {
+  $('#dataTableInstru').DataTable().destroy();
+}
+
+// 🔵 INICIALIZAR DATATABLE CON BOTONES
+$('#dataTableInstru').DataTable({
+    dom: 'lBfrtip', // Esto habilita la barra de botones
+    buttons: [
+        {
+            extend: 'excel',
+            text: '<i class="bi bi-file-earmark-excel"></i> Excel',
+            className: 'btn btn-success btn-sm',
+            title: 'Instructores',
+            exportOptions: {
+                columns: ':visible' // Exporta todas las columnas visibles
+            }
+        },
+        {
+            extend: 'pdf',
+            text: '<i class="bi bi-file-earmark-pdf"></i> PDF',
+            className: 'btn btn-danger btn-sm',
+            title: 'Instructores',
+            exportOptions: {
+                columns: ':visible'
+            },
+            orientation: 'landscape',
+            pageSize: 'A4'
+        },
+        {
+            extend: 'csv',
+            text: '<i class="bi bi-file-earmark-spreadsheet"></i> CSV',
+            className: 'btn btn-primary btn-sm',
+            title: 'Instructores',
+            exportOptions: {
+                columns: ':visible'
+            }
+        },
+        {
+            extend: 'print',
+            text: '<i class="bi bi-printer"></i> Imprimir',
+            className: 'btn btn-info btn-sm',
+            title: 'Instructores',
+            exportOptions: {
+                columns: ':visible'
+            }
+        },
+        {
+            extend: 'copy',
+            text: '<i class="bi bi-files"></i> Copiar',
+            className: 'btn btn-secondary btn-sm',
+            exportOptions: {
+                columns: ':visible'
+            }
+        }
+    ],
+    language: {
+        // url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
+         // Traducción al español
+        lengthMenu: 'Mostrar _MENU_ registros por página', // 👈 TEXTO CAMBIADO
+        zeroRecords: 'No se encontraron resultados',
+        info: 'Mostrando _START_ a _END_ de _TOTAL_ registros',
+        infoEmpty: 'Mostrando 0 a 0 de 0 registros',
+        infoFiltered: '(filtrado de _MAX_ registros totales)',
+        search: 'Buscar:',
+        paginate: {
+            first: 'Primero',
+            last: 'Último',
+            next: 'Siguiente',
+            previous: 'Anterior'
+    }
+  }
+});
+
+// 🔵 O si prefieres poner los botones en un lugar específico, puedes crear un div aparte:
+// $('.buttons-container').html($('#dataTableInstru_wrapper .dt-buttons'));
+
+// ... resto del código ...
+
+
+
+
 
     // 🔵 Delegación de eventos
     tabla.removeEventListener('click', handleTableClick);
@@ -116,7 +202,6 @@ function renderSupervisorSelect() {
 }
 
 async function recargarTabla() {
-
   const response = await InstructorService.get_all_instructores_paginated(1, 50);
   instructoresGlobal = response.data;
 
@@ -127,7 +212,41 @@ async function recargarTabla() {
 
   renderTable();
 
-  $('#dataTableInstru').DataTable();
+  // 🔵 INICIALIZAR CON BOTONES NUEVAMENTE
+  $('#dataTableInstru').DataTable({
+    dom: 'lBfrtip',
+    buttons: [
+        {
+            extend: 'excel',
+            text: '<i class="bi bi-file-earmark-excel"></i> Excel',
+            className: 'btn btn-success btn-sm',
+            title: 'Instructores'
+        },
+        {
+            extend: 'pdf',
+            text: '<i class="bi bi-file-earmark-pdf"></i> PDF',
+            className: 'btn btn-danger btn-sm',
+            title: 'Instructores',
+            orientation: 'landscape',
+            pageSize: 'A4'
+        },
+        {
+            extend: 'csv',
+            text: '<i class="bi bi-file-earmark-spreadsheet"></i> CSV',
+            className: 'btn btn-primary btn-sm',
+            title: 'Instructores'
+        },
+        {
+            extend: 'print',
+            text: '<i class="bi bi-printer"></i> Imprimir',
+            className: 'btn btn-info btn-sm',
+            title: 'Instructores'
+        }
+    ],
+    language: {
+        url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
+    }
+  });
 }
 
 
@@ -163,8 +282,8 @@ function renderTable() {
           </button>
         </td>
 
-        <td>${inst.nombres}</td>
-        <td>${inst.apellidos}</td>
+        <td>${inst.nombres} ${inst.apellidos} </td>
+      
 
         <td>
           <button 
