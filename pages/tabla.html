@@ -7,15 +7,23 @@
         <div class="table-responsive">
             <table class="table table-bordered" id="dataTableInstru" width="100%" cellspacing="0">
                 <thead>
-                    <tr>
-                        <th>Contrato Pago</th>
-                        <th>supervisor</th>
-                        <th>tipo</th>
-                        <th>Numero documento</th>
-                        <th>Nombres</th>
-                        <!-- <th>Apellidos</th> -->
-                        <th>Acciones</th>
-                    </tr>
+                  <tr>
+                      <th class="desktop">Contrato</th> <!-- Siempre visible -->
+                      <th class="all">Nombres</th> <!-- Visible en desktop y tablet landscape -->
+                      <th class="desktop">Tipo Doc</th> <!-- Solo visible en desktop -->
+                      <th class="desktop tablet-l">Documento</th> <!-- Siempre visible -->
+                      <th class="desktop tablet-l">Supervisor</th> <!-- Siempre visible -->
+                      <th class="desktop">Acciones</th> <!-- Siempre visible -->
+    <!-- Columna 6 (oculta) -->
+                       <th style="display:none;">N° Contrato</th>
+                      <th style="display:none;">CDP</th>
+                      <th style="display:none;">CRP</th>
+                      <th style="display:none;">Rubro</th>
+                      <th style="display:none;">Dependencia</th>
+                      <th style="display:none;">Fecha Inicio</th>
+                      <th style="display:none;">Fecha Fin</th>
+                      <th style="display:none;">Valor</th>
+                  </tr>
                 </thead>
                 <tbody class="cuerpoTabla">
                 </tbody>

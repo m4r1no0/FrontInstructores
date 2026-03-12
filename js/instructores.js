@@ -5,64 +5,83 @@ import { ContratoService } from './contrato.service.js';
 
 let instructoresGlobal = [];
 let supervisoresGlobal = [];
+let contratosGlobal = [];
 let modalInstance = null;
 
 export async function init() {
-
   const tabla = document.querySelector(".cuerpoTabla");
   if (!tabla) return;
 
   try {
-
     // 🔵 Obtener datos
     const response = await InstructorService.get_all_instructores_paginated(1, 50);
     instructoresGlobal = response.data;
 
     supervisoresGlobal = await SupervisorService.get_all_supervisores();
-    const contratosGlobal = await ContratoService.get_all_contratos();
+    contratosGlobal = await ContratoService.get_all_contratos();
 
-    console.log(contratosGlobal);
+    console.log('Contratos cargados:', contratosGlobal);
 
-    let cuerpoContratoDos = document.querySelector('.cuerpoContratoDos');
-    let cuerpoFechaContrato = document.querySelector('.cuerpoFechaContrato');
-    let cuerpoContrato = document.querySelector('.cuerpoContrato');
+    // 🔵 LLENAR MODALES DE CONTRATO
+    const cuerpoContratoDos = document.querySelector('.cuerpoContratoDos');
+    const cuerpoFechaContrato = document.querySelector('.cuerpoFechaContrato');
+    const cuerpoContrato = document.querySelector('.cuerpoContrato');
 
-    contratosGlobal.forEach(item =>{
-      cuerpoContratoDos.innerHTML = `
-                                    <tr>
-                                      <td>${item.valor_contrato}</td>
-                                      <td>${item.valor_mes}</td>
-                                      <td>${item.valorAdDi}</td>
-                                      <td>0</td>
-                                      <td>0</td>
-                                    </tr>
-                                    `
+    // Limpiar contenido anterior
+    if (cuerpoContratoDos) cuerpoContratoDos.innerHTML = '';
+    if (cuerpoFechaContrato) cuerpoFechaContrato.innerHTML = '';
+    if (cuerpoContrato) cuerpoContrato.innerHTML = '';
 
-      cuerpoContrato.innerHTML = 
-                                  `
-                                  <tr>
-                                    <td>${item.cdp}</td>
-                                    <td>${item.crp}</td>
-                                    <td>${item.rubro}</td>
-                                    <td>${item.dependencia}</td>
-                                  </tr>
-                                  `
-      cuerpoFechaContrato =
-                            `
-                            <tr>
-                              <td>${item.id_instructor}</td>
-                              <td>${item.numero_contrato}</td>
-                              <td>${item.estado}</td>
-                              <td>${item.fecha_inicio}</td>
-                              <td>${item.fecha_fin}</td>
-                            </tr>
-                            `
+    // Llenar con el primer contrato o mostrar vacío
+    if (contratosGlobal && contratosGlobal.length > 0) {
+      const primerContrato = contratosGlobal[0];
+      
+      if (cuerpoContratoDos) {
+        cuerpoContratoDos.innerHTML = `
+          <tr>
+            <td>${primerContrato.valor_contrato || ''}</td>
+            <td>${primerContrato.valor_mes || ''}</td>
+            <td>${primerContrato.valorAdDi || ''}</td>
+            <td>0</td>
+            <td>0</td>
+          </tr>
+        `;
+      }
+
+      if (cuerpoContrato) {
+        cuerpoContrato.innerHTML = `
+          <tr>
+            <td>${primerContrato.cdp || ''}</td>
+            <td>${primerContrato.crp || ''}</td>
+            <td>${primerContrato.rubro || ''}</td>
+            <td>${primerContrato.dependencia || ''}</td>
+          </tr>
+        `;
+      }
+
+      if (cuerpoFechaContrato) {
+        cuerpoFechaContrato.innerHTML = `
+          <tr>
+            <td>${primerContrato.id_instructor || ''}</td>
+            <td>${primerContrato.numero_contrato || ''}</td>
+            <td>${primerContrato.estado || ''}</td>
+            <td>${primerContrato.fecha_inicio || ''}</td>
+            <td>${primerContrato.fecha_fin || ''}</td>
+          </tr>
+        `;
+      }
+    } else {
+      // Mostrar filas vacías si no hay contratos
+      if (cuerpoContratoDos) {
+        cuerpoContratoDos.innerHTML = '<tr><td colspan="5">No hay contratos disponibles</td></tr>';
+      }
+      if (cuerpoContrato) {
+        cuerpoContrato.innerHTML = '<tr><td colspan="4">No hay contratos disponibles</td></tr>';
+      }
+      if (cuerpoFechaContrato) {
+        cuerpoFechaContrato.innerHTML = '<tr><td colspan="5">No hay contratos disponibles</td></tr>';
+      }
     }
-  )
-
-
-
-
 
     // 🔵 Renderizar select supervisores
     renderSupervisorSelect();
@@ -75,93 +94,151 @@ export async function init() {
       $('#dataTableInstru').DataTable().destroy();
     }
 
-    $('#dataTableInstru').DataTable();
-    // ... código anterior ...
-
-$('#dataTableInstru').DataTable();
-
-// 🔥 Destruir DataTable si ya existe
-if ($.fn.DataTable.isDataTable('#dataTableInstru')) {
-  $('#dataTableInstru').DataTable().destroy();
-}
-
-// 🔵 INICIALIZAR DATATABLE CON BOTONES
+    // 🔵 INICIALIZAR DATATABLE CON BOTONES
 $('#dataTableInstru').DataTable({
-    dom: 'lBfrtip', // Esto habilita la barra de botones
-    buttons: [
-        {
-            extend: 'excel',
-            text: '<i class="bi bi-file-earmark-excel"></i> Excel',
-            className: 'btn btn-success btn-sm',
-            title: 'Instructores',
-            exportOptions: {
-                columns: ':visible' // Exporta todas las columnas visibles
-            }
-        },
-        {
-            extend: 'pdf',
-            text: '<i class="bi bi-file-earmark-pdf"></i> PDF',
-            className: 'btn btn-danger btn-sm',
-            title: 'Instructores',
-            exportOptions: {
-                columns: ':visible'
-            },
-            orientation: 'landscape',
-            pageSize: 'A4'
-        },
-        {
-            extend: 'csv',
-            text: '<i class="bi bi-file-earmark-spreadsheet"></i> CSV',
-            className: 'btn btn-primary btn-sm',
-            title: 'Instructores',
-            exportOptions: {
-                columns: ':visible'
-            }
-        },
-        {
-            extend: 'print',
-            text: '<i class="bi bi-printer"></i> Imprimir',
-            className: 'btn btn-info btn-sm',
-            title: 'Instructores',
-            exportOptions: {
-                columns: ':visible'
-            }
-        },
-        {
-            extend: 'copy',
-            text: '<i class="bi bi-files"></i> Copiar',
-            className: 'btn btn-secondary btn-sm',
-            exportOptions: {
-                columns: ':visible'
-            }
+  responsive: true,
+  autoWidth: false,
+  dom: 'lBfrtip',
+  buttons: [
+    {
+      extend: 'excel',
+      text: '<i class="bi bi-file-earmark-excel"></i> Excel',
+      className: 'btn btn-success btn-sm',
+      title: 'Instructores',
+      exportOptions: {
+  columns: [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13], // Exporta columnas 0-4 y la 6 (datos contrato)
+  format: {
+        body: function(data, type, row, meta) {
+          // Columna 0 (Contrato botón) - mostrar texto
+          if (meta.col === 0) {
+            return 'Ver Contrato';
+          }
+          
+          // Columna 3 (Documento botón) - extraer número
+          if (meta.col === 3) {
+            const match = data.match(/\d+/);
+            return match ? match[0] : '';
+          }
+          
+          // Columna 5 (Acciones) - no mostrar nada
+          if (meta.col === 5) {
+            return '';
+          }
+          
+          // Para las columnas ocultas (6-13), los datos ya están limpios
+          // Para las demás, limpiar HTML
+          return data.replace(/<[^>]*>/g, '').trim();
         }
-    ],
-    language: {
-        // url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
-         // Traducción al español
-        lengthMenu: 'Mostrar _MENU_ registros por página', // 👈 TEXTO CAMBIADO
-        zeroRecords: 'No se encontraron resultados',
-        info: 'Mostrando _START_ a _END_ de _TOTAL_ registros',
-        infoEmpty: 'Mostrando 0 a 0 de 0 registros',
-        infoFiltered: '(filtrado de _MAX_ registros totales)',
-        search: 'Buscar:',
-        paginate: {
-            first: 'Primero',
-            last: 'Último',
-            next: 'Siguiente',
-            previous: 'Anterior'
+      }
+}
+    },
+    {
+      extend: 'pdf',
+      text: '<i class="bi bi-file-earmark-pdf"></i> PDF',
+      className: 'btn btn-danger btn-sm',
+      title: 'Instructores',
+      exportOptions: {
+        columns: [1, 2, 3, 4, 5],
+        format: {
+          body: function(data, row, column, node) {
+            if (data.includes('<button')) {
+              if (column === 3) {
+                const match = data.match(/\d+/);
+                return match ? match[0] : '';
+              }
+              if (column === 5) {
+                return '';
+              }
+              return '';
+            }
+            return data;
+          }
+        }
+      },
+      orientation: 'landscape',
+      pageSize: 'A4'
+    },
+    {
+      extend: 'csv',
+      text: '<i class="bi bi-file-earmark-spreadsheet"></i> CSV',
+      className: 'btn btn-primary btn-sm',
+      title: 'Instructores',
+      exportOptions: {
+        columns: [1, 2, 3, 4, 5],
+        format: {
+          body: function(data, row, column, node) {
+            if (data.includes('<button')) {
+              if (column === 3) {
+                const match = data.match(/\d+/);
+                return match ? match[0] : '';
+              }
+              if (column === 5) {
+                return '';
+              }
+              return '';
+            }
+            return data;
+          }
+        }
+      }
+    },
+    {
+      extend: 'print',
+      text: '<i class="bi bi-printer"></i> Imprimir',
+      className: 'btn btn-info btn-sm',
+      title: 'Instructores',
+      exportOptions: {
+        columns: [1, 2, 3, 4, 5]
+      }
+    },
+    {
+      extend: 'copy',
+      text: '<i class="bi bi-files"></i> Copiar',
+      className: 'btn btn-secondary btn-sm',
+      title: 'Instructores',
+      exportOptions: {
+        columns: [1, 2, 3, 4, 5],
+        format: {
+          body: function(data, row, column, node) {
+            if (data.includes('<button')) {
+              if (column === 3) {
+                const match = data.match(/\d+/);
+                return match ? match[0] : '';
+              }
+              if (column === 5) {
+                return '';
+              }
+              return '';
+            }
+            return data;
+          }
+        }
+      }
+    }
+  ],
+  columnDefs: [
+    {
+      targets: 0, // Columna del botón de contrato (no se exporta)
+      visible: true,
+      orderable: false,
+      searchable: false
+    }
+  ],
+  language: {
+    lengthMenu: 'Mostrar _MENU_ registros por página',
+    zeroRecords: 'No se encontraron resultados',
+    info: 'Mostrando _START_ a _END_ de _TOTAL_ registros',
+    infoEmpty: 'Mostrando 0 a 0 de 0 registros',
+    infoFiltered: '(filtrado de _MAX_ registros totales)',
+    search: 'Buscar:',
+    paginate: {
+      first: 'Primero',
+      last: 'Último',
+      next: 'Siguiente',
+      previous: 'Anterior'
     }
   }
 });
-
-// 🔵 O si prefieres poner los botones en un lugar específico, puedes crear un div aparte:
-// $('.buttons-container').html($('#dataTableInstru_wrapper .dt-buttons'));
-
-// ... resto del código ...
-
-
-
-
 
     // 🔵 Delegación de eventos
     tabla.removeEventListener('click', handleTableClick);
@@ -187,7 +264,6 @@ $('#dataTableInstru').DataTable({
 }
 
 function renderSupervisorSelect() {
-
   const selectSupervisor = document.querySelector('#selectSupervisor');
   if (!selectSupervisor) return;
 
@@ -204,6 +280,9 @@ function renderSupervisorSelect() {
 async function recargarTabla() {
   const response = await InstructorService.get_all_instructores_paginated(1, 50);
   instructoresGlobal = response.data;
+  
+  // 🔵 IMPORTANTE: Recargar también los contratos
+  contratosGlobal = await ContratoService.get_all_contratos();
 
   // destruir DataTable si existe
   if ($.fn.DataTable.isDataTable('#dataTableInstru')) {
@@ -211,106 +290,296 @@ async function recargarTabla() {
   }
 
   renderTable();
+  
 
   // 🔵 INICIALIZAR CON BOTONES NUEVAMENTE
   $('#dataTableInstru').DataTable({
-    dom: 'lBfrtip',
-    buttons: [
-        {
-            extend: 'excel',
-            text: '<i class="bi bi-file-earmark-excel"></i> Excel',
-            className: 'btn btn-success btn-sm',
-            title: 'Instructores'
-        },
-        {
-            extend: 'pdf',
-            text: '<i class="bi bi-file-earmark-pdf"></i> PDF',
-            className: 'btn btn-danger btn-sm',
-            title: 'Instructores',
-            orientation: 'landscape',
-            pageSize: 'A4'
-        },
-        {
-            extend: 'csv',
-            text: '<i class="bi bi-file-earmark-spreadsheet"></i> CSV',
-            className: 'btn btn-primary btn-sm',
-            title: 'Instructores'
-        },
-        {
-            extend: 'print',
-            text: '<i class="bi bi-printer"></i> Imprimir',
-            className: 'btn btn-info btn-sm',
-            title: 'Instructores'
+  responsive: true,
+  autoWidth: false,
+  dom: 'lBfrtip',
+  buttons: [
+    {
+      extend: 'excel',
+      text: '<i class="bi bi-file-earmark-excel"></i> Excel',
+      className: 'btn btn-success btn-sm',
+      title: 'Instructores',
+      exportOptions: {
+        columns: [0, 1, 2, 3, 4, 5], // TODAS las columnas en el orden correcto
+        format: {
+          body: function(data, type, row, meta) {
+            // meta.col es el índice de la columna (0-5)
+            
+            // Columna 0: CONTRATO - Usar los datos globales
+            if (meta.col === 0) {
+              const instructor = instructoresGlobal[meta.row];
+              if (instructor) {
+                const contrato = contratosGlobal.find(c => c.id_instructor == instructor.id_instructor) || {};
+                const partes = [];
+                if (contrato.numero_contrato) partes.push(`Contrato: ${contrato.numero_contrato}`);
+                if (contrato.cdp) partes.push(`CDP: ${contrato.cdp}`);
+                if (contrato.crp) partes.push(`CRP: ${contrato.crp}`);
+                if (contrato.rubro) partes.push(`Rubro: ${contrato.rubro}`);
+                if (contrato.dependencia) partes.push(`Dependencia: ${contrato.dependencia}`);
+                if (contrato.fecha_inicio) partes.push(`Inicio: ${contrato.fecha_inicio}`);
+                if (contrato.fecha_fin) partes.push(`Fin: ${contrato.fecha_fin}`);
+                if (contrato.valor_contrato) partes.push(`Valor: ${contrato.valor_contrato}`);
+                
+                return partes.length > 0 ? partes.join(' - ') : 'Sin contrato';
+              }
+              return 'Sin contrato';
+            }
+            
+            // Columna 1: NOMBRES - Limpiar HTML
+            if (meta.col === 1) {
+              return data.replace(/<[^>]*>/g, '').trim();
+            }
+            
+            // Columna 2: TIPO DOC - Limpiar HTML
+            if (meta.col === 2) {
+              return data.replace(/<[^>]*>/g, '').trim();
+            }
+            
+            // Columna 3: DOCUMENTO - Extraer solo el número
+            if (meta.col === 3) {
+              const match = data.match(/\d+/);
+              return match ? match[0] : '';
+            }
+            
+            // Columna 4: SUPERVISOR - Limpiar HTML
+            if (meta.col === 4) {
+              return data.replace(/<[^>]*>/g, '').trim();
+            }
+            
+            // Columna 5: ACCIONES - No exportar botones
+            if (meta.col === 5) {
+              return ''; // Vacío o podrías poner "Editar/Eliminar"
+            }
+            
+            return data;
+          }
         }
-    ],
-    language: {
-        url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
+      }
+    },
+    {
+      extend: 'pdf',
+      text: '<i class="bi bi-file-earmark-pdf"></i> PDF',
+      className: 'btn btn-danger btn-sm',
+      title: 'Instructores',
+      exportOptions: {
+        columns: [0, 1, 2, 3, 4],
+        format: {
+          body: function(data, type, row, meta) {
+            if (meta.col === 0) {
+              const instructor = instructoresGlobal[meta.row];
+              if (instructor) {
+                const contrato = contratosGlobal.find(c => c.id_instructor == instructor.id_instructor) || {};
+                const partes = [];
+                if (contrato.numero_contrato) partes.push(`Contrato: ${contrato.numero_contrato}`);
+                if (contrato.cdp) partes.push(`CDP: ${contrato.cdp}`);
+                if (contrato.crp) partes.push(`CRP: ${contrato.crp}`);
+                return partes.join(' | ');
+              }
+              return 'Sin contrato';
+            }
+            if (meta.col === 3) {
+              const match = data.match(/\d+/);
+              return match ? match[0] : '';
+            }
+            return data.replace(/<[^>]*>/g, '').trim();
+          }
+        }
+      },
+      orientation: 'landscape',
+      pageSize: 'A4'
+    },
+    {
+      extend: 'csv',
+      text: '<i class="bi bi-file-earmark-spreadsheet"></i> CSV',
+      className: 'btn btn-primary btn-sm',
+      title: 'Instructores',
+      exportOptions: {
+        columns: [0, 1, 2, 3, 4],
+        format: {
+          body: function(data, type, row, meta) {
+            if (meta.col === 0) {
+              const instructor = instructoresGlobal[meta.row];
+              if (instructor) {
+                const contrato = contratosGlobal.find(c => c.id_instructor == instructor.id_instructor) || {};
+                return `"${contrato.numero_contrato || ''}","${contrato.cdp || ''}","${contrato.crp || ''}"`;
+              }
+              return '"Sin contrato"';
+            }
+            if (meta.col === 3) {
+              const match = data.match(/\d+/);
+              return match ? match[0] : '';
+            }
+            return `"${data.replace(/<[^>]*>/g, '').trim()}"`;
+          }
+        }
+      }
+    },
+    {
+      extend: 'print',
+      text: '<i class="bi bi-printer"></i> Imprimir',
+      className: 'btn btn-info btn-sm',
+      title: 'Instructores',
+      exportOptions: {
+        columns: [0, 1, 2, 3, 4]
+      }
     }
-  });
+  ],
+  columnDefs: [
+    {
+      targets: 0,
+      orderable: false,
+      searchable: false
+    }
+  ],
+  language: {
+    lengthMenu: 'Mostrar _MENU_ registros por página',
+    zeroRecords: 'No se encontraron resultados',
+    info: 'Mostrando _START_ a _END_ de _TOTAL_ registros',
+    infoEmpty: 'Mostrando 0 a 0 de 0 registros',
+    infoFiltered: '(filtrado de _MAX_ registros totales)',
+    search: 'Buscar:',
+    paginate: {
+      first: 'Primero',
+      last: 'Último',
+      next: 'Siguiente',
+      previous: 'Anterior'
+    }
+  }
+});
 }
 
-
 function renderTable() {
-
   const tabla = document.querySelector(".cuerpoTabla");
+  if (!tabla) return;
+  
   tabla.innerHTML = "";
 
   instructoresGlobal.forEach(inst => {
-
     const supervisor = supervisoresGlobal.find(
       s => s.id_supervisor == inst.id_supervisor
     );
 
+    const contrato = contratosGlobal.find(c => c.id_instructor == inst.id_instructor) || {};
+
     tabla.innerHTML += `
       <tr>
+        <!-- Columna 0: CONTRATO (botón) -->
         <td>
-          <button class="btn btn-success boton-contrato" data-bs-toggle="modal" data-bs-target="#ModalContratoNuevo" data-id="id">
+          <button class="btn btn-success boton-contrato" data-bs-toggle="modal" data-bs-target="#ModalContratoNuevo" data-id="${inst.id_instructor}">
             📄
           </button>
         </td>
-
-        <td>${supervisor ? supervisor.nombre : ''}</td>
-        <td>${inst.tipo_documento}</td>
-
+        
+        <!-- Columna 1: NOMBRES -->
+        <td>${inst.nombres || ''} ${inst.apellidos || ''}</td>
+        
+        <!-- Columna 2: TIPO DOC -->
+        <td>${inst.tipo_documento || ''}</td>
+        
+        <!-- Columna 3: DOCUMENTO -->
         <td>
-          <button 
-            class="btn btn-fecha"
-            data-bs-toggle="modal"
-            data-bs-target="#ModalFecha"
-            data-documento="${inst.numero_documento}">
-            ${inst.numero_documento}
+          <button class="btn btn-fecha" data-bs-toggle="modal" data-bs-target="#ModalFecha" data-documento="${inst.numero_documento || ''}">
+            ${inst.numero_documento || ''}
           </button>
         </td>
-
-        <td>${inst.nombres} ${inst.apellidos} </td>
-      
-
+        
+        <!-- Columna 4: SUPERVISOR -->
+        <td>${supervisor ? supervisor.nombre : ''}</td>
+        
+        <!-- Columna 5: ACCIONES -->
         <td>
-          <button 
-            class="btn btn-danger botonEliminar"
-            data-id="${inst.id_instructor}">
+          <button class="btn btn-danger botonEliminar" data-id="${inst.id_instructor}">
             <i class="bi bi-trash"></i>
           </button>
-
-          <button 
-  class="btn btn-warning botonActualizar"
-  data-id="${inst.id_instructor}"><i class="bi bi-repeat"></i></button>
+          <button class="btn btn-warning botonActualizar" data-id="${inst.id_instructor}">
+            <i class="bi bi-repeat"></i>
+          </button>
         </td>
+        
+        <!-- COLUMNAS OCULTAS PARA EXPORTACIÓN (6-13) -->
+        <td style="display:none;" class="contrato-numero">${contrato.numero_contrato || ''}</td>
+        <td style="display:none;" class="contrato-cdp">${contrato.cdp || ''}</td>
+        <td style="display:none;" class="contrato-crp">${contrato.crp || ''}</td>
+        <td style="display:none;" class="contrato-rubro">${contrato.rubro || ''}</td>
+        <td style="display:none;" class="contrato-dependencia">${contrato.dependencia || ''}</td>
+        <td style="display:none;" class="contrato-fecha-inicio">${contrato.fecha_inicio || ''}</td>
+        <td style="display:none;" class="contrato-fecha-fin">${contrato.fecha_fin || ''}</td>
+        <td style="display:none;" class="contrato-valor">${contrato.valor_contrato || ''}</td>
       </tr>
     `;
   });
 }
 
 function handleTableClick(event) {
-
+  // 🔵 Botón CONTRATO
   const botonContrato = event.target.closest('.boton-contrato');
+  if (botonContrato) {
+    const instructorId = botonContrato.dataset.id;
+    const contrato = contratosGlobal.find(c => c.id_instructor == instructorId);
+    
+    // Actualizar modales con los datos del contrato seleccionado
+    const cuerpoContratoDos = document.querySelector('.cuerpoContratoDos');
+    const cuerpoFechaContrato = document.querySelector('.cuerpoFechaContrato');
+    const cuerpoContrato = document.querySelector('.cuerpoContrato');
+
+    if (contrato) {
+      if (cuerpoContratoDos) {
+        cuerpoContratoDos.innerHTML = `
+          <tr>
+            <td>${contrato.valor_contrato || ''}</td>
+            <td>${contrato.valor_mes || ''}</td>
+            <td>${contrato.valorAdDi || ''}</td>
+            <td>0</td>
+            <td>0</td>
+          </tr>
+        `;
+      }
+
+      if (cuerpoContrato) {
+        cuerpoContrato.innerHTML = `
+          <tr>
+            <td>${contrato.cdp || ''}</td>
+            <td>${contrato.crp || ''}</td>
+            <td>${contrato.rubro || ''}</td>
+            <td>${contrato.dependencia || ''}</td>
+          </tr>
+        `;
+      }
+
+      if (cuerpoFechaContrato) {
+        cuerpoFechaContrato.innerHTML = `
+          <tr>
+            <td>${contrato.id_instructor || ''}</td>
+            <td>${contrato.numero_contrato || ''}</td>
+            <td>${contrato.estado || ''}</td>
+            <td>${contrato.fecha_inicio || ''}</td>
+            <td>${contrato.fecha_fin || ''}</td>
+          </tr>
+        `;
+      }
+    } else {
+      // Si no hay contrato, mostrar vacío
+      if (cuerpoContratoDos) {
+        cuerpoContratoDos.innerHTML = '<tr><td colspan="5">No hay contrato para este instructor</td></tr>';
+      }
+      if (cuerpoContrato) {
+        cuerpoContrato.innerHTML = '<tr><td colspan="4">No hay contrato para este instructor</td></tr>';
+      }
+      if (cuerpoFechaContrato) {
+        cuerpoFechaContrato.innerHTML = '<tr><td colspan="5">No hay contrato para este instructor</td></tr>';
+      }
+    }
+    return;
+  }
 
   // 🔵 Botón FECHA
   const fechaButton = event.target.closest('.btn-fecha');
   if (fechaButton) {
-
     const numeroDocumento = fechaButton.dataset.documento;
-
 
     const instructor = instructoresGlobal.find(
       i => i.numero_documento == numeroDocumento
@@ -327,7 +596,6 @@ function handleTableClick(event) {
         </tr>
       `;
     }
-
     return;
   }
 
@@ -347,15 +615,12 @@ function handleTableClick(event) {
 }
 
 async function openEditModal(id) {
-
   const modalElement = document.getElementById('ModalActualizar');
   modalInstance = bootstrap.Modal.getOrCreateInstance(modalElement);
 
   try {
-
     const instructor = await InstructorService.get_user_by_id(id);
     console.log(supervisoresGlobal);
-
 
     // 🔥 GUARDAR ID REAL
     document.getElementById('idInstructorActualizar').value = instructor.id_instructor;
@@ -369,7 +634,6 @@ async function openEditModal(id) {
     document.getElementById('selectActualizar').value = instructor.id_supervisor;
 
     modalInstance.show();
-
   } catch (error) {
     console.error("Error:", error);
   }
@@ -378,7 +642,7 @@ async function openEditModal(id) {
 async function handleUpdateSubmit(event) {
   event.preventDefault();
 
- const id = document.getElementById('idInstructorActualizar').value;
+  const id = document.getElementById('idInstructorActualizar').value;
 
   const updatedData = {
     nombres: document.getElementById('nombreActualizar').value,
@@ -391,16 +655,12 @@ async function handleUpdateSubmit(event) {
   };
 
   try {
-
     await InstructorService.update_user_by_id(id, updatedData);
-
     modalInstance.hide();
-
     await recargarTabla();
-
   } catch (error) {
     console.error("Error:", error);
-    modalInstance.hide()
+    modalInstance.hide();
   }
 }
 
@@ -418,34 +678,24 @@ async function handleCreateSubmit(event) {
   };
 
   try {
-
     await InstructorService.create_instructor(newData);
     const modal = bootstrap.Modal.getInstance(
       document.getElementById("ModalCrear")
     );
 
     if (modal) modal.hide();
-
     event.target.reset();
     init();
-
   } catch (error) {
     console.error("Error:", error);
   }
-
-
-
-  
 }
 
 // async function eliminarInstructor(id) {
 //   if (!result.isConfirmed) return;
-
 //   try {
-
 //     await InstructorService.delete_instructor(id);
 //     init();
-
 //   } catch (error) {
 //     console.error(error);
 //   }
