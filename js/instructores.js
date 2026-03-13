@@ -138,23 +138,31 @@ $('#dataTableInstru').DataTable({
       className: 'btn btn-danger btn-sm',
       title: 'Instructores',
       exportOptions: {
-        columns: [1, 2, 3, 4, 5],
-        format: {
-          body: function(data, row, column, node) {
-            if (data.includes('<button')) {
-              if (column === 3) {
-                const match = data.match(/\d+/);
-                return match ? match[0] : '';
-              }
-              if (column === 5) {
-                return '';
-              }
-              return '';
-            }
-            return data;
+  columns: [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13], // Exporta columnas 0-4 y la 6 (datos contrato)
+  format: {
+        body: function(data, type, row, meta) {
+          // Columna 0 (Contrato botón) - mostrar texto
+          if (meta.col === 0) {
+            return 'Ver Contrato';
           }
+          
+          // Columna 3 (Documento botón) - extraer número
+          if (meta.col === 3) {
+            const match = data.match(/\d+/);
+            return match ? match[0] : '';
+          }
+          
+          // Columna 5 (Acciones) - no mostrar nada
+          if (meta.col === 5) {
+            return '';
+          }
+          
+          // Para las columnas ocultas (6-13), los datos ya están limpios
+          // Para las demás, limpiar HTML
+          return data.replace(/<[^>]*>/g, '').trim();
         }
-      },
+      }
+},
       orientation: 'landscape',
       pageSize: 'A4'
     },
@@ -164,23 +172,31 @@ $('#dataTableInstru').DataTable({
       className: 'btn btn-primary btn-sm',
       title: 'Instructores',
       exportOptions: {
-        columns: [1, 2, 3, 4, 5],
-        format: {
-          body: function(data, row, column, node) {
-            if (data.includes('<button')) {
-              if (column === 3) {
-                const match = data.match(/\d+/);
-                return match ? match[0] : '';
-              }
-              if (column === 5) {
-                return '';
-              }
-              return '';
-            }
-            return data;
+  columns: [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13], // Exporta columnas 0-4 y la 6 (datos contrato)
+  format: {
+        body: function(data, type, row, meta) {
+          // Columna 0 (Contrato botón) - mostrar texto
+          if (meta.col === 0) {
+            return 'Ver Contrato';
           }
+          
+          // Columna 3 (Documento botón) - extraer número
+          if (meta.col === 3) {
+            const match = data.match(/\d+/);
+            return match ? match[0] : '';
+          }
+          
+          // Columna 5 (Acciones) - no mostrar nada
+          if (meta.col === 5) {
+            return '';
+          }
+          
+          // Para las columnas ocultas (6-13), los datos ya están limpios
+          // Para las demás, limpiar HTML
+          return data.replace(/<[^>]*>/g, '').trim();
         }
       }
+}
     },
     {
       extend: 'print',
@@ -197,23 +213,31 @@ $('#dataTableInstru').DataTable({
       className: 'btn btn-secondary btn-sm',
       title: 'Instructores',
       exportOptions: {
-        columns: [1, 2, 3, 4, 5],
-        format: {
-          body: function(data, row, column, node) {
-            if (data.includes('<button')) {
-              if (column === 3) {
-                const match = data.match(/\d+/);
-                return match ? match[0] : '';
-              }
-              if (column === 5) {
-                return '';
-              }
-              return '';
-            }
-            return data;
+  columns: [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13], // Exporta columnas 0-4 y la 6 (datos contrato)
+  format: {
+        body: function(data, type, row, meta) {
+          // Columna 0 (Contrato botón) - mostrar texto
+          if (meta.col === 0) {
+            return 'Ver Contrato';
           }
+          
+          // Columna 3 (Documento botón) - extraer número
+          if (meta.col === 3) {
+            const match = data.match(/\d+/);
+            return match ? match[0] : '';
+          }
+          
+          // Columna 5 (Acciones) - no mostrar nada
+          if (meta.col === 5) {
+            return '';
+          }
+          
+          // Para las columnas ocultas (6-13), los datos ya están limpios
+          // Para las demás, limpiar HTML
+          return data.replace(/<[^>]*>/g, '').trim();
         }
       }
+}
     }
   ],
   columnDefs: [
@@ -501,14 +525,14 @@ function renderTable() {
         </td>
         
         <!-- COLUMNAS OCULTAS PARA EXPORTACIÓN (6-13) -->
-        <td style="display:none;" class="contrato-numero">${contrato.numero_contrato || ''}</td>
-        <td style="display:none;" class="contrato-cdp">${contrato.crp || ''}</td>
-        <td style="display:none;" class="contrato-crp">${contrato.cdp || ''}</td>
-        <td style="display:none;" class="contrato-rubro">${contrato.rubro || ''}</td>
-        <td style="display:none;" class="contrato-dependencia">${contrato.dependencia || ''}</td>
-        <td style="display:none;" class="contrato-fecha-inicio">${contrato.fecha_inicio || ''}</td>
-        <td style="display:none;" class="contrato-fecha-fin">${contrato.fecha_fin || ''}</td>
-        <td style="display:none;" class="contrato-valor">${contrato.valor_contrato || ''}</td>
+        <td class="contrato-numero">${contrato.numero_contrato || ''}</td>
+        <td class="contrato-crp">${contrato.crp || ''}</td>
+        <td class="d-none contrato-cdp">${contrato.cdp || ''}</td>
+        <td class="d-none contrato-rubro">${contrato.rubro || ''}</td>
+        <td class="d-none contrato-dependencia">${contrato.dependencia || ''}</td>
+        <td class="d-none contrato-fecha-inicio">${contrato.fecha_inicio || ''}</td>
+        <td class="d-none contrato-fecha-fin">${contrato.fecha_fin || ''}</td>
+        <td class="d-none contrato-valor">${contrato.valor_contrato || ''}</td>
       </tr>
     `;
   });
