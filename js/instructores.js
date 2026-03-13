@@ -502,8 +502,8 @@ function renderTable() {
         
         <!-- COLUMNAS OCULTAS PARA EXPORTACIÓN (6-13) -->
         <td style="display:none;" class="contrato-numero">${contrato.numero_contrato || ''}</td>
-        <td style="display:none;" class="contrato-cdp">${contrato.cdp || ''}</td>
-        <td style="display:none;" class="contrato-crp">${contrato.crp || ''}</td>
+        <td style="display:none;" class="contrato-cdp">${contrato.crp || ''}</td>
+        <td style="display:none;" class="contrato-crp">${contrato.cdp || ''}</td>
         <td style="display:none;" class="contrato-rubro">${contrato.rubro || ''}</td>
         <td style="display:none;" class="contrato-dependencia">${contrato.dependencia || ''}</td>
         <td style="display:none;" class="contrato-fecha-inicio">${contrato.fecha_inicio || ''}</td>
