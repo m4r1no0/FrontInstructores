@@ -60,7 +60,13 @@ export async function initContrato() {
         contratos.forEach((contrato,) => {
             const row = `
                 <tr>
-                    <td>${contrato.id_contrato}</td>
+                    <td>
+                        <div class="col my-3">
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ModalAgregarContrato">
+                                    +
+                            </button>
+                        </div>
+                    </td>
                     <td>${contrato.id_instructor}</td>
                     <td>${contrato.numero_contrato}</td>
                     <td>${contrato.fecha_inicio}</td>
