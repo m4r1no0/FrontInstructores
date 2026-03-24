@@ -60,8 +60,8 @@ export async function initContrato() {
         contratos.forEach((contrato,) => {
             const row = `
                 <tr>
-                    <td>${contrato.id}</td>
-                    <td>${contrato.instructor}</td>
+                    <td>${contrato.id_contrato}</td>
+                    <td>${contrato.id_instructor}</td>
                     <td>${contrato.numero_contrato}</td>
                     <td>${contrato.fecha_inicio}</td>
                     <td>${contrato.fecha_fin}</td>
