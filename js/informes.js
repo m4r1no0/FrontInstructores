@@ -1,33 +1,85 @@
-import { ContratoService } from "./contrato.service.js";
+// informes.js
+import { ContratoService } from './contrato.service.js';
 
-
-export async function initInforme() {
-     console.log('🚀 Iniciando generación de informe...');
+export const initInforme = () => {
+    console.log('🚀 Inicializando página de informes...');
     
-    // Aquí debes obtener el ID de contrato de donde corresponda
-    // Por ejemplo, de la URL, de un estado, etc.
-    const idContrato = 1; // 🔴 CAMBIA ESTO POR EL ID REAL
+    // Seleccionar elementos
+    const btnGenerar = document.querySelector('#btnGenerarInforme');
+    const inputIdContrato = document.querySelector('#idContrato');
     
-    console.log('📋 ID de contrato:', idContrato);
-    
-    if (!idContrato) {
-        console.error('❌ No se encontró ID de contrato');
+    // Verificar que los elementos existen
+    if (!btnGenerar) {
+        console.error('❌ Botón no encontrado');
         return;
     }
     
-    try {
-        const resultado = await ContratoService.generar_informe_contrato(idContrato);
-        console.log('✅ Resultado:', resultado);
+    if (!inputIdContrato) {
+        console.error('❌ Input de ID no encontrado');
+        return;
+    }
+    
+    // Agregar evento click al botón
+    btnGenerar.addEventListener('click', async function() {
+        console.log('🖱️ Botón clickeado');
         
-        if (resultado.success) {
-            console.log('📄 Informe generado y descargado correctamente');
+        // Obtener el valor del input
+        const idContrato = inputIdContrato.value;
+        
+        console.log('📋 ID de contrato ingresado:', idContrato);
+        
+        // Validar que no esté vacío
+        if (!idContrato) {
+            console.error('❌ Por favor ingrese un ID de contrato');
+            alert('Por favor ingrese un ID de contrato');
+            return;
         }
         
-    } catch (error) {
-        console.error('❌ Error al generar informe:', error);
-        alert(`Error: ${error.message}`);
-    }
+        // Validar que sea un número
+        const idNumerico = Number(idContrato);
+        if (isNaN(idNumerico) || idNumerico <= 0) {
+            console.error('❌ ID inválido:', idContrato);
+            alert('Por favor ingrese un ID válido (número positivo)');
+            return;
+        }
+        
+        try {
+            console.log('🔄 Generando informe para contrato ID:', idNumerico);
+            
+            // Mostrar indicador de carga (opcional)
+            btnGenerar.disabled = true;
+            btnGenerar.textContent = 'Generando...';
+            
+            // Llamar al servicio para generar y descargar el informe
+            const resultado = await ContratoService.generar_informe_contrato(idNumerico);
+            
+            console.log('✅ Resultado:', resultado);
+            
+            if (resultado.success) {
+                console.log('📄 Informe generado y descargado correctamente');
+                alert('Informe generado correctamente');
+                
+                // Limpiar el input después de generar (opcional)
+                inputIdContrato.value = '';
+            }
+            
+        } catch (error) {
+            console.error('❌ Error al generar informe:', error);
+            alert(`Error al generar informe: ${error.message}`);
+            
+        } finally {
+            // Restaurar botón
+            btnGenerar.disabled = false;
+            btnGenerar.textContent = 'Generar Informe';
+        }
+    });
+    
+    console.log('✅ Evento de descarga configurado correctamente');
 };
 
-// Si quieres ejecutarlo automáticamente
-// initInforme();
+// Ejecutar cuando el DOM esté listo
+// if (document.readyState === 'loading') {
+//     document.addEventListener('DOMContentLoaded', initInforme);
+// } else {
+//     initInforme();
+// }
