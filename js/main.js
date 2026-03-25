@@ -1,17 +1,21 @@
+// main.js actualizado
 import { init } from "./instructores.js";
 import { initSupervisor } from "./supervisor.js";
 import { initContrato } from "./contrato.js";
 import { initDireccion } from "./direccion.js";
+import { initInforme } from "./informes.js";
 
 console.log("=== MAIN.JS CARGADO ===");
 
 // Mapa de inicializadores por página
 const inicializadores = {
     'contrato.html': initContrato,
+    'informes.html': initInforme, // 👈 Agregar el inicializador para informes
     'tabla.html': () => {
         init();
         initSupervisor();
         initContrato();
+        initDireccion();
     },
     'supervisor.html': initSupervisor,
     'direccion.html': initDireccion
@@ -33,14 +37,19 @@ document.addEventListener("click", function (e) {
                 
                 // Esperar a que el DOM se actualice
                 setTimeout(() => {
+                    // Extraer solo el nombre del archivo de la ruta
+                    const nombreArchivo = pagina.split('/').pop();
+                    console.log("Nombre archivo:", nombreArchivo);
+                    
                     // Buscar el inicializador correspondiente
-                    const inicializador = inicializadores[pagina.split('/').pop()];
+                    const inicializador = inicializadores[nombreArchivo];
                     
                     if (inicializador) {
                         console.log(`>>> Ejecutando inicializador para ${pagina}`);
                         inicializador();
                     } else {
                         console.log(`No hay inicializador definido para: ${pagina}`);
+                        console.log("Inicializadores disponibles:", Object.keys(inicializadores));
                     }
                 }, 100);
             })

@@ -7,3 +7,91 @@
     <div class="card-body">
         <button class="btn btn-primary">Modificacion de contrato</button>
     </div>
+
+    <div class="row">
+        <div class="col">
+            <label for="id">id</label>
+            <input type="number" name="" id="id" class="idContratoInforme">
+            <input type="submit" value="enviar">
+        </div>
+    </div>
+
+
+        <div class="container-fluid px-4 py-4">
+        <!-- Header con información -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h2 class="mb-1">
+                                    <i class="bi bi-file-text-fill text-primary"></i> 
+                                    Gestión de Contratos
+                                </h2>
+                                <p class="text-muted mb-0">
+                                    <i class="bi bi-info-circle"></i> 
+                                    Administre los contratos de instructores y genere informes oficiales
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel de búsqueda rápida -->
+        <div class="row mb-4">
+            <div class="col-md-4">
+            </div>
+            <div class="col-md-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-person-badge"></i> Buscar por Instructor
+                        </label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" id="buscarPorInstructor" placeholder="ID del instructor">
+                            <button class="btn btn-info" id="btnBuscarPorInstructor">
+                                <i class="bi bi-search"></i> Buscar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabla de contratos -->
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover" id="dataTableContrato" width="100%" cellspacing="0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="text-center" style="width: 60px;">ID</th>
+                                <th>N° Contrato</th>
+                                <th>Instructor</th>
+                                <th>Período</th>
+                                <th class="text-end">Valor</th>
+                                <th class="text-center">Estado</th>
+                                <th class="text-center" style="width: 150px;">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody class="cuerpoTablaContrato">
+                            <!-- Los datos se cargarán aquí dinámicamente -->
+                            <tr>
+                                <td colspan="7" class="text-center py-5">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">Cargando...</span>
+                                    </div>
+                                    <p class="mt-2 text-muted">Cargando contratos...</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
