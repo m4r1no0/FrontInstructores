@@ -182,7 +182,7 @@ $('#dataTableInstru').DataTable({
           
           // Columna 3 (Documento botón) - extraer número
           if (meta.col === 3) {
-            const match = data.match(/\d+/);
+            const match = data.match(/\d+/);n
             return match ? match[0] : '';
           }
           
