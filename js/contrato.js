@@ -73,6 +73,7 @@ export async function initContrato() {
                     <td>${contrato.fecha_fin}</td>
                     <td>${contrato.vigencia}</td>
                     <td>${formatMoney(contrato.valor_contrato)}</td>
+                    <td>${formatMoney(contrato.valor_mes)}</td>
                     <td>${contrato.estado}</td>
                     <td>${contrato.cdp}</td>
                     <td>${contrato.crp}</td>
@@ -143,3 +144,41 @@ function formatMoney(amount) {
         minimumFractionDigits: 0
     }).format(amount);
 }
+
+async function handleCreateSubmit(event) {
+  event.preventDefault();
+
+  const newData = {
+    numeroContrato: document.getElementById('numeroContrato').value,
+    crp: document.getElementById('CRP').value,
+    cdp: document.getElementById('CDP').value,
+    rubro: document.getElementById('rubro').value,
+    dependencia: document.getElementById('dependencia').value,
+    fechaInicio: document.getElementById('fecha_inicio').value,
+    fechaFin: document.getElementById('fechaFin').value,
+    valorContrato: document.getElementById('valorContrato').value,
+    valorMes: document.getElementById('valorMes').value
+
+  }
+
+  try {
+    await ContratoService.create_contrato(newData);
+    const modal = bootstrap.Modal.getInstance(
+      document.getElementById("ModalAgregarContrato")
+    );
+    
+
+    if (modal) modal.hide();
+    event.target.reset();
+    init();
+  } catch (error) {
+    console.error("Error:", error);
+  }
+}
+
+    // 🔵 Form crear
+    const formCrear = document.getElementById('formContrato');
+    if (formCrear) {
+      formCrear.removeEventListener('submit', handleCreateSubmit);
+      formCrear.addEventListener('submit', handleCreateSubmit);
+    }
