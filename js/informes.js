@@ -8,56 +8,50 @@ let dataTable = null;
 
 const cargarInstructores = async () => {
     try {
-        instructoresGlobal = await InstructorService.get_all_instructores_paginated();
+        let response = await ContratoService.get_contrato_instructor();
+        instructoresGlobal =response.data
         console.log(instructoresGlobal);
         
         const cuerpoTable = document.querySelector('.tablaInstrutoresInforme');
         console.log(cuerpoTable)
-let datos = instructoresGlobal.data;
+let datos = instructoresGlobal;
 
 if (cuerpoTable) {
     // Limpiar tabla
     cuerpoTable.innerHTML = '';
     
     if (datos && datos.length > 0) {
-        datos.forEach(item => {
-            const fila = cuerpoTable.insertRow();
-            
-            // ID
-            fila.insertCell(0).innerHTML = item.id_instructor || '-';
-            
-            // Documento
-            fila.insertCell(1).innerHTML = `${item.tipo_documento || ''} ${item.numero_documento || '-'}`;
-            
-            // Nombres
-            fila.insertCell(2).innerHTML = item.nombres || '-';
-            
-            // Apellidos
-            fila.insertCell(3).innerHTML = item.apellidos || '-';
-            
-            // Teléfono
-            fila.insertCell(4).innerHTML = item.telefono || '-';
-            
-            // Email
-            fila.insertCell(5).innerHTML = item.email || '-';
-            
-            // Supervisor ID
-            fila.insertCell(6).innerHTML = item.id_supervisor || '-';
-            
-            // Acciones
-            fila.insertCell(7).innerHTML = `
-                <button class="btn btn-primary btn-sm btn-generar-informe" 
-                        data-id="${item.id_instructor}"
-                        data-nombre="${item.nombres} ${item.apellidos}">
-                    <i class="fas fa-file-word"></i> Generar Informe
-                </button>
-            `;
-        });
-    } else {
+    datos.forEach(item => {
+        const fila = cuerpoTable.insertRow();
+        
+        // Documento
+        fila.insertCell(0).innerHTML = item.numero_documento || '-';
+        
+        // Nombres
+        fila.insertCell(1).innerHTML = item.nombres || '-';
+        
+        // Apellidos
+        fila.insertCell(2).innerHTML = item.apellidos || '-';
+        
+        // No. Contrato
+        fila.insertCell(3).innerHTML = item.numero_contrato || '-';
+        
+        // CRP
+        fila.insertCell(4).innerHTML = item.crp || '-';
+        
+        // Acciones
+        fila.insertCell(5).innerHTML = `
+            <button class="btn btn-primary btn-sm btn-generar-informe" 
+                    data-id="${item.id_instructor}">
+                <i class="fas fa-file-word"></i> Generar Informe
+            </button>
+        `;
+    });
+    }else {
         // Mostrar mensaje si no hay datos
         const fila = cuerpoTable.insertRow();
         const celda = fila.insertCell(0);
-        celda.colSpan = 8;
+        celda.colSpan = 6;
         celda.className = 'text-center';
         celda.innerHTML = '<i class="fas fa-info-circle"></i> No hay instructores registrados';
     }

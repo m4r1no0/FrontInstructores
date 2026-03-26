@@ -59,6 +59,9 @@ export const ContratoService = {
             console.error('Error:', error);
             throw error;
         }
+    },
+    get_contrato_instructor:() =>{
+    return request('/contrato/instructores_contratos')
     }
 
 }
