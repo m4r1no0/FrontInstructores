@@ -1,31 +1,4 @@
-  <div class="container-fluid mt-4">
-        <!-- Formulario para generar informe manual -->
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Generar Informe por ID</h6>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-4">
-                        <label for="idContrato">ID del Contrato/Instructor:</label>
-                        <input type="number" class="form-control" id="idContrato" placeholder="Ingrese el ID">
-                    </div>
-                    <div class="col-md-2 d-flex align-items-end">
-                        <button class="btn btn-primary btn-block" id="btnGenerarInforme">
-                            <i class="fas fa-file-word"></i> Generar Informe
-                        </button>
-                    </div>
-                    <div class="col-md-2 d-flex align-items-end">
-                        <button class="btn btn-secondary btn-block" id="btnRefrescar">
-                            <i class="fas fa-sync-alt"></i> Refrescar
-                        </button>
-                    </div>
-                    <div class="col-md-4 d-flex align-items-end">
-                        <input type="text" class="form-control" id="inputBuscar" placeholder="Buscar en tabla...">
-                    </div>
-                </div>
-            </div>
-        </div>
+
         
         <!-- Tabla de instructores -->
         <div class="card shadow mb-4">
@@ -37,6 +10,7 @@
                     <table class="table table-bordered table-hover" id="dataTableInforme" width="100%" cellspacing="0">
                         <thead>
                             <tr>
+                                <th class="d-none">id instructor</th>
                                 <th>No.documento</th>
                                 <th>nombres</th>
                                 <th>apellidos</th>
