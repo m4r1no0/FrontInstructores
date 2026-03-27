@@ -288,132 +288,175 @@ function renderSupervisorSelectActualizar() {
 }
 
 async function recargarTabla() {
-  const response = await InstructorService.get_all_instructores_paginated(1, 50);
-  instructoresGlobal = response.data;
+  console.log("🔄 Recargando tabla de instructores...");
   
-  // 🔵 IMPORTANTE: Recargar también los contratos
-  contratosGlobal = await ContratoService.get_all_contratos();
-
-  // destruir DataTable si existe
-  if ($.fn.DataTable.isDataTable('#dataTableInstru')) {
-    $('#dataTableInstru').DataTable().destroy();
-  }
-
-  renderTable();
-  
-
-  // 🔵 INICIALIZAR CON BOTONES NUEVAMENTE
-  $('#dataTableInstru').DataTable({
-    responsive: true,
-    autoWidth: false,
-    dom: 'lBfrtip',
-    buttons: [
-      {
-        extend: 'excel',
-        text: '<i class="bi bi-file-earmark-excel"></i> Excel',
-        className: 'btn btn-success btn-sm',
-        title: 'Instructores',
-        exportOptions: {
-          columns: [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13],
-          format: {
-            body: function(data, type, row, meta) {
-              if (meta.col === 0) {
-                return 'Ver Contrato';
+  try {
+    // Recargar instructores
+    const response = await InstructorService.get_all_instructores_paginated(1, 200);
+    instructoresGlobal = response.data;
+    console.log(`✅ Instructores cargados: ${instructoresGlobal.length}`);
+    
+    // Recargar supervisores
+    supervisoresGlobal = await SupervisorService.get_all_supervisores();
+    console.log(`✅ Supervisores cargados: ${supervisoresGlobal.length}`);
+    
+    // Recargar contratos
+    contratosGlobal = await ContratoService.get_all_contratos();
+    console.log(`✅ Contratos cargados: ${contratosGlobal.length}`);
+    
+    // Destruir DataTable si existe
+    if ($.fn.DataTable.isDataTable('#dataTableInstru')) {
+      $('#dataTableInstru').DataTable().destroy();
+      console.log("🗑️ DataTable anterior destruida");
+    }
+    
+    // Volver a renderizar el tbody con los nuevos datos
+    renderTable();
+    
+    // Reinicializar DataTable con la configuración completa
+    $('#dataTableInstru').DataTable({
+      responsive: true,
+      autoWidth: false,
+      dom: 'lBfrtip',
+      buttons: [
+        {
+          extend: 'excel',
+          text: '<i class="bi bi-file-earmark-excel"></i> Excel',
+          className: 'btn btn-success btn-sm',
+          title: 'Instructores',
+          exportOptions: {
+            columns: [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13],
+            format: {
+              body: function(data, type, row, meta) {
+                if (meta.col === 0) {
+                  return 'Ver Contrato';
+                }
+                if (meta.col === 3) {
+                  const match = data.match(/\d+/);
+                  return match ? match[0] : '';
+                }
+                if (meta.col === 5) {
+                  return '';
+                }
+                return data.replace(/<[^>]*>/g, '').trim();
               }
-              if (meta.col === 3) {
-                const match = data.match(/\d+/);
-                return match ? match[0] : '';
-              }
-              if (meta.col === 5) {
-                return '';
-              }
-              return data.replace(/<[^>]*>/g, '').trim();
-            }
-          }
-        }
-      },
-      {
-        extend: 'pdf',
-        text: '<i class="bi bi-file-earmark-pdf"></i> PDF',
-        className: 'btn btn-danger btn-sm',
-        title: 'Instructores',
-        exportOptions: {
-          columns: [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13],
-          format: {
-            body: function(data, type, row, meta) {
-              if (meta.col === 0) {
-                return 'Ver Contrato';
-              }
-              if (meta.col === 3) {
-                const match = data.match(/\d+/);
-                return match ? match[0] : '';
-              }
-              if (meta.col === 5) {
-                return '';
-              }
-              return data.replace(/<[^>]*>/g, '').trim();
             }
           }
         },
-        orientation: 'landscape',
-        pageSize: 'A4'
-      },
-      {
-        extend: 'csv',
-        text: '<i class="bi bi-file-earmark-spreadsheet"></i> CSV',
-        className: 'btn btn-primary btn-sm',
-        title: 'Instructores',
-        exportOptions: {
-          columns: [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13],
-          format: {
-            body: function(data, type, row, meta) {
-              if (meta.col === 0) {
-                return 'Ver Contrato';
+        {
+          extend: 'pdf',
+          text: '<i class="bi bi-file-earmark-pdf"></i> PDF',
+          className: 'btn btn-danger btn-sm',
+          title: 'Instructores',
+          exportOptions: {
+            columns: [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13],
+            format: {
+              body: function(data, type, row, meta) {
+                if (meta.col === 0) {
+                  return 'Ver Contrato';
+                }
+                if (meta.col === 3) {
+                  const match = data.match(/\d+/);
+                  return match ? match[0] : '';
+                }
+                if (meta.col === 5) {
+                  return '';
+                }
+                return data.replace(/<[^>]*>/g, '').trim();
               }
-              if (meta.col === 3) {
-                const match = data.match(/\d+/);
-                return match ? match[0] : '';
+            }
+          },
+          orientation: 'landscape',
+          pageSize: 'A4'
+        },
+        {
+          extend: 'csv',
+          text: '<i class="bi bi-file-earmark-spreadsheet"></i> CSV',
+          className: 'btn btn-primary btn-sm',
+          title: 'Instructores',
+          exportOptions: {
+            columns: [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13],
+            format: {
+              body: function(data, type, row, meta) {
+                if (meta.col === 0) {
+                  return 'Ver Contrato';
+                }
+                if (meta.col === 3) {
+                  const match = data.match(/\d+/);
+                  return match ? match[0] : '';
+                }
+                if (meta.col === 5) {
+                  return '';
+                }
+                return data.replace(/<[^>]*>/g, '').trim();
               }
-              if (meta.col === 5) {
-                return '';
+            }
+          }
+        },
+        {
+          extend: 'print',
+          text: '<i class="bi bi-printer"></i> Imprimir',
+          className: 'btn btn-info btn-sm',
+          title: 'Instructores',
+          exportOptions: {
+            columns: [1, 2, 3, 4, 5]
+          }
+        },
+        {
+          extend: 'copy',
+          text: '<i class="bi bi-files"></i> Copiar',
+          className: 'btn btn-secondary btn-sm',
+          title: 'Instructores',
+          exportOptions: {
+            columns: [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13],
+            format: {
+              body: function(data, type, row, meta) {
+                if (meta.col === 0) {
+                  return 'Ver Contrato';
+                }
+                if (meta.col === 3) {
+                  const match = data.match(/\d+/);
+                  return match ? match[0] : '';
+                }
+                if (meta.col === 5) {
+                  return '';
+                }
+                return data.replace(/<[^>]*>/g, '').trim();
               }
-              return data.replace(/<[^>]*>/g, '').trim();
             }
           }
         }
-      },
-      {
-        extend: 'print',
-        text: '<i class="bi bi-printer"></i> Imprimir',
-        className: 'btn btn-info btn-sm',
-        title: 'Instructores',
-        exportOptions: {
-          columns: [1, 2, 3, 4, 5]
+      ],
+      columnDefs: [
+        {
+          targets: 0,
+          visible: true,
+          orderable: false,
+          searchable: false
+        }
+      ],
+      language: {
+        lengthMenu: 'Mostrar _MENU_ registros por página',
+        zeroRecords: 'No se encontraron resultados',
+        info: 'Mostrando _START_ a _END_ de _TOTAL_ registros',
+        infoEmpty: 'Mostrando 0 a 0 de 0 registros',
+        infoFiltered: '(filtrado de _MAX_ registros totales)',
+        search: 'Buscar:',
+        paginate: {
+          first: 'Primero',
+          last: 'Último',
+          next: 'Siguiente',
+          previous: 'Anterior'
         }
       }
-    ],
-    columnDefs: [
-      {
-        targets: 0,
-        orderable: false,
-        searchable: false
-      }
-    ],
-    language: {
-      lengthMenu: 'Mostrar _MENU_ registros por página',
-      zeroRecords: 'No se encontraron resultados',
-      info: 'Mostrando _START_ a _END_ de _TOTAL_ registros',
-      infoEmpty: 'Mostrando 0 a 0 de 0 registros',
-      infoFiltered: '(filtrado de _MAX_ registros totales)',
-      search: 'Buscar:',
-      paginate: {
-        first: 'Primero',
-        last: 'Último',
-        next: 'Siguiente',
-        previous: 'Anterior'
-      }
-    }
-  });
+    });
+    
+    console.log(`✅ Tabla recargada exitosamente. Total registros: ${instructoresGlobal.length}`);
+    
+  } catch (error) {
+    console.error("❌ Error al recargar la tabla:", error);
+    alert("Error al recargar los datos. Por favor recargue la página.");
+  }
 }
 
 function renderTable() {
@@ -666,8 +709,8 @@ async function handleCreateInstructorSubmit(event) {
     // Limpiar formulario
     event.target.reset();
 
-    // Recargar la tabla con los nuevos datos
-    await init();
+    // 🔥 IMPORTANTE: Recargar los datos globales y la tabla
+    await recargarDatosCompletos();
     
   } catch (error) {
     console.error("❌ Error al crear instructor:", error);
@@ -687,4 +730,168 @@ async function eliminarInstructor(id) {
     console.error("Error al eliminar:", error);
     alert("Error al eliminar el instructor");
   }
+}
+
+// Función para recargar todos los datos globales y actualizar la tabla
+async function recargarDatosCompletos() {
+  console.log("🔄 Recargando datos completos...");
+  
+  try {
+    // Recargar instructores
+    const response = await InstructorService.get_all_instructores_paginated(1, 200);
+    instructoresGlobal = response.data;
+    
+    // Recargar supervisores
+    supervisoresGlobal = await SupervisorService.get_all_supervisores();
+    
+    // Recargar contratos
+    contratosGlobal = await ContratoService.get_all_contratos();
+    
+    console.log(`📊 Datos recargados: ${instructoresGlobal.length} instructores, ${contratosGlobal.length} contratos`);
+    
+    // 🔥 IMPORTANTE: Destruir el DataTable actual
+    if ($.fn.DataTable.isDataTable('#dataTableInstru')) {
+      $('#dataTableInstru').DataTable().destroy();
+      console.log("🗑️ DataTable destruida");
+    }
+    
+    // Volver a renderizar la tabla con los nuevos datos
+    renderTable();
+    
+    // Reinicializar DataTable con la misma configuración
+    reinicializarDataTable();
+    
+    console.log("✅ Tabla recargada exitosamente");
+    
+  } catch (error) {
+    console.error("❌ Error al recargar datos:", error);
+  }
+}
+
+// Función para reinicializar DataTable
+function reinicializarDataTable() {
+  console.log("🔄 Reinicializando DataTable...");
+  
+  $('#dataTableInstru').DataTable({
+    responsive: true,
+    autoWidth: false,
+    dom: 'lBfrtip',
+    buttons: [
+      {
+        extend: 'excel',
+        text: '<i class="bi bi-file-earmark-excel"></i> Excel',
+        className: 'btn btn-success btn-sm',
+        title: 'Instructores',
+        exportOptions: {
+          columns: [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13],
+          format: {
+            body: function(data, type, row, meta) {
+              if (meta.col === 0) return 'Ver Contrato';
+              if (meta.col === 3) {
+                const match = data.match(/\d+/);
+                return match ? match[0] : '';
+              }
+              if (meta.col === 5) return '';
+              return data.replace(/<[^>]*>/g, '').trim();
+            }
+          }
+        }
+      },
+      {
+        extend: 'pdf',
+        text: '<i class="bi bi-file-earmark-pdf"></i> PDF',
+        className: 'btn btn-danger btn-sm',
+        title: 'Instructores',
+        exportOptions: {
+          columns: [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13],
+          format: {
+            body: function(data, type, row, meta) {
+              if (meta.col === 0) return 'Ver Contrato';
+              if (meta.col === 3) {
+                const match = data.match(/\d+/);
+                return match ? match[0] : '';
+              }
+              if (meta.col === 5) return '';
+              return data.replace(/<[^>]*>/g, '').trim();
+            }
+          }
+        },
+        orientation: 'landscape',
+        pageSize: 'A4'
+      },
+      {
+        extend: 'csv',
+        text: '<i class="bi bi-file-earmark-spreadsheet"></i> CSV',
+        className: 'btn btn-primary btn-sm',
+        title: 'Instructores',
+        exportOptions: {
+          columns: [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13],
+          format: {
+            body: function(data, type, row, meta) {
+              if (meta.col === 0) return 'Ver Contrato';
+              if (meta.col === 3) {
+                const match = data.match(/\d+/);
+                return match ? match[0] : '';
+              }
+              if (meta.col === 5) return '';
+              return data.replace(/<[^>]*>/g, '').trim();
+            }
+          }
+        }
+      },
+      {
+        extend: 'print',
+        text: '<i class="bi bi-printer"></i> Imprimir',
+        className: 'btn btn-info btn-sm',
+        title: 'Instructores',
+        exportOptions: {
+          columns: [1, 2, 3, 4, 5]
+        }
+      },
+      {
+        extend: 'copy',
+        text: '<i class="bi bi-files"></i> Copiar',
+        className: 'btn btn-secondary btn-sm',
+        title: 'Instructores',
+        exportOptions: {
+          columns: [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13],
+          format: {
+            body: function(data, type, row, meta) {
+              if (meta.col === 0) return 'Ver Contrato';
+              if (meta.col === 3) {
+                const match = data.match(/\d+/);
+                return match ? match[0] : '';
+              }
+              if (meta.col === 5) return '';
+              return data.replace(/<[^>]*>/g, '').trim();
+            }
+          }
+        }
+      }
+    ],
+    columnDefs: [
+      {
+        targets: 0,
+        visible: true,
+        orderable: false,
+        searchable: false
+      }
+    ],
+    language: {
+      lengthMenu: 'Mostrar _MENU_ registros por página',
+      zeroRecords: 'No se encontraron resultados',
+      info: 'Mostrando _START_ a _END_ de _TOTAL_ registros',
+      infoEmpty: 'Mostrando 0 a 0 de 0 registros',
+      infoFiltered: '(filtrado de _MAX_ registros totales)',
+      search: 'Buscar:',
+      paginate: {
+        first: 'Primero',
+        last: 'Último',
+        next: 'Siguiente',
+        previous: 'Anterior'
+      }
+    }
+  });
+  
+  console.log("✅ DataTable reinicializada correctamente");
 }
