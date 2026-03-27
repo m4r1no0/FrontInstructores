@@ -85,6 +85,7 @@ export async function init() {
 
     // 🔵 Renderizar select supervisores
     renderSupervisorSelect();
+    renderSupervisorSelectActualizar();
 
     // 🔵 Renderizar tabla
     renderTable();
@@ -95,174 +96,142 @@ export async function init() {
     }
 
     // 🔵 INICIALIZAR DATATABLE CON BOTONES
-$('#dataTableInstru').DataTable({
-  responsive: true,
-  autoWidth: false,
-  dom: 'lBfrtip',
-  buttons: [
-    {
-      extend: 'excel',
-      text: '<i class="bi bi-file-earmark-excel"></i> Excel',
-      className: 'btn btn-success btn-sm',
-      title: 'Instructores',
-      exportOptions: {
-  columns: [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13], // Exporta columnas 0-4 y la 6 (datos contrato)
-  format: {
-        body: function(data, type, row, meta) {
-          // Columna 0 (Contrato botón) - mostrar texto
-          if (meta.col === 0) {
-            return 'Ver Contrato';
+    $('#dataTableInstru').DataTable({
+      responsive: true,
+      autoWidth: false,
+      dom: 'lBfrtip',
+      buttons: [
+        {
+          extend: 'excel',
+          text: '<i class="bi bi-file-earmark-excel"></i> Excel',
+          className: 'btn btn-success btn-sm',
+          title: 'Instructores',
+          exportOptions: {
+            columns: [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13],
+            format: {
+              body: function(data, type, row, meta) {
+                if (meta.col === 0) {
+                  return 'Ver Contrato';
+                }
+                if (meta.col === 3) {
+                  const match = data.match(/\d+/);
+                  return match ? match[0] : '';
+                }
+                if (meta.col === 5) {
+                  return '';
+                }
+                return data.replace(/<[^>]*>/g, '').trim();
+              }
+            }
           }
-          
-          // Columna 3 (Documento botón) - extraer número
-          if (meta.col === 3) {
-            const match = data.match(/\d+/);
-            return match ? match[0] : '';
+        },
+        {
+          extend: 'pdf',
+          text: '<i class="bi bi-file-earmark-pdf"></i> PDF',
+          className: 'btn btn-danger btn-sm',
+          title: 'Instructores',
+          exportOptions: {
+            columns: [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13],
+            format: {
+              body: function(data, type, row, meta) {
+                if (meta.col === 0) {
+                  return 'Ver Contrato';
+                }
+                if (meta.col === 3) {
+                  const match = data.match(/\d+/);
+                  return match ? match[0] : '';
+                }
+                if (meta.col === 5) {
+                  return '';
+                }
+                return data.replace(/<[^>]*>/g, '').trim();
+              }
+            }
+          },
+          orientation: 'landscape',
+          pageSize: 'A4'
+        },
+        {
+          extend: 'csv',
+          text: '<i class="bi bi-file-earmark-spreadsheet"></i> CSV',
+          className: 'btn btn-primary btn-sm',
+          title: 'Instructores',
+          exportOptions: {
+            columns: [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13],
+            format: {
+              body: function(data, type, row, meta) {
+                if (meta.col === 0) {
+                  return 'Ver Contrato';
+                }
+                if (meta.col === 3) {
+                  const match = data.match(/\d+/);
+                  return match ? match[0] : '';
+                }
+                if (meta.col === 5) {
+                  return '';
+                }
+                return data.replace(/<[^>]*>/g, '').trim();
+              }
+            }
           }
-          
-          // Columna 5 (Acciones) - no mostrar nada
-          if (meta.col === 5) {
-            return '';
+        },
+        {
+          extend: 'print',
+          text: '<i class="bi bi-printer"></i> Imprimir',
+          className: 'btn btn-info btn-sm',
+          title: 'Instructores',
+          exportOptions: {
+            columns: [1, 2, 3, 4, 5]
           }
-          
-          // Para las columnas ocultas (6-13), los datos ya están limpios
-          // Para las demás, limpiar HTML
-          return data.replace(/<[^>]*>/g, '').trim();
+        },
+        {
+          extend: 'copy',
+          text: '<i class="bi bi-files"></i> Copiar',
+          className: 'btn btn-secondary btn-sm',
+          title: 'Instructores',
+          exportOptions: {
+            columns: [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13],
+            format: {
+              body: function(data, type, row, meta) {
+                if (meta.col === 0) {
+                  return 'Ver Contrato';
+                }
+                if (meta.col === 3) {
+                  const match = data.match(/\d+/);
+                  return match ? match[0] : '';
+                }
+                if (meta.col === 5) {
+                  return '';
+                }
+                return data.replace(/<[^>]*>/g, '').trim();
+              }
+            }
+          }
+        }
+      ],
+      columnDefs: [
+        {
+          targets: 0,
+          visible: true,
+          orderable: false,
+          searchable: false
+        }
+      ],
+      language: {
+        lengthMenu: 'Mostrar _MENU_ registros por página',
+        zeroRecords: 'No se encontraron resultados',
+        info: 'Mostrando _START_ a _END_ de _TOTAL_ registros',
+        infoEmpty: 'Mostrando 0 a 0 de 0 registros',
+        infoFiltered: '(filtrado de _MAX_ registros totales)',
+        search: 'Buscar:',
+        paginate: {
+          first: 'Primero',
+          last: 'Último',
+          next: 'Siguiente',
+          previous: 'Anterior'
         }
       }
-}
-    },
-    {
-      extend: 'pdf',
-      text: '<i class="bi bi-file-earmark-pdf"></i> PDF',
-      className: 'btn btn-danger btn-sm',
-      title: 'Instructores',
-      exportOptions: {
-  columns: [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13], // Exporta columnas 0-4 y la 6 (datos contrato)
-  format: {
-        body: function(data, type, row, meta) {
-          // Columna 0 (Contrato botón) - mostrar texto
-          if (meta.col === 0) {
-            return 'Ver Contrato';
-          }
-          
-          // Columna 3 (Documento botón) - extraer número
-          if (meta.col === 3) {
-            const match = data.match(/\d+/);
-            return match ? match[0] : '';
-          }
-          
-          // Columna 5 (Acciones) - no mostrar nada
-          if (meta.col === 5) {
-            return '';
-          }
-          
-          // Para las columnas ocultas (6-13), los datos ya están limpios
-          // Para las demás, limpiar HTML
-          return data.replace(/<[^>]*>/g, '').trim();
-        }
-      }
-},
-      orientation: 'landscape',
-      pageSize: 'A4'
-    },
-    {
-      extend: 'csv',
-      text: '<i class="bi bi-file-earmark-spreadsheet"></i> CSV',
-      className: 'btn btn-primary btn-sm',
-      title: 'Instructores',
-      exportOptions: {
-  columns: [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13], // Exporta columnas 0-4 y la 6 (datos contrato)
-  format: {
-        body: function(data, type, row, meta) {
-          // Columna 0 (Contrato botón) - mostrar texto
-          if (meta.col === 0) {
-            return 'Ver Contrato';
-          }
-          
-          // Columna 3 (Documento botón) - extraer número
-          if (meta.col === 3) {
-            const match = data.match(/\d+/);n
-            return match ? match[0] : '';
-          }
-          
-          // Columna 5 (Acciones) - no mostrar nada
-          if (meta.col === 5) {
-            return '';
-          }
-          
-          // Para las columnas ocultas (6-13), los datos ya están limpios
-          // Para las demás, limpiar HTML
-          return data.replace(/<[^>]*>/g, '').trim();
-        }
-      }
-}
-    },
-    {
-      extend: 'print',
-      text: '<i class="bi bi-printer"></i> Imprimir',
-      className: 'btn btn-info btn-sm',
-      title: 'Instructores',
-      exportOptions: {
-        columns: [1, 2, 3, 4, 5]
-      }
-    },
-    {
-      extend: 'copy',
-      text: '<i class="bi bi-files"></i> Copiar',
-      className: 'btn btn-secondary btn-sm',
-      title: 'Instructores',
-      exportOptions: {
-  columns: [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13], // Exporta columnas 0-4 y la 6 (datos contrato)
-  format: {
-        body: function(data, type, row, meta) {
-          // Columna 0 (Contrato botón) - mostrar texto
-          if (meta.col === 0) {
-            return 'Ver Contrato';
-          }
-          
-          // Columna 3 (Documento botón) - extraer número
-          if (meta.col === 3) {
-            const match = data.match(/\d+/);
-            return match ? match[0] : '';
-          }
-          
-          // Columna 5 (Acciones) - no mostrar nada
-          if (meta.col === 5) {
-            return '';
-          }
-          
-          // Para las columnas ocultas (6-13), los datos ya están limpios
-          // Para las demás, limpiar HTML
-          return data.replace(/<[^>]*>/g, '').trim();
-        }
-      }
-}
-    }
-  ],
-  columnDefs: [
-    {
-      targets: 0, // Columna del botón de contrato (no se exporta)
-      visible: true,
-      orderable: false,
-      searchable: false
-    }
-  ],
-  language: {
-    lengthMenu: 'Mostrar _MENU_ registros por página',
-    zeroRecords: 'No se encontraron resultados',
-    info: 'Mostrando _START_ a _END_ de _TOTAL_ registros',
-    infoEmpty: 'Mostrando 0 a 0 de 0 registros',
-    infoFiltered: '(filtrado de _MAX_ registros totales)',
-    search: 'Buscar:',
-    paginate: {
-      first: 'Primero',
-      last: 'Último',
-      next: 'Siguiente',
-      previous: 'Anterior'
-    }
-  }
-});
+    });
 
     // 🔵 Delegación de eventos
     tabla.removeEventListener('click', handleTableClick);
@@ -275,11 +244,14 @@ $('#dataTableInstru').DataTable({
       formActualizar.addEventListener('submit', handleUpdateSubmit);
     }
 
-    // 🔵 Form crear
-    const formCrear = document.getElementById('formCrearInstructor');
+    // 🔵 Form crear - CORREGIDO: el id correcto es 'formInstructor'
+    const formCrear = document.getElementById('formInstructor');
     if (formCrear) {
-      formCrear.removeEventListener('submit', handleCreateSubmit);
-      formCrear.addEventListener('submit', handleCreateSubmit);
+      formCrear.removeEventListener('submit', handleCreateInstructorSubmit);
+      formCrear.addEventListener('submit', handleCreateInstructorSubmit);
+      console.log("✅ Event listener del formulario de instructor configurado");
+    } else {
+      console.error("❌ No se encontró el formulario con id 'formInstructor'");
     }
 
   } catch (error) {
@@ -301,6 +273,20 @@ function renderSupervisorSelect() {
   });
 }
 
+function renderSupervisorSelectActualizar() {
+  const selectActualizar = document.querySelector('#selectActualizar');
+  if (!selectActualizar) return;
+
+  selectActualizar.innerHTML = '<option value="">Seleccione supervisor</option>';
+
+  supervisoresGlobal.forEach(supervisor => {
+    const option = document.createElement("option");
+    option.value = supervisor.id_supervisor;
+    option.textContent = supervisor.nombre;
+    selectActualizar.appendChild(option);
+  });
+}
+
 async function recargarTabla() {
   const response = await InstructorService.get_all_instructores_paginated(1, 50);
   instructoresGlobal = response.data;
@@ -318,162 +304,116 @@ async function recargarTabla() {
 
   // 🔵 INICIALIZAR CON BOTONES NUEVAMENTE
   $('#dataTableInstru').DataTable({
-  responsive: true,
-  autoWidth: false,
-  dom: 'lBfrtip',
-  buttons: [
-    {
-      extend: 'excel',
-      text: '<i class="bi bi-file-earmark-excel"></i> Excel',
-      className: 'btn btn-success btn-sm',
-      title: 'Instructores',
-      exportOptions: {
-        columns: [0, 1, 2, 3, 4, 5], // TODAS las columnas en el orden correcto
-        format: {
-          body: function(data, type, row, meta) {
-            // meta.col es el índice de la columna (0-5)
-            
-            // Columna 0: CONTRATO - Usar los datos globales
-            if (meta.col === 0) {
-              const instructor = instructoresGlobal[meta.row];
-              if (instructor) {
-                const contrato = contratosGlobal.find(c => c.id_instructor == instructor.id_instructor) || {};
-                const partes = [];
-                if (contrato.numero_contrato) partes.push(`Contrato: ${contrato.numero_contrato}`);
-                if (contrato.cdp) partes.push(`CDP: ${contrato.cdp}`);
-                if (contrato.crp) partes.push(`CRP: ${contrato.crp}`);
-                if (contrato.rubro) partes.push(`Rubro: ${contrato.rubro}`);
-                if (contrato.dependencia) partes.push(`Dependencia: ${contrato.dependencia}`);
-                if (contrato.fecha_inicio) partes.push(`Inicio: ${contrato.fecha_inicio}`);
-                if (contrato.fecha_fin) partes.push(`Fin: ${contrato.fecha_fin}`);
-                if (contrato.valor_contrato) partes.push(`Valor: ${contrato.valor_contrato}`);
-                
-                return partes.length > 0 ? partes.join(' - ') : 'Sin contrato';
+    responsive: true,
+    autoWidth: false,
+    dom: 'lBfrtip',
+    buttons: [
+      {
+        extend: 'excel',
+        text: '<i class="bi bi-file-earmark-excel"></i> Excel',
+        className: 'btn btn-success btn-sm',
+        title: 'Instructores',
+        exportOptions: {
+          columns: [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13],
+          format: {
+            body: function(data, type, row, meta) {
+              if (meta.col === 0) {
+                return 'Ver Contrato';
               }
-              return 'Sin contrato';
-            }
-            
-            // Columna 1: NOMBRES - Limpiar HTML
-            if (meta.col === 1) {
-              return data.replace(/<[^>]*>/g, '').trim();
-            }
-            
-            // Columna 2: TIPO DOC - Limpiar HTML
-            if (meta.col === 2) {
-              return data.replace(/<[^>]*>/g, '').trim();
-            }
-            
-            // Columna 3: DOCUMENTO - Extraer solo el número
-            if (meta.col === 3) {
-              const match = data.match(/\d+/);
-              return match ? match[0] : '';
-            }
-            
-            // Columna 4: SUPERVISOR - Limpiar HTML
-            if (meta.col === 4) {
-              return data.replace(/<[^>]*>/g, '').trim();
-            }
-            
-            // Columna 5: ACCIONES - No exportar botones
-            if (meta.col === 5) {
-              return ''; // Vacío o podrías poner "Editar/Eliminar"
-            }
-            
-            return data;
-          }
-        }
-      }
-    },
-    {
-      extend: 'pdf',
-      text: '<i class="bi bi-file-earmark-pdf"></i> PDF',
-      className: 'btn btn-danger btn-sm',
-      title: 'Instructores',
-      exportOptions: {
-        columns: [0, 1, 2, 3, 4],
-        format: {
-          body: function(data, type, row, meta) {
-            if (meta.col === 0) {
-              const instructor = instructoresGlobal[meta.row];
-              if (instructor) {
-                const contrato = contratosGlobal.find(c => c.id_instructor == instructor.id_instructor) || {};
-                const partes = [];
-                if (contrato.numero_contrato) partes.push(`Contrato: ${contrato.numero_contrato}`);
-                if (contrato.cdp) partes.push(`CDP: ${contrato.cdp}`);
-                if (contrato.crp) partes.push(`CRP: ${contrato.crp}`);
-                return partes.join(' | ');
+              if (meta.col === 3) {
+                const match = data.match(/\d+/);
+                return match ? match[0] : '';
               }
-              return 'Sin contrato';
+              if (meta.col === 5) {
+                return '';
+              }
+              return data.replace(/<[^>]*>/g, '').trim();
             }
-            if (meta.col === 3) {
-              const match = data.match(/\d+/);
-              return match ? match[0] : '';
-            }
-            return data.replace(/<[^>]*>/g, '').trim();
           }
         }
       },
-      orientation: 'landscape',
-      pageSize: 'A4'
-    },
-    {
-      extend: 'csv',
-      text: '<i class="bi bi-file-earmark-spreadsheet"></i> CSV',
-      className: 'btn btn-primary btn-sm',
-      title: 'Instructores',
-      exportOptions: {
-        columns: [0, 1, 2, 3, 4],
-        format: {
-          body: function(data, type, row, meta) {
-            if (meta.col === 0) {
-              const instructor = instructoresGlobal[meta.row];
-              if (instructor) {
-                const contrato = contratosGlobal.find(c => c.id_instructor == instructor.id_instructor) || {};
-                return `"${contrato.numero_contrato || ''}","${contrato.cdp || ''}","${contrato.crp || ''}"`;
+      {
+        extend: 'pdf',
+        text: '<i class="bi bi-file-earmark-pdf"></i> PDF',
+        className: 'btn btn-danger btn-sm',
+        title: 'Instructores',
+        exportOptions: {
+          columns: [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13],
+          format: {
+            body: function(data, type, row, meta) {
+              if (meta.col === 0) {
+                return 'Ver Contrato';
               }
-              return '"Sin contrato"';
+              if (meta.col === 3) {
+                const match = data.match(/\d+/);
+                return match ? match[0] : '';
+              }
+              if (meta.col === 5) {
+                return '';
+              }
+              return data.replace(/<[^>]*>/g, '').trim();
             }
-            if (meta.col === 3) {
-              const match = data.match(/\d+/);
-              return match ? match[0] : '';
+          }
+        },
+        orientation: 'landscape',
+        pageSize: 'A4'
+      },
+      {
+        extend: 'csv',
+        text: '<i class="bi bi-file-earmark-spreadsheet"></i> CSV',
+        className: 'btn btn-primary btn-sm',
+        title: 'Instructores',
+        exportOptions: {
+          columns: [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13],
+          format: {
+            body: function(data, type, row, meta) {
+              if (meta.col === 0) {
+                return 'Ver Contrato';
+              }
+              if (meta.col === 3) {
+                const match = data.match(/\d+/);
+                return match ? match[0] : '';
+              }
+              if (meta.col === 5) {
+                return '';
+              }
+              return data.replace(/<[^>]*>/g, '').trim();
             }
-            return `"${data.replace(/<[^>]*>/g, '').trim()}"`;
           }
         }
+      },
+      {
+        extend: 'print',
+        text: '<i class="bi bi-printer"></i> Imprimir',
+        className: 'btn btn-info btn-sm',
+        title: 'Instructores',
+        exportOptions: {
+          columns: [1, 2, 3, 4, 5]
+        }
       }
-    },
-    {
-      extend: 'print',
-      text: '<i class="bi bi-printer"></i> Imprimir',
-      className: 'btn btn-info btn-sm',
-      title: 'Instructores',
-      exportOptions: {
-        columns: [0, 1, 2, 3, 4]
+    ],
+    columnDefs: [
+      {
+        targets: 0,
+        orderable: false,
+        searchable: false
+      }
+    ],
+    language: {
+      lengthMenu: 'Mostrar _MENU_ registros por página',
+      zeroRecords: 'No se encontraron resultados',
+      info: 'Mostrando _START_ a _END_ de _TOTAL_ registros',
+      infoEmpty: 'Mostrando 0 a 0 de 0 registros',
+      infoFiltered: '(filtrado de _MAX_ registros totales)',
+      search: 'Buscar:',
+      paginate: {
+        first: 'Primero',
+        last: 'Último',
+        next: 'Siguiente',
+        previous: 'Anterior'
       }
     }
-  ],
-  columnDefs: [
-    {
-      targets: 0,
-      orderable: false,
-      searchable: false
-    }
-  ],
-  language: {
-    lengthMenu: 'Mostrar _MENU_ registros por página',
-    zeroRecords: 'No se encontraron resultados',
-    info: 'Mostrando _START_ a _END_ de _TOTAL_ registros',
-    infoEmpty: 'Mostrando 0 a 0 de 0 registros',
-    infoFiltered: '(filtrado de _MAX_ registros totales)',
-    search: 'Buscar:',
-    paginate: {
-      first: 'Primero',
-      last: 'Último',
-      next: 'Siguiente',
-      previous: 'Anterior'
-    }
-  }
-});
+  });
 }
 
 function renderTable() {
@@ -644,7 +584,6 @@ async function openEditModal(id) {
 
   try {
     const instructor = await InstructorService.get_user_by_id(id);
-    console.log(supervisoresGlobal);
 
     // 🔥 GUARDAR ID REAL
     document.getElementById('idInstructorActualizar').value = instructor.id_instructor;
@@ -675,7 +614,7 @@ async function handleUpdateSubmit(event) {
     numero_documento: document.getElementById('numero_documentoActualizar').value,
     fecha_nacimiento: document.getElementById('fecha_nacimientoActualizar').value,
     fecha_expedicion: document.getElementById('fecha_expedicionActualizar').value,
-    id_supervisor: 1
+    id_supervisor: document.getElementById('selectActualizar').value
   };
 
   try {
@@ -688,39 +627,64 @@ async function handleUpdateSubmit(event) {
   }
 }
 
-async function handleCreateSubmit(event) {
+// 🔵 FUNCIÓN CORREGIDA PARA CREAR INSTRUCTOR
+async function handleCreateInstructorSubmit(event) {
   event.preventDefault();
+  console.log("📝 Enviando formulario de creación de instructor...");
 
   const newData = {
-    nombres: document.getElementById('nombreCrear').value,
-    apellidos: document.getElementById('apellidoCrear').value,
-    tipo_documento: document.getElementById('tipo_documentoCrear').value,
-    numero_documento: document.getElementById('numero_documentoCrear').value,
-    fecha_nacimiento: document.getElementById('fecha_nacimientoCrear').value,
-    fecha_expedicion: document.getElementById('fecha_expedicionCrear').value,
+    nombres: document.getElementById('nombre').value,
+    apellidos: document.getElementById('apellido').value,
+    tipo_documento: document.getElementById('tipo_documento').value,
+    numero_documento: document.getElementById('documento').value,
+    fecha_nacimiento: document.getElementById('fecha_nacimiento').value,
+    fecha_expedicion: document.getElementById('fecha_expedicion').value,
     id_supervisor: document.getElementById('selectSupervisor').value
   };
 
-  try {
-    await InstructorService.create_instructor(newData);
-    const modal = bootstrap.Modal.getInstance(
-      document.getElementById("ModalCrear")
-    );
+  // Validar campos requeridos
+  if (!newData.nombres || !newData.apellidos || !newData.numero_documento) {
+    console.error("❌ Campos requeridos faltantes");
+    alert("Por favor complete todos los campos requeridos");
+    return;
+  }
 
-    if (modal) modal.hide();
+  try {
+    console.log("Enviando datos:", newData);
+    await InstructorService.create_instructor(newData);
+    console.log("✅ Instructor creado exitosamente");
+    
+    // Cerrar modal
+    const modalElement = document.getElementById("ModalAgregar");
+    if (modalElement) {
+      const modal = bootstrap.Modal.getInstance(modalElement);
+      if (modal) {
+        modal.hide();
+      }
+    }
+
+    // Limpiar formulario
     event.target.reset();
-    init();
+
+    // Recargar la tabla con los nuevos datos
+    await init();
+    
   } catch (error) {
-    console.error("Error:", error);
+    console.error("❌ Error al crear instructor:", error);
+    alert("Error al crear el instructor. Por favor verifique los datos e intente nuevamente.");
   }
 }
 
-// async function eliminarInstructor(id) {
-//   if (!result.isConfirmed) return;
-//   try {
-//     await InstructorService.delete_instructor(id);
-//     init();
-//   } catch (error) {
-//     console.error(error);
-//   }
-// }
+async function eliminarInstructor(id) {
+  const confirmacion = confirm("¿Está seguro de eliminar este instructor?");
+  if (!confirmacion) return;
+  
+  try {
+    await InstructorService.delete_instructor(id);
+    console.log("✅ Instructor eliminado");
+    await init();
+  } catch (error) {
+    console.error("Error al eliminar:", error);
+    alert("Error al eliminar el instructor");
+  }
+}
