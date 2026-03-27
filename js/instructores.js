@@ -14,7 +14,7 @@ export async function init() {
 
   try {
     // 🔵 Obtener datos
-    const response = await InstructorService.get_all_instructores_paginated(1, 50);
+    const response = await InstructorService.get_all_instructores_paginated(1, 200);
     instructoresGlobal = response.data;
 
     supervisoresGlobal = await SupervisorService.get_all_supervisores();
@@ -62,7 +62,7 @@ export async function init() {
       if (cuerpoFechaContrato) {
         cuerpoFechaContrato.innerHTML = `
           <tr>
-            <td>${primerContrato.id_instructor || ''}</td>
+            <td>${primerContrato.id_instructor}</td>
             <td>${primerContrato.numero_contrato || ''}</td>
             <td>${primerContrato.estado || ''}</td>
             <td>${primerContrato.fecha_inicio || ''}</td>

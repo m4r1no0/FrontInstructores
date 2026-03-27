@@ -4,7 +4,8 @@ export async function initContrato() {
     console.log("=== INITCONTRATO EJECUTÁNDOSE ===");
     
     
-    const contratos = await ContratoService.get_all_contratos()
+    const contratos = await ContratoService.get_contrato_instructor()
+    let contratoLeft = contratos.data
     console.log(contratos)
 
     // Esperar a que el DOM esté listo
@@ -57,7 +58,7 @@ export async function initContrato() {
         console.log("✅ tbody limpiado");
         
         // Llenar los datos manualmente
-        contratos.forEach((contrato,) => {
+        contratoLeft.forEach((contrato,) => {
             const row = `
                 <tr>
                     <td>
@@ -69,16 +70,9 @@ export async function initContrato() {
                     </td>
                     <td>${contrato.id_instructor}</td>
                     <td>${contrato.numero_contrato}</td>
-                    <td>${contrato.fecha_inicio}</td>
-                    <td>${contrato.fecha_fin}</td>
-                    <td>${contrato.vigencia}</td>
-                    <td>${formatMoney(contrato.valor_contrato)}</td>
-                    <td>${formatMoney(contrato.valor_mes)}</td>
-                    <td>${contrato.estado}</td>
-                    <td>${contrato.cdp}</td>
+                    <td>${contrato.nombres} ${contrato.apellidos}</td>
+                    <td>${contrato.numero_documento}</td>
                     <td>${contrato.crp}</td>
-                    <td>${contrato.rubro}</td>
-                    <td>${contrato.dependencia}</td>
                 </tr>
             `;
             $tbody.append(row);
