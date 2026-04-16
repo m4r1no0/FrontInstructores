@@ -71,6 +71,12 @@ function initializeTable(contratoLeft) {
                                 data-id="${contrato.id_instructor}">
                             <i class="bi bi-plus-lg"></i>
                         </button>
+                        <button class="btn btn-danger btn-sm btn-agregar-contrato" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#ModalEliminarContrato" 
+                                data-id="${contrato.id_instructor}">
+                            <i class="bi bi-clipboard-minus-fill"></i>
+                        </button>
                     </td>
                     <td>${contrato.id_instructor || ''}</td>
                     <td>${contrato.numero_contrato || ''}</td>
