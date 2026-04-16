@@ -1,228 +1,161 @@
+// initContrato.js
 import { ContratoService } from './contrato.service.js';
 
 export async function initContrato() {
     console.log("=== INITCONTRATO EJECUTÁNDOSE ===");
     
-    const contratos = await ContratoService.get_contrato_instructor();
-    let contratoLeft = contratos.data;
-    console.log(contratos);
+    try {
+        const contratos = await ContratoService.get_contrato_instructor();
+        let contratoLeft = contratos.data;
+        console.log("Datos recibidos:", contratoLeft);
 
-    // Configurar el event listener del formulario
-    setupFormHandler();
+        // Configurar event listeners
+        setupFormHandler();
+        setupModalButtons();
 
-    // Esperar a que el DOM esté listo
-    const initialize = () => {
-        console.log("Inicializando tabla...");
+        // Inicializar la tabla
+        initializeTable(contratoLeft);
         
-        // Verificar que la tabla existe
-        const tabla = document.getElementById('dataTableContrato');
-        if (!tabla) {
-            console.error("❌ No se encontró la tabla");
-            return;
-        }
-        
-        // Verificar el número de columnas en el thead
-        const thead = tabla.querySelector('thead tr');
-        if (thead) {
-            const numColumnas = thead.querySelectorAll('th').length;
-            console.log("Número de columnas en thead:", numColumnas);
-            if (numColumnas !== 6) {
-                console.warn(`⚠️ La tabla tiene ${numColumnas} columnas pero debería tener 6`);
-            }
-        }
-        
-        // Verificar jQuery
-        if (typeof $ === 'undefined') {
-            console.error("❌ jQuery no está cargado");
-            return;
-        }
-        
-        // Verificar DataTable
-        if (typeof $.fn.DataTable === 'undefined') {
-            console.error("❌ DataTable no está cargado");
-            return;
-        }
-        
-        console.log("✅ jQuery y DataTable disponibles");
-        
-        // Obtener la tabla
-        const $table = $('#dataTableContrato');
-        
-        // Destruir instancia anterior si existe
-        if ($.fn.DataTable.isDataTable('#dataTableContrato')) {
-            console.log("Destruyendo DataTable existente");
-            $table.DataTable().destroy();
-        }
-        
-        // Limpiar el tbody
-        const $tbody = $table.find('tbody');
-        $tbody.empty();
-        console.log("✅ tbody limpiado");
-        
-        // Llenar los datos manualmente
-        if (contratoLeft && contratoLeft.length > 0) {
-            contratoLeft.forEach((contrato) => {
-                const row = `
-                    <tr>
-                        <td class="text-center">
-                            <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#ModalAgregarContrato">
-                                +
-                            </button>
-                        </td>
-                        <td>${contrato.id_instructor || ''}</td>
-                        <td>${contrato.numero_contrato || ''}</td>
-                        <td>${(contrato.nombres || '') + ' ' + (contrato.apellidos || '')}</td>
-                        <td>${contrato.numero_documento || ''}</td>
-                        <td>${contrato.crp || ''}</td>
-                    </tr>
-                `;
-                $tbody.append(row);
-            });
-        } else {
-            $tbody.append('<tr><td colspan="6" class="text-center">No hay contratos disponibles</td></tr>');
-        }
-        
-        console.log(`✅ ${contratoLeft?.length || 0} filas agregadas al tbody`);
-        console.log("Filas en tbody:", $tbody.find('tr').length);
-        
-        // Inicializar DataTable con botones de exportación
-        try {
-            const dataTable = $table.DataTable({
-                responsive: true,
-                dom: 'lBfrtip', // l: lengthMenu, B: buttons, f: filter, r: processing, t: table, i: info, p: pagination
-                pageLength: 10,
-                lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "Todos"]],
-                order: [[2, 'desc']], // Ordenar por No. Contrato (índice 2)
-                language: {
-                    url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json'
-                },
-                // 🔥 BOTONES DE EXPORTACIÓN
-                buttons: [
-                    {
-                        extend: 'excel',
-                        text: '<i class="bi bi-file-earmark-excel"></i> Excel',
-                        className: 'btn btn-success btn-sm',
-                        title: 'Contratos',
-                        exportOptions: {
-                            columns: [1, 2, 3, 4, 5], // Exportar columnas: Instructor, No. Contrato, Nombre, Documento, CRP
-                            format: {
-                                body: function(data, type, row, meta) {
-                                    // Limpiar HTML de los datos
-                                    return data.replace(/<[^>]*>/g, '').trim();
-                                }
-                            }
-                        }
-                    },
-                    {
-                        extend: 'pdf',
-                        text: '<i class="bi bi-file-earmark-pdf"></i> PDF',
-                        className: 'btn btn-danger btn-sm',
-                        title: 'Contratos',
-                        orientation: 'landscape',
-                        pageSize: 'A4',
-                        exportOptions: {
-                            columns: [1, 2, 3, 4, 5],
-                            format: {
-                                body: function(data, type, row, meta) {
-                                    return data.replace(/<[^>]*>/g, '').trim();
-                                }
-                            }
-                        }
-                    },
-                    {
-                        extend: 'csv',
-                        text: '<i class="bi bi-file-earmark-spreadsheet"></i> CSV',
-                        className: 'btn btn-primary btn-sm',
-                        title: 'Contratos',
-                        exportOptions: {
-                            columns: [1, 2, 3, 4, 5],
-                            format: {
-                                body: function(data, type, row, meta) {
-                                    return data.replace(/<[^>]*>/g, '').trim();
-                                }
-                            }
-                        }
-                    },
-                    {
-                        extend: 'print',
-                        text: '<i class="bi bi-printer"></i> Imprimir',
-                        className: 'btn btn-info btn-sm',
-                        title: 'Contratos',
-                        exportOptions: {
-                            columns: [1, 2, 3, 4, 5],
-                            format: {
-                                body: function(data, type, row, meta) {
-                                    return data.replace(/<[^>]*>/g, '').trim();
-                                }
-                            }
-                        }
-                    },
-                    {
-                        extend: 'copy',
-                        text: '<i class="bi bi-files"></i> Copiar',
-                        className: 'btn btn-secondary btn-sm',
-                        title: 'Contratos',
-                        exportOptions: {
-                            columns: [1, 2, 3, 4, 5],
-                            format: {
-                                body: function(data, type, row, meta) {
-                                    return data.replace(/<[^>]*>/g, '').trim();
-                                }
-                            }
-                        }
-                    }
-                ],
-                columnDefs: [
-                    {
-                        targets: 0, // Columna de acciones (botón +)
-                        orderable: false, // No permitir ordenar
-                        searchable: false, // No permitir búsqueda en esta columna
-                        exportOptions: {
-                            columns: [0], // No exportar esta columna
-                            format: {
-                                body: function(data, type, row, meta) {
-                                    return ''; // Dejar vacío en exportación
-                                }
-                            }
-                        }
-                    }
-                ],
-                destroy: true,
-                retrieve: false,
-                paging: true,
-                searching: true,
-                info: true
-            });
-            
-            console.log("✅✅✅ DATATABLE INICIALIZADO CON ÉXITO ✅✅✅");
-            console.log("Total registros:", dataTable.rows().count());
-            
-            // Forzar redibujo
-            dataTable.draw();
-            
-        } catch (error) {
-            console.error("Error al inicializar DataTable:", error);
-            console.log("Intentando inicializar sin opciones complejas...");
-            
-            // Intentar con opciones mínimas
-            try {
-                const dataTable = $table.DataTable({
-                    responsive: true
-                });
-                console.log("✅ DataTable inicializado con opciones mínimas");
-            } catch (error2) {
-                console.error("Error incluso con opciones mínimas:", error2);
-            }
-        }
-    };
-    
-    // Ejecutar después de que el DOM esté listo
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initialize);
-    } else {
-        // Pequeño retraso para asegurar que todo esté renderizado
-        setTimeout(initialize, 50);
+    } catch (error) {
+        console.error("Error en initContrato:", error);
     }
+}
+
+// =============================
+// INICIALIZAR TABLA
+// =============================
+function initializeTable(contratoLeft) {
+    console.log("Inicializando tabla...");
+    
+    // Verificar que la tabla existe
+    const tabla = document.getElementById('dataTableContrato');
+    if (!tabla) {
+        console.error("❌ No se encontró la tabla");
+        return;
+    }
+    
+    // Verificar jQuery y DataTable
+    if (typeof $ === 'undefined') {
+        console.error("❌ jQuery no está cargado");
+        return;
+    }
+    
+    if (typeof $.fn.DataTable === 'undefined') {
+        console.error("❌ DataTable no está cargado");
+        return;
+    }
+    
+    console.log("✅ jQuery y DataTable disponibles");
+    
+    const $table = $('#dataTableContrato');
+    
+    // Destruir instancia anterior si existe
+    if ($.fn.DataTable.isDataTable('#dataTableContrato')) {
+        console.log("Destruyendo DataTable existente");
+        $table.DataTable().destroy();
+    }
+    
+    // Limpiar el tbody
+    const $tbody = $table.find('tbody');
+    $tbody.empty();
+    
+    // Llenar los datos manualmente
+    if (contratoLeft && contratoLeft.length > 0) {
+        contratoLeft.forEach((contrato) => {
+            const row = `
+                <tr>
+                    <td class="text-center">
+                        <button class="btn btn-primary btn-sm btn-agregar-contrato" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#ModalAgregarContrato" 
+                                data-id="${contrato.id_instructor}">
+                            <i class="bi bi-plus-lg"></i> Agregar
+                        </button>
+                    </td>
+                    <td>${contrato.id_instructor || ''}</td>
+                    <td>${contrato.numero_contrato || ''}</td>
+                    <td>${(contrato.nombres || '') + ' ' + (contrato.apellidos || '')}</td>
+                    <td>${contrato.numero_documento || ''}</td>
+                    <td>${contrato.crp || ''}</td>
+                </tr>
+            `;
+            $tbody.append(row);
+        });
+        console.log(`✅ ${contratoLeft.length} filas agregadas`);
+    } else {
+        $tbody.append('<tr><td colspan="6" class="text-center">No hay contratos disponibles</td></tr>');
+    }
+    
+    // Inicializar DataTable
+    try {
+        const dataTable = $table.DataTable({
+            responsive: true,
+            language: {
+                url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json'
+            },
+            pageLength: 10,
+            lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "Todos"]],
+            order: [[1, 'asc']], // Ordenar por ID
+            columnDefs: [
+                {
+                    targets: 0, // Columna de acciones
+                    orderable: false,
+                    searchable: false
+                }
+            ]
+        });
+        
+        console.log("✅ DataTable inicializada con éxito");
+        
+    } catch (error) {
+        console.error("Error al inicializar DataTable:", error);
+    }
+}
+
+// =============================
+// CONFIGURAR BOTONES DEL MODAL
+// =============================
+function setupModalButtons() {
+    // Usar event delegation para botones dinámicos (incluyendo los de DataTable)
+    $(document).on('click', '.btn-agregar-contrato', function(e) {
+        // Obtener el ID del data-id del botón
+        const id_instructor = $(this).data('id');
+        
+        console.log("🔑 ID Instructor capturado del botón:", id_instructor);
+        
+        // Asignar al input hidden del formulario
+        const inputIdInstructor = document.getElementById('id_instructor');
+        if (inputIdInstructor) {
+            inputIdInstructor.value = id_instructor;
+            console.log("✅ ID asignado al input hidden:", inputIdInstructor.value);
+        } else {
+            console.error("❌ No se encontró el input hidden 'id_instructor'");
+        }
+        
+        // Opcional: Mostrar en el modal quién es el instructor
+        const nombreInstructor = $(this).closest('tr').find('td:eq(3)').text();
+        console.log("📌 Instructor seleccionado:", nombreInstructor);
+    });
+    
+    // Evento cuando el modal se abre (método alternativo)
+    $('#ModalAgregarContrato').on('show.bs.modal', function(e) {
+        const button = $(e.relatedTarget);
+        const id_instructor = button.data('id');
+        
+        if (id_instructor) {
+            document.getElementById('id_instructor').value = id_instructor;
+            console.log("🎯 Modal abierto - ID asignado:", id_instructor);
+        }
+    });
+    
+    // Limpiar el input hidden cuando el modal se cierra
+    $('#ModalAgregarContrato').on('hidden.bs.modal', function() {
+        const inputIdInstructor = document.getElementById('id_instructor');
+        if (inputIdInstructor) {
+            // No limpiar inmediatamente por si acaso, pero puedes hacerlo
+            console.log("Modal cerrado, ID actual:", inputIdInstructor.value);
+        }
+    });
 }
 
 // =============================
@@ -240,7 +173,93 @@ function setupFormHandler() {
 }
 
 // =============================
-// FORMATEO DE DINERO
+// MANEJAR ENVÍO DEL FORMULARIO
+// =============================
+async function handleCreateSubmit(event) {
+    event.preventDefault();
+    console.log("📝 Enviando formulario de contrato...");
+
+    // Capturar el ID del input hidden
+    const idInstructorInput = document.getElementById('id_instructor');
+    const id_instructor = idInstructorInput ? idInstructorInput.value : null;
+    
+    console.log("📌 ID Instructor a enviar:", id_instructor);
+    
+    // Validar que el ID esté presente
+    if (!id_instructor || id_instructor === '') {
+        console.error("❌ No se ha seleccionado ningún instructor");
+        alert("Error: Por favor seleccione un instructor de la tabla primero");
+        return;
+    }
+    
+    // Validar campos requeridos
+    const numero_contrato = document.getElementById('numero_contrato')?.value || '';
+    if (!numero_contrato) {
+        console.error("❌ Número de contrato es requerido");
+        alert("Por favor ingrese el número de contrato");
+        return;
+    }
+
+    
+    // Construir objeto con los datos
+    const newData = {
+        id_instructor: parseInt(id_instructor), // Asegurar que sea número
+        numero_contrato: numero_contrato,
+        crp: parseInt(document.getElementById('CRP').value),
+        cdp: parseInt(document.getElementById('CDP').value),
+        rubro: document.getElementById('rubro')?.value || '',
+        dependencia: document.getElementById('dependencia')?.value || '',
+        fecha_inicio: document.getElementById('fecha_inicio')?.value || '',
+        fecha_fin: document.getElementById('fecha_fin')?.value || '',
+        valor_contrato: parseFloat(document.getElementById('valor_contrato').value),
+        valor_mes: parseFloat(document.getElementById('valorMes').value),
+        estado : 'Activo',
+        vigencia:  document.getElementById('fecha_fin')?.value || '',
+        valorAdDi  : null 
+    };
+    
+    console.log("📦 Datos a enviar:", newData);
+
+    try {
+        console.log("🚀 Enviando datos al servidor...");
+        await ContratoService.create_contrato(newData);
+        console.log("✅ Contrato creado exitosamente");
+
+        // Cerrar modal
+        const modalElement = document.getElementById("ModalAgregarContrato");
+        if (modalElement) {
+            const modal = bootstrap.Modal.getInstance(modalElement);
+            if (modal) {
+                modal.hide();
+            } else {
+                // Si no hay instancia, cerrar de otra forma
+                const modalInstance = new bootstrap.Modal(modalElement);
+                modalInstance.hide();
+            }
+        }
+
+        // Limpiar formulario
+        event.target.reset();
+        
+        // Limpiar el input hidden
+        if (idInstructorInput) {
+            idInstructorInput.value = '';
+        }
+
+        // Mostrar mensaje de éxito
+        alert("Contrato creado exitosamente");
+
+        // Recargar la tabla con los nuevos datos
+        await initContrato();
+
+    } catch (error) {
+        console.error("❌ Error al crear contrato:", error);
+        alert("Error al crear el contrato. Por favor verifique los datos e intente nuevamente.");
+    }
+}
+
+// =============================
+// FORMATEO DE DINERO (opcional)
 // =============================
 function formatMoney(amount) {
     if (!amount && amount !== 0) return '$0';
@@ -254,54 +273,9 @@ function formatMoney(amount) {
     }).format(numero);
 }
 
-// =============================
-// MANEJAR ENVÍO DEL FORMULARIO
-// =============================
-async function handleCreateSubmit(event) {
-    event.preventDefault();
-    console.log("📝 Enviando formulario de contrato...");
-
-    const newData = {
-        numeroContrato: document.getElementById('numeroContrato')?.value || '',
-        crp: document.getElementById('CRP')?.value || '',
-        cdp: document.getElementById('CDP')?.value || '',
-        rubro: document.getElementById('rubro')?.value || '',
-        dependencia: document.getElementById('dependencia')?.value || '',
-        fechaInicio: document.getElementById('fecha_inicio')?.value || '',
-        fechaFin: document.getElementById('fechaFin')?.value || '',
-        valorContrato: document.getElementById('valorContrato')?.value || '',
-        valorMes: document.getElementById('valorMes')?.value || ''
-    };
-
-    // Validar campos requeridos
-    if (!newData.numeroContrato) {
-        console.error("❌ Número de contrato es requerido");
-        alert("Por favor ingrese el número de contrato");
-        return;
-    }
-
-    try {
-        console.log("Enviando datos:", newData);
-        await ContratoService.create_contrato(newData);
-        console.log("✅ Contrato creado exitosamente");
-
-        // Cerrar modal
-        const modalElement = document.getElementById("ModalAgregarContrato");
-        if (modalElement) {
-            const modal = bootstrap.Modal.getInstance(modalElement);
-            if (modal) {
-                modal.hide();
-            }
-        }
-
-        // Limpiar formulario
-        event.target.reset();
-
-        // Recargar la tabla con los nuevos datos
-        await initContrato();
-
-    } catch (error) {
-        console.error("❌ Error al crear contrato:", error);
-        alert("Error al crear el contrato. Por favor verifique los datos e intente nuevamente.");
-    }
+// Inicializar cuando el DOM esté listo
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => initContrato());
+} else {
+    initContrato();
 }
