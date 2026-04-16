@@ -69,7 +69,7 @@ function initializeTable(contratoLeft) {
                                 data-bs-toggle="modal" 
                                 data-bs-target="#ModalAgregarContrato" 
                                 data-id="${contrato.id_instructor}">
-                            <i class="bi bi-plus-lg"></i> Agregar
+                            <i class="bi bi-plus-lg"></i>
                         </button>
                     </td>
                     <td>${contrato.id_instructor || ''}</td>
@@ -77,6 +77,7 @@ function initializeTable(contratoLeft) {
                     <td>${(contrato.nombres || '') + ' ' + (contrato.apellidos || '')}</td>
                     <td>${contrato.numero_documento || ''}</td>
                     <td>${contrato.crp || ''}</td>
+                    <td>${contrato.cdp || ''}</td>
                 </tr>
             `;
             $tbody.append(row);
