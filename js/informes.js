@@ -49,6 +49,44 @@ export const initInforme = () => {
                 button.disabled = false;
                 button.innerHTML = '<i class="fas fa-file-word"></i> Generar Informe';
             }
+        }else if (event.target.closest('.btn-generar-acta')) {
+            event.preventDefault();
+            console.log('🖱️ Botón de acta clickeado');
+            
+            const button = event.target.closest('.btn-generar-acta'); // ✅ FALTABA ESTO
+            const idInstructor = button.getAttribute('data-id');
+
+            
+            if (!idInstructor) {
+                console.error('❌ No se encontró el ID del instructor');
+                alert('Error: No se pudo identificar el instructor');
+                return;
+            }
+            
+            try {
+                // Deshabilitar botón mientras procesa
+                button.disabled = true;
+                button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generando...';
+                
+                // Llamar al servicio para generar el informe
+                const resultado = await ContratoService.generar_acta_contrato(idInstructor);
+                
+                console.log('✅ Resultado:', resultado);
+                
+                if (resultado.success) {
+                    console.log('📄 Acta generado y descargado correctamente');
+                    alert('Acta generado correctamente');
+                }
+                
+            } catch (error) {
+                console.error('❌ Error al generar acta:', error);
+                alert(`Error al generar acta: ${error.message}`);
+                
+            } finally {
+                // Restaurar botón
+                button.disabled = false;
+                button.innerHTML = '<i class="fas fa-file-word"></i> Generar Acta';
+            }
         }
     });
     
@@ -98,6 +136,10 @@ const cargarInstructores = async () => {
                     <button class="btn btn-primary btn-sm btn-generar-informe" 
                             data-id="${item.id_instructor}">
                         <i class="fas fa-file-word"></i> Generar Informe
+                    </button>
+                    <button class="btn btn-primary btn-sm btn-generar-acta" 
+                            data-id="${item.id_instructor}">
+                        <i class="fas fa-file-word"></i> Generar Acta
                     </button>
                 `;
                 });
