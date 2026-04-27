@@ -142,6 +142,10 @@ if (!localStorage.getItem("access_token")) {
                 <!-- Topbar -->
                 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
 
+                    <button class="btn btn-primary" id="boton_nav">
+                        <i class="fas fa-bars"></i>
+                    </button>
+
                     <!-- Sidebar Toggle (Topbar) -->
                     <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
                         <i class="fa fa-bars"></i>
@@ -371,6 +375,14 @@ if (!localStorage.getItem("access_token")) {
 
 <!-- TU SCRIPT (SIEMPRE AL FINAL) -->
 <script type="module" src="js/main.js"></script>
+
+<script>
+    let botonNav = document.getElementById("boton_nav");
+    botonNav.addEventListener("click", function() {
+        let sidebar = document.getElementById("accordionSidebar");
+        sidebar.classList.toggle("toggled");
+    });
+</script>
 
 
 </body>
