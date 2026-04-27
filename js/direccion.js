@@ -1,8 +1,6 @@
 import { DireccionService } from "./direccion.service.js";
-import { InstructorService } from "./instructor.service.js";
 
 let direccionesGlobal = [];
-let instructoresGlobal = [];
 
 export async function initDireccion() {
   const tabla = document.querySelector(".cuerpoTablaDireccion");
@@ -26,12 +24,7 @@ export async function initDireccion() {
     }
     
     console.log("Direcciones procesadas:", direccionesGlobal);
-    
-    // Obtener instructores
-    const instrResponse = await InstructorService.get_all_instructores_paginated(1, 50);
-    instructoresGlobal = instrResponse.data || instrResponse || [];
-    
-    console.log("Instructores:", instructoresGlobal);
+
 
     // 🔥 Destruir DataTable si ya existe
     if ($.fn.DataTable.isDataTable('#dataTableDireccion')) {
@@ -149,30 +142,25 @@ function renderTable() {
   let html = '';
   
   direccionesGlobal.forEach(dir => {
-    // Buscar el instructor correspondiente
-    const instructor = instructoresGlobal.find(
-      s => s.id_instructor == dir.id_instructor
-    );
     
-    const nombreInstructor = instructor ? 
-      `${instructor.nombres || ''} ${instructor.apellidos || ''}`.trim() || 'N/A' : 
-      'Instructor no encontrado';
-
     html += `
       <tr>
         <!-- Columna 0: Instructor -->
-        <td>${nombreInstructor}</td>
+        <td>${dir.nombre}</td>
         
         <!-- Columna 2: Municipio -->
         <td>${dir.municipio || ''}</td>
         
-        <!-- Columna 3: Barrio -->
-        <td>${dir.barrio || ''}</td>
-        
         <!-- Columna 4: Complemento -->
         <td>${dir.complemento || ''}</td>
+
+        <!-- Columna 3: Telefono -->
+        <td>${dir.telefono || ''}</td>
+
+        <!-- Columna 5: Correo -->
+        <td>${dir.correo || ''}</td>
         
-        <!-- Columna 5: ACCIONES -->
+        <!-- Columna 6: ACCIONES -->
         <td>
           <button class="btn btn-danger btn-sm botonEliminar" data-id="${dir.id_direccion}">
             <i class="bi bi-trash"></i>
