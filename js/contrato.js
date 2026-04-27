@@ -11,6 +11,7 @@ export async function initContrato() {
 
         // Configurar event listeners
         setupFormHandler();
+        setupDeleteFormHandler(); // Nuevo: Configurar manejador de eliminación
         setupModalButtons();
 
         // Inicializar la tabla
@@ -71,10 +72,10 @@ function initializeTable(contratoLeft) {
                                 data-id="${contrato.id_instructor}">
                             <i class="bi bi-plus-lg"></i>
                         </button>
-                        <button class="btn btn-danger btn-sm btn-agregar-contrato" 
+                        <button class="btn btn-danger btn-sm btn-eliminar-contrato" 
                                 data-bs-toggle="modal" 
                                 data-bs-target="#ModalEliminarContrato" 
-                                data-id="${contrato.id_instructor}">
+                                data-id-contrato="${contrato.id_contrato}">  <!-- ✅ Correcto -->
                             <i class="bi bi-clipboard-minus-fill"></i>
                         </button>
                     </td>
@@ -90,7 +91,7 @@ function initializeTable(contratoLeft) {
         });
         console.log(`✅ ${contratoLeft.length} filas agregadas`);
     } else {
-        $tbody.append('<tr><td colspan="6" class="text-center">No hay contratos disponibles</td></tr>');
+        $tbody.append('<tr><td colspan="7" class="text-center">No hay contratos disponibles</td></tr>');
     }
     
     // Inicializar DataTable
@@ -123,14 +124,12 @@ function initializeTable(contratoLeft) {
 // CONFIGURAR BOTONES DEL MODAL
 // =============================
 function setupModalButtons() {
-    // Usar event delegation para botones dinámicos (incluyendo los de DataTable)
+    // Botón para AGREGAR contrato
     $(document).on('click', '.btn-agregar-contrato', function(e) {
-        // Obtener el ID del data-id del botón
         const id_instructor = $(this).data('id');
         
         console.log("🔑 ID Instructor capturado del botón:", id_instructor);
         
-        // Asignar al input hidden del formulario
         const inputIdInstructor = document.getElementById('id_instructor');
         if (inputIdInstructor) {
             inputIdInstructor.value = id_instructor;
@@ -139,67 +138,112 @@ function setupModalButtons() {
             console.error("❌ No se encontró el input hidden 'id_instructor'");
         }
         
-        // Opcional: Mostrar en el modal quién es el instructor
         const nombreInstructor = $(this).closest('tr').find('td:eq(3)').text();
         console.log("📌 Instructor seleccionado:", nombreInstructor);
     });
     
-    // Evento cuando el modal se abre (método alternativo)
+    // Botón para ELIMINAR contrato
+$(document).on('click', '.btn-eliminar-contrato', function(e) {
+    // jQuery convierte data-id-contrato a dataIdContrato (camelCase)
+    const id_contrato = $(this).data('idContrato');  // ← Así se escribe
+    
+    console.log("🔑 ID Contrato capturado del botón:", id_contrato);
+    console.log("Data attributes completos:", $(this).data()); // Para depuración
+    
+    const inputIdContrato = document.getElementById('id_contrato_eliminar');
+    if (inputIdContrato && id_contrato) {
+        inputIdContrato.value = id_contrato;
+        console.log("✅ ID Contrato asignado al input hidden:", inputIdContrato.value);
+    } else {
+        console.error("❌ No se encontró el ID del contrato");
+    }
+});
+    
+    // Evento show.bs.modal para AGREGAR (método alternativo)
     $('#ModalAgregarContrato').on('show.bs.modal', function(e) {
         const button = $(e.relatedTarget);
         const id_instructor = button.data('id');
         
         if (id_instructor) {
             document.getElementById('id_instructor').value = id_instructor;
-            console.log("🎯 Modal abierto - ID asignado:", id_instructor);
+            console.log("🎯 Modal Agregar abierto - ID asignado:", id_instructor);
         }
     });
     
-    // Limpiar el input hidden cuando el modal se cierra
+    // Evento show.bs.modal para ELIMINAR (método alternativo)
+    $('#ModalEliminarContrato').on('show.bs.modal', function(e) {
+        const button = $(e.relatedTarget);
+        const id_contrato = button.data('id-contrato');
+        
+        if (id_contrato) {
+            document.getElementById('id_contrato').value = id_contrato;
+            console.log("🎯 Modal Eliminar abierto - ID Contrato asignado:", id_contrato);
+        }
+    });
+    
+    // Limpiar inputs cuando los modales se cierran
     $('#ModalAgregarContrato').on('hidden.bs.modal', function() {
         const inputIdInstructor = document.getElementById('id_instructor');
         if (inputIdInstructor) {
-            // No limpiar inmediatamente por si acaso, pero puedes hacerlo
-            console.log("Modal cerrado, ID actual:", inputIdInstructor.value);
+            console.log("Modal Agregar cerrado, ID actual:", inputIdInstructor.value);
+        }
+    });
+    
+    $('#ModalEliminarContrato').on('hidden.bs.modal', function() {
+        const inputIdContrato = document.getElementById('id_contrato');
+        if (inputIdContrato) {
+            inputIdContrato.value = '';
+            console.log("Modal Eliminar cerrado, ID limpiado");
         }
     });
 }
 
 // =============================
-// CONFIGURACIÓN DEL FORMULARIO
+// CONFIGURACIÓN DEL FORMULARIO DE CREACIÓN
 // =============================
 function setupFormHandler() {
     const formCrear = document.getElementById('formContrato');
     if (formCrear) {
         formCrear.removeEventListener('submit', handleCreateSubmit);
         formCrear.addEventListener('submit', handleCreateSubmit);
-        console.log("✅ Event listener del formulario configurado");
+        console.log("✅ Event listener del formulario de creación configurado");
     } else {
-        console.warn("⚠️ No se encontró el formulario con id 'formContrato'");
+        console.log("⚠️ No se encontró el formulario con id 'formContrato'");
     }
 }
 
 // =============================
-// MANEJAR ENVÍO DEL FORMULARIO
+// CONFIGURACIÓN DEL FORMULARIO DE ELIMINACIÓN
+// =============================
+function setupDeleteFormHandler() {
+    const formEliminar = document.getElementById('formEliminarContrato');
+    if (formEliminar) {
+        formEliminar.removeEventListener('submit', handleDeleteSubmit);
+        formEliminar.addEventListener('submit', handleDeleteSubmit);
+        console.log("✅ Event listener del formulario de eliminación configurado");
+    } else {
+        console.log("⚠️ No se encontró el formulario con id 'formEliminarContrato'");
+    }
+}
+
+// =============================
+// MANEJAR ENVÍO DEL FORMULARIO DE CREACIÓN
 // =============================
 async function handleCreateSubmit(event) {
     event.preventDefault();
     console.log("📝 Enviando formulario de contrato...");
 
-    // Capturar el ID del input hidden
     const idInstructorInput = document.getElementById('id_instructor');
     const id_instructor = idInstructorInput ? idInstructorInput.value : null;
     
     console.log("📌 ID Instructor a enviar:", id_instructor);
     
-    // Validar que el ID esté presente
     if (!id_instructor || id_instructor === '') {
         console.error("❌ No se ha seleccionado ningún instructor");
         alert("Error: Por favor seleccione un instructor de la tabla primero");
         return;
     }
     
-    // Validar campos requeridos
     const numero_contrato = document.getElementById('numero_contrato')?.value || '';
     if (!numero_contrato) {
         console.error("❌ Número de contrato es requerido");
@@ -207,10 +251,8 @@ async function handleCreateSubmit(event) {
         return;
     }
 
-    
-    // Construir objeto con los datos
     const newData = {
-        id_instructor: parseInt(id_instructor), // Asegurar que sea número
+        id_instructor: parseInt(id_instructor),
         numero_contrato: numero_contrato,
         crp: parseInt(document.getElementById('CRP').value),
         cdp: parseInt(document.getElementById('CDP').value),
@@ -220,9 +262,9 @@ async function handleCreateSubmit(event) {
         fecha_fin: document.getElementById('fecha_fin')?.value || '',
         valor_contrato: parseFloat(document.getElementById('valor_contrato').value),
         valor_mes: parseFloat(document.getElementById('valorMes').value),
-        estado : 'Activo',
-        vigencia:  document.getElementById('fecha_fin')?.value || '',
-        valorAdDi  : null 
+        estado: 'Activo',
+        vigencia: document.getElementById('fecha_fin')?.value || '',
+        valorAdDi: null 
     };
     
     console.log("📦 Datos a enviar:", newData);
@@ -232,36 +274,82 @@ async function handleCreateSubmit(event) {
         await ContratoService.create_contrato(newData);
         console.log("✅ Contrato creado exitosamente");
 
-        // Cerrar modal
         const modalElement = document.getElementById("ModalAgregarContrato");
         if (modalElement) {
             const modal = bootstrap.Modal.getInstance(modalElement);
             if (modal) {
                 modal.hide();
             } else {
-                // Si no hay instancia, cerrar de otra forma
                 const modalInstance = new bootstrap.Modal(modalElement);
                 modalInstance.hide();
             }
         }
 
-        // Limpiar formulario
         event.target.reset();
         
-        // Limpiar el input hidden
         if (idInstructorInput) {
             idInstructorInput.value = '';
         }
 
-        // Mostrar mensaje de éxito
         alert("Contrato creado exitosamente");
-
-        // Recargar la tabla con los nuevos datos
         await initContrato();
 
     } catch (error) {
         console.error("❌ Error al crear contrato:", error);
         alert("Error al crear el contrato. Por favor verifique los datos e intente nuevamente.");
+    }
+}
+
+// =============================
+// MANEJAR ENVÍO DEL FORMULARIO DE ELIMINACIÓN
+// =============================
+async function handleDeleteSubmit(event) {
+    event.preventDefault();
+    console.log("📝 Eliminar contrato...");
+
+    const idContratoInput = document.getElementById('id_contrato');
+    const id_contrato = idContratoInput ? idContratoInput.value : null;
+    
+    console.log("📌 ID Contrato a enviar:", id_contrato);
+    
+    if (!id_contrato || id_contrato === '') {
+        console.error("❌ No se ha seleccionado ningún contrato");
+        alert("Error: Por favor seleccione un contrato de la tabla primero");
+        return;
+    }
+    
+    // Confirmar eliminación
+    const confirmar = confirm(`¿Está seguro que desea eliminar el contrato #${id_contrato}?`);
+    if (!confirmar) {
+        console.log("Eliminación cancelada por el usuario");
+        return;
+    }
+
+    try {
+        console.log("🚀 Enviando datos al servidor...");
+        await ContratoService.delete_contrato(id_contrato);
+        console.log("✅ Contrato eliminado exitosamente");
+        
+        const modalElement = document.getElementById("ModalEliminarContrato");
+        if (modalElement) {
+            const modal = bootstrap.Modal.getInstance(modalElement);
+            if (modal) {
+                modal.hide();
+            }
+        }
+        
+        alert("Contrato eliminado exitosamente");
+        
+        // Limpiar el input hidden
+        if (idContratoInput) {
+            idContratoInput.value = '';
+        }
+
+        await initContrato();
+
+    } catch (error) {
+        console.error("❌ Error al eliminar contrato:", error);
+        alert("Error al eliminar el contrato. Por favor verifique los datos e intente nuevamente.");
     }
 }
 
