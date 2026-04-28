@@ -53,7 +53,7 @@ export async function initContacto() {
           extend: 'pdf',
           text: '<i class="bi bi-file-earmark-pdf"></i> PDF',
           className: 'btn btn-danger btn-sm',
-          title: 'Direcciones',
+          title: 'Contactos',
           exportOptions: {
             columns: [0, 1, 2, 3, 4],
           },
@@ -218,8 +218,8 @@ export async function recargarTablaContacto() {
 
 // Inicializar automáticamente cuando se carga el script
 document.addEventListener('DOMContentLoaded', () => {
-  // Verificar si estamos en la página de direcciones
-  if (document.querySelector(".cuerpoTablaDireccion")) {
-    initDireccion();
+  // Verificar si estamos en la página de contactos
+  if (document.querySelector(".cuerpoTablaContacto")) {
+    initContacto();
   }
 });

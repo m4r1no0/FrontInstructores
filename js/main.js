@@ -5,6 +5,7 @@ import { initContrato } from "./contrato.js";
 import { initDireccion } from "./direccion.js";
 import { initInforme } from "./informes.js";
 import { initContacto } from "./contacto.js";
+import { initPoliza } from "./poliza.js";
 
 console.log("=== MAIN.JS CARGADO ===");
 
@@ -16,11 +17,12 @@ const inicializadores = {
         init();
         initSupervisor();
         initContrato();
-        initDireccion();
+        initDireccion(); // 👈 Agregar el inicializador para pólizas
     },
     'supervisor.html': initSupervisor,
     'direccion.html': initDireccion,
-    'contacto.html': initContacto
+    'contacto.html': initContacto,
+    'poliza.html': initPoliza
 };
 
 document.addEventListener("click", function (e) {
