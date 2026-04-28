@@ -560,7 +560,6 @@ function handleTableClick(event) {
       if (cuerpoFechaContrato) {
         cuerpoFechaContrato.innerHTML = `
           <tr>
-            <td>${contrato.id_instructor || ''}</td>
             <td>${contrato.numero_contrato || ''}</td>
             <td>${contrato.estado || ''}</td>
             <td>${contrato.fecha_inicio || ''}</td>

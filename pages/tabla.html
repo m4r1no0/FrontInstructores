@@ -1,104 +1,116 @@
-    <div class="card-body">
-        <div class="col my-3">
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ModalAgregar">
-                    Agregar 
-            </button>
-        </div>
-        <div class="table-responsive">
-            <table class="table table-bordered" id="dataTableInstru" width="100%" cellspacing="0">
-                <thead>
-                  <tr>
-                      <th class="desktop">Contrato</th> <!-- Siempre visible -->
-                      <th class="all">Nombres</th> <!-- Visible en desktop y tablet landscape -->
-                      <th class="desktop">Tipo Doc</th> <!-- Solo visible en desktop -->
-                      <th class="desktop tablet-l">Documento</th> <!-- Siempre visible -->
-                      <th class="desktop tablet-l">Supervisor</th> <!-- Siempre visible -->
-                      <th class="desktop">Acciones</th> <!-- Siempre visible -->
-                      <th style="display:none;">N° Contrato</th>
-                      <th style="display:none;">CRP</th>
-                      <th class="d-none">CDP</th>
-                      <th class="d-none">Rubro</th>
-                      <th class="d-none">Dependencia</th>
-                      <th class="d-none">Fecha Inicio</th>
-                      <th class="d-none">Fecha Fin</th>
-                      <th class="d-none">Valor</th>
-                  </tr>
-                </thead>
-                <tbody class="cuerpoTabla">
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-<!-- modal de contrato -->
+<div class="card-body">
+  <div class="col my-3">
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ModalAgregar">
+      Agregar
+    </button>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-bordered" id="dataTableInstru" width="100%" cellspacing="0">
+      <thead>
+        <tr>
+          <th class="desktop">Contrato</th> <!-- Siempre visible -->
+          <th class="all">Nombres</th> <!-- Visible en desktop y tablet landscape -->
+          <th class="desktop">Tipo Doc</th> <!-- Solo visible en desktop -->
+          <th class="desktop tablet-l">Documento</th> <!-- Siempre visible -->
+          <th class="desktop tablet-l">Supervisor</th> <!-- Siempre visible -->
+          <th class="desktop">Acciones</th> <!-- Siempre visible -->
+          <th style="display:none;">N° Contrato</th>
+          <th style="display:none;">CRP</th>
+          <th class="d-none">CDP</th>
+          <th class="d-none">Rubro</th>
+          <th class="d-none">Dependencia</th>
+          <th class="d-none">Fecha Inicio</th>
+          <th class="d-none">Fecha Fin</th>
+          <th class="d-none">Valor</th>
+        </tr>
+      </thead>
+      <tbody class="cuerpoTabla">
+      </tbody>
+    </table>
+  </div>
+</div>
 
 <div class="modal fade" id="ModalContratoNuevo" tabindex="-1">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-xl"> <!-- MÁS ANCHO -->
     <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Contrato y pagos</h5>
-          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">X</button>
+      
+      <div class="modal-header">
+        <h5 class="modal-title">Contrato y pagos</h5>
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">X</button>
+      </div>
+
+      <div class="modal-body">
+
+        <!-- TABLA 1 -->
+        <div class="row mb-3">
+          <div class="col">
+            <div class="table-responsive">
+              <table class="table table-bordered table-sm">
+                <thead>
+                  <tr>
+                    <td>No.contrato</td>
+                    <td>Estado</td>
+                    <td>fecha inicio</td>
+                    <td>fecha fin</td>
+                  </tr>
+                </thead>
+                <tbody class="cuerpoFechaContrato">
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
 
-        <div class="modal-body">
-          <div class="row">
-            <div class="col">
-              <table class="table table-bordered">
-            <thead>
-              <tr>
-                <td>No.contrato</td>
-                <td>Estado</td>
-                <td>fecha inicio</td>
-                <td>fecha fin</td>
-              </tr>
-            </thead>
-            <tbody class="cuerpoFechaContrato">
-            </tbody>
-          </table>  
+        <!-- TABLA 2 -->
+        <div class="row mb-3">
+          <div class="col">
+            <div class="table-responsive">
+              <table class="table table-bordered table-sm">
+                <thead>
+                  <tr>
+                    <td class="d-none">ID</td>
+                    <td>CDP</td>
+                    <td>CRP</td>
+                    <td>Rubro</td>
+                    <td>Dependencia</td>
+                  </tr>
+                </thead>
+                <tbody class="cuerpoContrato">
+                </tbody>
+              </table>
             </div>
           </div>
-          <div class="row">
-            <div class="col">
-              <table class="table table-bordered">
-            <thead>
-              <tr>
-                <td class="d-none">ID</td>
-                <td>CDP</td>
-                <td>CRP</td>
-                <td>Rubro</td>
-                <td>Dependencia</td>
-              </tr>
-            </thead>
-            <tbody class="cuerpoContrato">
-            </tbody>
-          </table>  
-            </div>
-          </div>
-          <div class="row">
-            <div class="col">
-              <table class="table table-bordered">
-              <thead>
-                <tr>
-                  <td>Valor contrato</td>
-                  <td>Valor mes</td>
-                  <td>Valor Ad/Di</td>
-                  <td>Valor pagado</td>
-                  <td>Saldo</td>
-                </tr>
-              </thead>
-              <tbody class="cuerpoContratoDos">
-              </tbody>
-          </table>  
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer text-center">
-          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
-            Plan de pagos
-          </button>
         </div>
 
-      </form>
+        <!-- TABLA 3 -->
+        <div class="row">
+          <div class="col">
+            <div class="table-responsive">
+              <table class="table table-bordered table-sm">
+                <thead>
+                  <tr>
+                    <td>Valor contrato</td>
+                    <td>Valor mes</td>
+                    <td>Valor Ad/Di</td>
+                    <td>Valor pagado</td>
+                    <td>Saldo</td>
+                  </tr>
+                </thead>
+                <tbody class="cuerpoContratoDos">
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- FOOTER CENTRADO -->
+      <div class="modal-footer justify-content-center">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+          Plan de pagos
+        </button>
+      </div>
 
     </div>
   </div>
@@ -109,7 +121,7 @@
 <div class="modal fade" id="ModalAgregar" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
-      
+
       <form id="formInstructor">
 
         <div class="modal-header">
@@ -157,11 +169,11 @@
           </div>
           <div class="row mt-2">
             <div class="col">
-                <select name="" id="selectSupervisor" class="form-control"></select>
+              <select name="" id="selectSupervisor" class="form-control"></select>
             </div>
             <div class="col">
               <select name="" id="selectArl" class="form-control">
-                <option value=""selected disabled>Seleccione ARL</option>
+                <option value="" selected disabled>Seleccione ARL</option>
                 <option value="">Positiva</option>
                 <option value="">Sura</option>
                 <option value="">Colmena</option>
@@ -192,7 +204,7 @@
 <div class="modal fade" id="ModalActualizar" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
-      
+
       <form id="formInstructorActualizar">
 
         <div class="modal-header">
@@ -241,8 +253,8 @@
           </div>
           <div class="row mt-2">
             <div class="col">
-                <select name="" id="selectActualizar" class="form-control"></select>
-                <input type="hidden" name="" id="instructorId">
+              <select name="" id="selectActualizar" class="form-control"></select>
+              <input type="hidden" name="" id="instructorId">
             </div>
           </div>
 
@@ -268,7 +280,7 @@
 <div class="modal fade" id="ModalFecha" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
-      
+
       <form id="formInstructorActualizar">
 
         <div class="modal-header">
@@ -290,24 +302,19 @@
 
             </tbody>
           </table>
-            
 
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-            Cancelar
-          </button>
-          <button type="submit" class="btn btn-primary">
-            Guardar
-          </button>
-        </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+              Cancelar
+            </button>
+            <button type="submit" class="btn btn-primary">
+              Guardar
+            </button>
+          </div>
 
       </form>
 
     </div>
   </div>
 </div>
-
-
-
-
-
