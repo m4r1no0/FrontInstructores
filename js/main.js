@@ -6,6 +6,7 @@ import { initDireccion } from "./direccion.js";
 import { initInforme } from "./informes.js";
 import { initContacto } from "./contacto.js";
 import { initPoliza } from "./poliza.js";
+import { initPago } from "./pago.js";
 
 console.log("=== MAIN.JS CARGADO ===");
 
@@ -22,7 +23,8 @@ const inicializadores = {
     'supervisor.html': initSupervisor,
     'direccion.html': initDireccion,
     'contacto.html': initContacto,
-    'poliza.html': initPoliza
+    'poliza.html': initPoliza,
+    'pagos.html': initPago
 };
 
 document.addEventListener("click", function (e) {
