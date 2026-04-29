@@ -33,7 +33,7 @@
 <div class="modal fade" id="ModalContratoNuevo" tabindex="-1">
   <div class="modal-dialog modal-xl"> <!-- MÁS ANCHO -->
     <div class="modal-content">
-      
+
       <div class="modal-header">
         <h5 class="modal-title">Contrato y pagos</h5>
         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">X</button>
@@ -116,205 +116,284 @@
   </div>
 </div>
 
-<!-- modal agregar -->
 
-<div class="modal fade" id="ModalAgregar" tabindex="-1">
+<div class="modal fade" id="ModalExportacion" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
-
-      <form id="formInstructor">
-
-        <div class="modal-header">
-          <h5 class="modal-title">Agregar Instructor</h5>
-          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">X</button>
-        </div>
-
-        <div class="modal-body">
-
-          <div class="row">
+      <div class="modal-header">
+        <h5 class="modal-title">Exportar Datos</h5>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col">
             <div class="col">
-              <label>Nombre</label>
-              <input class="form-control" type="text" id="nombre" required>
+              <label for="contrato">contrato</label>
+              <input type="checkbox" id="contrato">
             </div>
             <div class="col">
-              <label>Apellido</label>
-              <input class="form-control" type="text" id="apellido" required>
-            </div>
-          </div>
-
-          <div class="row mt-2">
-            <div class="col">
-              <label>Tipo documento</label>
-              <select id="tipo_documento" class="form-control" required>
-                <option value="CC">CC</option>
-                <option value="CE">CE</option>
-                <option value="TI">TI</option>
-              </select>
+              <label for="nombre">nombre</label>
+              <input type="checkbox" id="nombre">
             </div>
             <div class="col">
-              <label>Número documento</label>
-              <input class="form-control" type="number" id="documento" required>
-            </div>
-          </div>
-
-          <div class="row mt-2">
-            <div class="col">
-              <label>Fecha nacimiento</label>
-              <input class="form-control" type="date" id="fecha_nacimiento" required>
+              <label for="crp">crp</label>
+              <input type="checkbox" id="crp">
             </div>
             <div class="col">
-              <label>Fecha expedición</label>
-              <input class="form-control" type="date" id="fecha_expedicion" required>
+              <label for="rubro">rubro</label>
+              <input type="checkbox" id="rubro">
+            </div>
+            <div class="col">
+              <label for="dependencia">dependecia</label>
+              <input type="checkbox" id="dependencia">
+            </div>
+            <div class="col">
+              <label for="numero_contrato">numero contrato</label>
+              <input type="checkbox" id="numero_contrato">
+            </div>
+            <div class="col">
+              <label for="supervisor">supervisor</label>
+              <input type="checkbox" id="supervisor">
             </div>
           </div>
-          <div class="row mt-2">
+          <div class="col">
             <div class="col">
-              <select name="" id="selectSupervisor" class="form-control"></select>
+              <label for="contrato">contrato</label>
+              <input type="checkbox" id="contrato">
             </div>
             <div class="col">
-              <select name="" id="selectArl" class="form-control">
-                <option value="" selected disabled>Seleccione ARL</option>
-                <option value="">Positiva</option>
-                <option value="">Sura</option>
-                <option value="">Colmena</option>
-                <option value="">Otra</option>
-              </select>
-            </div>
-          </div>
-
-        </div>
-
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-            Cancelar
-          </button>
-          <button type="submit" class="btn btn-primary">
-            Guardar
-          </button>
-        </div>
-
-      </form>
-
-    </div>
-  </div>
-</div>
-
-<!-- modal Actualizar -->
-
-<div class="modal fade" id="ModalActualizar" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-
-      <form id="formInstructorActualizar">
-
-        <div class="modal-header">
-          <h5 class="modal-title">Actualizar Instructor</h5>
-          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">X</button>
-        </div>
-
-        <div class="modal-body">
-
-          <div class="row">
-            <input type="hidden" id="idInstructorActualizar">
-            <div class="col">
-              <label>Nombre</label>
-              <input class="form-control" type="text" id="nombreActualizar" required>
+              <label for="nombre">nombre</label>
+              <input type="checkbox" id="nombre">
             </div>
             <div class="col">
-              <label>Apellido</label>
-              <input class="form-control" type="text" id="apellidoActualizar" required>
+              <label for="crp">contrato</label>
+              <input type="checkbox" id="crp">
+            </div>
+            <div class="col">
+              <label for="crp">contrato</label>
+              <input type="checkbox" id="crp">
+            </div>
+            <div class="col">
+              <label for="crp">contrato</label>
+              <input type="checkbox" id="crp">
+            </div>
+            <div class="col">
+              <label for="crp">contrato</label>
+              <input type="checkbox" id="crp">
+            </div>
+            <div class="col">
+              <label for="crp">contrato</label>
+              <input type="checkbox" id="crp">
             </div>
           </div>
-
-          <div class="row mt-2">
-            <div class="col">
-              <label>Tipo documento</label>
-              <select id="tipo_documentoActualizar" class="form-control" required>
-                <option value="CC">CC</option>
-                <option value="CE">CE</option>
-                <option value="TI">TI</option>
-              </select>
-            </div>
-            <div class="col">
-              <label>Número documento</label>
-              <input class="form-control" type="number" id="numero_documentoActualizar" required>
-            </div>
-          </div>
-
-          <div class="row mt-2">
-            <div class="col">
-              <label>Fecha nacimiento</label>
-              <input class="form-control" type="date" id="fecha_nacimientoActualizar" required>
-            </div>
-            <div class="col">
-              <label>Fecha expedición</label>
-              <input class="form-control" type="date" id="fecha_expedicionActualizar" required>
-            </div>
-          </div>
-          <div class="row mt-2">
-            <div class="col">
-              <select name="" id="selectActualizar" class="form-control"></select>
-              <input type="hidden" name="" id="instructorId">
-            </div>
-          </div>
-
-        </div>
-
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-            Cancelar
-          </button>
-          <button type="submit" class="btn btn-primary">
-            Guardar
-          </button>
-        </div>
-
-      </form>
-
-    </div>
-  </div>
-</div>
-
-<!-- Modal para fecha_nac y fecha_exp -->
-
-<div class="modal fade" id="ModalFecha" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-
-      <form id="formInstructorActualizar">
-
-        <div class="modal-header">
-          <h5 class="modal-title">Actualizar Instructor</h5>
-          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">X</button>
-        </div>
-
-        <div class="modal-body">
-
-          <table class="table table-bordered">
-            <thead>
-              <tr>
-                <td>No.Documento</td>
-                <td>Fecha Nacimiento</td>
-                <td>Fecha expedición</td>
-              </tr>
-            </thead>
-            <tbody class="cuerpoFecha">
-
-            </tbody>
-          </table>
-
-
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-              Cancelar
-            </button>
-            <button type="submit" class="btn btn-primary">
-              Guardar
+              Cerrar
             </button>
           </div>
 
-      </form>
-
+        </div>
+      </div>
     </div>
-  </div>
-</div>
+
+    <!-- modal agregar -->
+
+    <div class="modal fade" id="ModalAgregar" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+
+          <form id="formInstructor">
+
+            <div class="modal-header">
+              <h5 class="modal-title">Agregar Instructor</h5>
+              <button type="button" class="btn btn-danger" data-bs-dismiss="modal">X</button>
+            </div>
+
+            <div class="modal-body">
+
+              <div class="row">
+                <div class="col">
+                  <label>Nombre</label>
+                  <input class="form-control" type="text" id="nombre" required>
+                </div>
+                <div class="col">
+                  <label>Apellido</label>
+                  <input class="form-control" type="text" id="apellido" required>
+                </div>
+              </div>
+
+              <div class="row mt-2">
+                <div class="col">
+                  <label>Tipo documento</label>
+                  <select id="tipo_documento" class="form-control" required>
+                    <option value="CC">CC</option>
+                    <option value="CE">CE</option>
+                    <option value="TI">TI</option>
+                  </select>
+                </div>
+                <div class="col">
+                  <label>Número documento</label>
+                  <input class="form-control" type="number" id="documento" required>
+                </div>
+              </div>
+
+              <div class="row mt-2">
+                <div class="col">
+                  <label>Fecha nacimiento</label>
+                  <input class="form-control" type="date" id="fecha_nacimiento" required>
+                </div>
+                <div class="col">
+                  <label>Fecha expedición</label>
+                  <input class="form-control" type="date" id="fecha_expedicion" required>
+                </div>
+              </div>
+              <div class="row mt-2">
+                <div class="col">
+                  <select name="" id="selectSupervisor" class="form-control"></select>
+                </div>
+                <div class="col">
+                  <select name="" id="selectArl" class="form-control">
+                    <option value="" selected disabled>Seleccione ARL</option>
+                    <option value="">Positiva</option>
+                    <option value="">Sura</option>
+                    <option value="">Colmena</option>
+                    <option value="">Otra</option>
+                  </select>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                Cancelar
+              </button>
+              <button type="submit" class="btn btn-primary">
+                Guardar
+              </button>
+            </div>
+
+          </form>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- modal Actualizar -->
+
+    <div class="modal fade" id="ModalActualizar" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+
+          <form id="formInstructorActualizar">
+
+            <div class="modal-header">
+              <h5 class="modal-title">Actualizar Instructor</h5>
+              <button type="button" class="btn btn-danger" data-bs-dismiss="modal">X</button>
+            </div>
+
+            <div class="modal-body">
+
+              <div class="row">
+                <input type="hidden" id="idInstructorActualizar">
+                <div class="col">
+                  <label>Nombre</label>
+                  <input class="form-control" type="text" id="nombreActualizar" required>
+                </div>
+                <div class="col">
+                  <label>Apellido</label>
+                  <input class="form-control" type="text" id="apellidoActualizar" required>
+                </div>
+              </div>
+
+              <div class="row mt-2">
+                <div class="col">
+                  <label>Tipo documento</label>
+                  <select id="tipo_documentoActualizar" class="form-control" required>
+                    <option value="CC">CC</option>
+                    <option value="CE">CE</option>
+                    <option value="TI">TI</option>
+                  </select>
+                </div>
+                <div class="col">
+                  <label>Número documento</label>
+                  <input class="form-control" type="number" id="numero_documentoActualizar" required>
+                </div>
+              </div>
+
+              <div class="row mt-2">
+                <div class="col">
+                  <label>Fecha nacimiento</label>
+                  <input class="form-control" type="date" id="fecha_nacimientoActualizar" required>
+                </div>
+                <div class="col">
+                  <label>Fecha expedición</label>
+                  <input class="form-control" type="date" id="fecha_expedicionActualizar" required>
+                </div>
+              </div>
+              <div class="row mt-2">
+                <div class="col">
+                  <select name="" id="selectActualizar" class="form-control"></select>
+                  <input type="hidden" name="" id="instructorId">
+                </div>
+              </div>
+
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                Cancelar
+              </button>
+              <button type="submit" class="btn btn-primary">
+                Guardar
+              </button>
+            </div>
+
+          </form>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal para fecha_nac y fecha_exp -->
+
+    <div class="modal fade" id="ModalFecha" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+
+          <form id="formInstructorActualizar">
+
+            <div class="modal-header">
+              <h5 class="modal-title">Actualizar Instructor</h5>
+              <button type="button" class="btn btn-danger" data-bs-dismiss="modal">X</button>
+            </div>
+
+            <div class="modal-body">
+
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <td>No.Documento</td>
+                    <td>Fecha Nacimiento</td>
+                    <td>Fecha expedición</td>
+                  </tr>
+                </thead>
+                <tbody class="cuerpoFecha">
+
+                </tbody>
+              </table>
+
+
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                  Cancelar
+                </button>
+                <button type="submit" class="btn btn-primary">
+                  Guardar
+                </button>
+              </div>
+
+          </form>
+
+        </div>
+      </div>
+    </div>

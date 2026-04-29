@@ -16,9 +16,9 @@ const inicializadores = {
     'informes.html': initInforme, // 👈 Agregar el inicializador para informes
     'tabla.html': () => {
         init();
-        initSupervisor();
-        initContrato();
-        initDireccion(); // 👈 Agregar el inicializador para pólizas
+        // initSupervisor();
+        // initContrato();
+        // initDireccion(); // 👈 Agregar el inicializador para pólizas
     },
     'supervisor.html': initSupervisor,
     'direccion.html': initDireccion,

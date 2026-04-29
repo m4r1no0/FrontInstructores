@@ -98,6 +98,10 @@ function initializeTable(contratoLeft) {
     try {
         const dataTable = $table.DataTable({
             responsive: true,
+            dom: 'lBfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ],
             language: {
                 url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json'
             },

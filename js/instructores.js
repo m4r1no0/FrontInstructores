@@ -1,12 +1,12 @@
 // js/instructor.js
 import { InstructorService } from './instructor.service.js';
-import { SupervisorService } from './supervisor.service.js';
-import { ContratoService } from './contrato.service.js';
+// import { SupervisorService } from './supervisor.service.js';
+// import { ContratoService } from './contrato.service.js';
 
 let instructoresGlobal = [];
-let supervisoresGlobal = [];
-let contratosGlobal = [];
-let modalInstance = null;
+// let supervisoresGlobal = [];
+// let contratosGlobal = [];
+// let modalInstance = null;
 
 export async function init() {
   const tabla = document.querySelector(".cuerpoTabla");
@@ -17,10 +17,10 @@ export async function init() {
     const response = await InstructorService.get_all_instructores_paginated(1, 200);
     instructoresGlobal = response.data;
 
-    supervisoresGlobal = await SupervisorService.get_all_supervisores();
-    contratosGlobal = await ContratoService.get_all_contratos();
+    // supervisoresGlobal = await SupervisorService.get_all_supervisores();
+    // contratosGlobal = await ContratoService.get_all_contratos();
 
-    console.log('Contratos cargados:', contratosGlobal);
+    // console.log('Contratos cargados:', contratosGlobal);
 
     // 🔵 LLENAR MODALES DE CONTRATO
     const cuerpoContratoDos = document.querySelector('.cuerpoContratoDos');
@@ -33,8 +33,8 @@ export async function init() {
     if (cuerpoContrato) cuerpoContrato.innerHTML = '';
 
     // Llenar con el primer contrato o mostrar vacío
-    if (contratosGlobal && contratosGlobal.length > 0) {
-      const primerContrato = contratosGlobal[0];
+    if (instructoresGlobal && instructoresGlobal.length > 0) {
+      const primerContrato = instructoresGlobal[0];
       
       if (cuerpoContratoDos) {
         cuerpoContratoDos.innerHTML = `
@@ -95,6 +95,8 @@ export async function init() {
       $('#dataTableInstru').DataTable().destroy();
     }
 
+    var oldExportAction = $.fn.dataTable.ext.buttons.excelHtml5.action;
+    let columns;
     // 🔵 INICIALIZAR DATATABLE CON BOTONES
     $('#dataTableInstru').DataTable({
       responsive: true,
@@ -105,9 +107,21 @@ export async function init() {
           extend: 'excel',
           text: '<i class="bi bi-file-earmark-excel"></i> Excel',
           className: 'btn btn-success btn-sm',
-          title: 'Instructores',
+          attr: {
+        'data-bs-toggle': 'modal',
+        'data-bs-target': '#ModalExportacion'
+        },
+          title: 'Instructores',  
+          
+          action: function (e, dt, node, config) {
+            console.log('Botón Excel clickeado');
+            
+            columns = [ 7, 8, 9, 10, 11, 12, 13];
+            config.exportOptions.columns = columns;
+            oldExportAction.call(this, e, dt, node, config);
+          },
           exportOptions: {
-            columns: [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13],
+            columns: columns,
             format: {
               body: function(data, type, row, meta) {
                 if (meta.col === 0) {
@@ -122,8 +136,10 @@ export async function init() {
                 }
                 return data.replace(/<[^>]*>/g, '').trim();
               }
-            }
+            },
+            
           }
+          
         },
         {
           extend: 'pdf',
@@ -265,7 +281,7 @@ function renderSupervisorSelect() {
 
   selectSupervisor.innerHTML = '<option value="">Seleccione supervisor</option>';
 
-  supervisoresGlobal.forEach(supervisor => {
+  instructoresGlobal.forEach(supervisor => {
     const option = document.createElement("option");
     option.value = supervisor.id_supervisor;
     option.textContent = supervisor.nombre;
@@ -279,7 +295,7 @@ function renderSupervisorSelectActualizar() {
 
   selectActualizar.innerHTML = '<option value="">Seleccione supervisor</option>';
 
-  supervisoresGlobal.forEach(supervisor => {
+  instructoresGlobal.forEach(supervisor => {
     const option = document.createElement("option");
     option.value = supervisor.id_supervisor;
     option.textContent = supervisor.nombre;
@@ -296,13 +312,13 @@ async function recargarTabla() {
     instructoresGlobal = response.data;
     console.log(`✅ Instructores cargados: ${instructoresGlobal.length}`);
     
-    // Recargar supervisores
-    supervisoresGlobal = await SupervisorService.get_all_supervisores();
-    console.log(`✅ Supervisores cargados: ${supervisoresGlobal.length}`);
+    // // Recargar supervisores
+    // supervisoresGlobal = await SupervisorService.get_all_supervisores();
+    // console.log(`✅ Supervisores cargados: ${supervisoresGlobal.length}`);
     
-    // Recargar contratos
-    contratosGlobal = await ContratoService.get_all_contratos();
-    console.log(`✅ Contratos cargados: ${contratosGlobal.length}`);
+    // // Recargar contratos
+    // contratosGlobal = await ContratoService.get_all_contratos();
+    // console.log(`✅ Contratos cargados: ${contratosGlobal.length}`);
     
     // Destruir DataTable si existe
     if ($.fn.DataTable.isDataTable('#dataTableInstru')) {
@@ -466,11 +482,11 @@ function renderTable() {
   tabla.innerHTML = "";
 
   instructoresGlobal.forEach(inst => {
-    const supervisor = supervisoresGlobal.find(
+    const supervisor = instructoresGlobal.find(
       s => s.id_supervisor == inst.id_supervisor
     );
 
-    const contrato = contratosGlobal.find(c => c.id_instructor == inst.id_instructor) || {};
+    const contrato = instructoresGlobal.find(c => c.id_instructor == inst.id_instructor) || {};
 
     tabla.innerHTML += `
       <tr>
@@ -482,7 +498,7 @@ function renderTable() {
         </td>
         
         <!-- Columna 1: NOMBRES -->
-        <td>${inst.nombres || ''} ${inst.apellidos || ''}</td>
+        <td>${inst.instructor_nombre}</td>
         
         <!-- Columna 2: TIPO DOC -->
         <td>${inst.tipo_documento || ''}</td>
@@ -526,7 +542,7 @@ function handleTableClick(event) {
   const botonContrato = event.target.closest('.boton-contrato');
   if (botonContrato) {
     const instructorId = botonContrato.dataset.id;
-    const contrato = contratosGlobal.find(c => c.id_instructor == instructorId);
+    const contrato = instructoresGlobal.find(c => c.id_instructor == instructorId);
     
     // Actualizar modales con los datos del contrato seleccionado
     const cuerpoContratoDos = document.querySelector('.cuerpoContratoDos');
@@ -740,13 +756,13 @@ async function recargarDatosCompletos() {
     const response = await InstructorService.get_all_instructores_paginated(1, 200);
     instructoresGlobal = response.data;
     
-    // Recargar supervisores
-    supervisoresGlobal = await SupervisorService.get_all_supervisores();
+    // // Recargar supervisores
+    // supervisoresGlobal = await SupervisorService.get_all_supervisores();
     
-    // Recargar contratos
-    contratosGlobal = await ContratoService.get_all_contratos();
+    // // Recargar contratos
+    // contratosGlobal = await ContratoService.get_all_contratos();
     
-    console.log(`📊 Datos recargados: ${instructoresGlobal.length} instructores, ${contratosGlobal.length} contratos`);
+    console.log(`📊 Datos recargados: ${instructoresGlobal.length} `);
     
     // 🔥 IMPORTANTE: Destruir el DataTable actual
     if ($.fn.DataTable.isDataTable('#dataTableInstru')) {
