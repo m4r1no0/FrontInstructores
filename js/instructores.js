@@ -1,12 +1,7 @@
 // js/instructor.js
 import { InstructorService } from './instructor.service.js';
-// import { SupervisorService } from './supervisor.service.js';
-// import { ContratoService } from './contrato.service.js';
 
 let instructoresGlobal = [];
-// let supervisoresGlobal = [];
-// let contratosGlobal = [];
-// let modalInstance = null;
 
 export async function init() {
   const tabla = document.querySelector(".cuerpoTabla");
@@ -16,11 +11,6 @@ export async function init() {
     // 🔵 Obtener datos
     const response = await InstructorService.get_all_instructores_paginated(1, 200);
     instructoresGlobal = response.data;
-
-    // supervisoresGlobal = await SupervisorService.get_all_supervisores();
-    // contratosGlobal = await ContratoService.get_all_contratos();
-
-    // console.log('Contratos cargados:', contratosGlobal);
 
     // 🔵 LLENAR MODALES DE CONTRATO
     const cuerpoContratoDos = document.querySelector('.cuerpoContratoDos');
@@ -311,14 +301,6 @@ async function recargarTabla() {
     const response = await InstructorService.get_all_instructores_paginated(1, 200);
     instructoresGlobal = response.data;
     console.log(`✅ Instructores cargados: ${instructoresGlobal.length}`);
-    
-    // // Recargar supervisores
-    // supervisoresGlobal = await SupervisorService.get_all_supervisores();
-    // console.log(`✅ Supervisores cargados: ${supervisoresGlobal.length}`);
-    
-    // // Recargar contratos
-    // contratosGlobal = await ContratoService.get_all_contratos();
-    // console.log(`✅ Contratos cargados: ${contratosGlobal.length}`);
     
     // Destruir DataTable si existe
     if ($.fn.DataTable.isDataTable('#dataTableInstru')) {
@@ -755,14 +737,7 @@ async function recargarDatosCompletos() {
     // Recargar instructores
     const response = await InstructorService.get_all_instructores_paginated(1, 200);
     instructoresGlobal = response.data;
-    
-    // // Recargar supervisores
-    // supervisoresGlobal = await SupervisorService.get_all_supervisores();
-    
-    // // Recargar contratos
-    // contratosGlobal = await ContratoService.get_all_contratos();
-    
-    console.log(`📊 Datos recargados: ${instructoresGlobal.length} `);
+  
     
     // 🔥 IMPORTANTE: Destruir el DataTable actual
     if ($.fn.DataTable.isDataTable('#dataTableInstru')) {
@@ -893,7 +868,7 @@ function reinicializarDataTable() {
       }
     ],
     language: {
-      lengthMenu: 'Mostrar _MENU_ registros por página',
+      lengthMenu: 'Mostrar _MENU_ registro por pág ',
       zeroRecords: 'No se encontraron resultados',
       info: 'Mostrando _START_ a _END_ de _TOTAL_ registros',
       infoEmpty: 'Mostrando 0 a 0 de 0 registros',

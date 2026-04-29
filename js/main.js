@@ -27,7 +27,7 @@ const inicializadores = {
     'pagos.html': initPago
 };
 
-document.addEventListener("click", function (e) {
+document.addEventListener("click",   function (e) {
     const enlace = e.target.closest("[data-page]");
 
     if (enlace) {

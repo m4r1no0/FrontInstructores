@@ -7,7 +7,6 @@ export async function initContrato() {
     try {
         const contratos = await ContratoService.get_contrato_instructor();
         let contratoLeft = contratos.data;
-        console.log("Datos recibidos:", contratoLeft);
 
         // Configurar event listeners
         setupFormHandler();

@@ -29,32 +29,32 @@
     </table>
   </div>
 </div>
-
-<div class="modal fade" id="ModalContratoNuevo" tabindex="-1">
-  <div class="modal-dialog modal-xl"> <!-- MÁS ANCHO -->
+<div class="modal fade" id="ModalContratoNuevo" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
     <div class="modal-content">
-
       <div class="modal-header">
         <h5 class="modal-title">Contrato y pagos</h5>
-        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">X</button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
 
       <div class="modal-body">
-
         <!-- TABLA 1 -->
         <div class="row mb-3">
           <div class="col">
             <div class="table-responsive">
               <table class="table table-bordered table-sm">
-                <thead>
+                <thead class="table-light">
                   <tr>
-                    <td>No.contrato</td>
-                    <td>Estado</td>
-                    <td>fecha inicio</td>
-                    <td>fecha fin</td>
+                    <th>No. Contrato</th>
+                    <th>Estado</th>
+                    <th>Fecha Inicio</th>
+                    <th>Fecha Fin</th>
                   </tr>
                 </thead>
                 <tbody class="cuerpoFechaContrato">
+                  <tr>
+                    <td colspan="4" class="text-center">No hay datos</td>
+                  </tr>
                 </tbody>
               </table>
             </div>
@@ -66,16 +66,19 @@
           <div class="col">
             <div class="table-responsive">
               <table class="table table-bordered table-sm">
-                <thead>
+                <thead class="table-light">
                   <tr>
-                    <td class="d-none">ID</td>
-                    <td>CDP</td>
-                    <td>CRP</td>
-                    <td>Rubro</td>
-                    <td>Dependencia</td>
+                    <th class="d-none">ID</th>
+                    <th>CDP</th>
+                    <th>CRP</th>
+                    <th>Rubro</th>
+                    <th>Dependencia</th>
                   </tr>
                 </thead>
                 <tbody class="cuerpoContrato">
+                  <tr>
+                    <td colspan="4" class="text-center">No hay datos</td>
+                  </tr>
                 </tbody>
               </table>
             </div>
@@ -87,313 +90,298 @@
           <div class="col">
             <div class="table-responsive">
               <table class="table table-bordered table-sm">
-                <thead>
+                <thead class="table-light">
                   <tr>
-                    <td>Valor contrato</td>
-                    <td>Valor mes</td>
-                    <td>Valor Ad/Di</td>
-                    <td>Valor pagado</td>
-                    <td>Saldo</td>
+                    <th>Valor Contrato</th>
+                    <th>Valor Mes</th>
+                    <th>Valor Ad/Di</th>
+                    <th>Valor Pagado</th>
+                    <th>Saldo</th>
                   </tr>
                 </thead>
                 <tbody class="cuerpoContratoDos">
+                  <tr>
+                    <td colspan="5" class="text-center">No hay datos</td>
+                  </tr>
                 </tbody>
               </table>
             </div>
           </div>
         </div>
-
       </div>
 
-      <!-- FOOTER CENTRADO -->
       <div class="modal-footer justify-content-center">
         <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
           Plan de pagos
         </button>
       </div>
-
     </div>
   </div>
 </div>
 
+<div class="modal fade" id="ModalAgregar" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="formInstructor">
+        <div class="modal-header">
+          <h5 class="modal-title">Agregar Instructor</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
 
-<div class="modal fade" id="ModalExportacion" tabindex="-1">
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-6">
+              <label class="form-label">Nombre</label>
+              <input class="form-control" type="text" id="nombre" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Apellido</label>
+              <input class="form-control" type="text" id="apellido" required>
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-md-6">
+              <label class="form-label">Tipo documento</label>
+              <select id="tipo_documento" class="form-select" required>
+                <option value="CC">CC</option>
+                <option value="CE">CE</option>
+                <option value="TI">TI</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Número documento</label>
+              <input class="form-control" type="number" id="documento" required>
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-md-6">
+              <label class="form-label">Fecha nacimiento</label>
+              <input class="form-control" type="date" id="fecha_nacimiento" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Fecha expedición</label>
+              <input class="form-control" type="date" id="fecha_expedicion" required>
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-md-6">
+              <label class="form-label">Supervisor</label>
+              <select id="selectSupervisor" class="form-select"></select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">ARL</label>
+              <select id="selectArl" class="form-select">
+                <option value="" selected disabled>Seleccione ARL</option>
+                <option value="Positiva">Positiva</option>
+                <option value="Sura">Sura</option>
+                <option value="Colmena">Colmena</option>
+                <option value="Otra">Otra</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="ModalActualizar" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="formInstructorActualizar">
+        <div class="modal-header">
+          <h5 class="modal-title">Actualizar Instructor</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body">
+          <input type="hidden" id="idInstructorActualizar">
+          
+          <div class="row">
+            <div class="col-md-6">
+              <label class="form-label">Nombre</label>
+              <input class="form-control" type="text" id="nombreActualizar" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Apellido</label>
+              <input class="form-control" type="text" id="apellidoActualizar" required>
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-md-6">
+              <label class="form-label">Tipo documento</label>
+              <select id="tipo_documentoActualizar" class="form-select" required>
+                <option value="CC">CC</option>
+                <option value="CE">CE</option>
+                <option value="TI">TI</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Número documento</label>
+              <input class="form-control" type="number" id="numero_documentoActualizar" required>
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-md-6">
+              <label class="form-label">Fecha nacimiento</label>
+              <input class="form-control" type="date" id="fecha_nacimientoActualizar" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Fecha expedición</label>
+              <input class="form-control" type="date" id="fecha_expedicionActualizar" required>
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-md-12">
+              <label class="form-label">Supervisor</label>
+              <select id="selectActualizar" class="form-select"></select>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="ModalFecha" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Exportar Datos</h5>
+        <h5 class="modal-title">Actualizar Fechas</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
+
       <div class="modal-body">
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead class="table-light">
+              <tr>
+                <th>No. Documento</th>
+                <th>Fecha Nacimiento</th>
+                <th>Fecha Expedición</th>
+              </tr>
+            </thead>
+            <tbody class="cuerpoFecha">
+              <tr>
+                <td colspan="3" class="text-center">No hay datos</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" id="guardarFechasBtn">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="ModalExportacion" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="bi bi-file-earmark-excel"></i> Exportar Datos
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      
+      <div class="modal-body">
+        <p class="mb-3">Selecciona las columnas que deseas exportar:</p>
+        
         <div class="row">
-          <div class="col">
-            <div class="col">
-              <label for="contrato">contrato</label>
-              <input type="checkbox" id="contrato">
+          <div class="col-md-4">
+            <div class="form-check mb-2">
+              <input type="checkbox" class="form-check-input" id="col_contrato" checked>
+              <label class="form-check-label" for="col_contrato">Contrato</label>
             </div>
-            <div class="col">
-              <label for="nombre">nombre</label>
-              <input type="checkbox" id="nombre">
+            <div class="form-check mb-2">
+              <input type="checkbox" class="form-check-input" id="col_nombre" checked>
+              <label class="form-check-label" for="col_nombre">Nombre Instructor</label>
             </div>
-            <div class="col">
-              <label for="crp">crp</label>
-              <input type="checkbox" id="crp">
+            <div class="form-check mb-2">
+              <input type="checkbox" class="form-check-input" id="col_crp" checked>
+              <label class="form-check-label" for="col_crp">CRP</label>
             </div>
-            <div class="col">
-              <label for="rubro">rubro</label>
-              <input type="checkbox" id="rubro">
-            </div>
-            <div class="col">
-              <label for="dependencia">dependecia</label>
-              <input type="checkbox" id="dependencia">
-            </div>
-            <div class="col">
-              <label for="numero_contrato">numero contrato</label>
-              <input type="checkbox" id="numero_contrato">
-            </div>
-            <div class="col">
-              <label for="supervisor">supervisor</label>
-              <input type="checkbox" id="supervisor">
+            <div class="form-check mb-2">
+              <input type="checkbox" class="form-check-input" id="col_cdp" checked>
+              <label class="form-check-label" for="col_cdp">CDP</label>
             </div>
           </div>
-          <div class="col">
-            <div class="col">
-              <label for="contrato">contrato</label>
-              <input type="checkbox" id="contrato">
+          
+          <div class="col-md-4">
+            <div class="form-check mb-2">
+              <input type="checkbox" class="form-check-input" id="col_rubro" checked>
+              <label class="form-check-label" for="col_rubro">Rubro</label>
             </div>
-            <div class="col">
-              <label for="nombre">nombre</label>
-              <input type="checkbox" id="nombre">
+            <div class="form-check mb-2">
+              <input type="checkbox" class="form-check-input" id="col_dependencia" checked>
+              <label class="form-check-label" for="col_dependencia">Dependencia</label>
             </div>
-            <div class="col">
-              <label for="crp">contrato</label>
-              <input type="checkbox" id="crp">
+            <div class="form-check mb-2">
+              <input type="checkbox" class="form-check-input" id="col_numero_contrato" checked>
+              <label class="form-check-label" for="col_numero_contrato">N° Contrato</label>
             </div>
-            <div class="col">
-              <label for="crp">contrato</label>
-              <input type="checkbox" id="crp">
-            </div>
-            <div class="col">
-              <label for="crp">contrato</label>
-              <input type="checkbox" id="crp">
-            </div>
-            <div class="col">
-              <label for="crp">contrato</label>
-              <input type="checkbox" id="crp">
-            </div>
-            <div class="col">
-              <label for="crp">contrato</label>
-              <input type="checkbox" id="crp">
+            <div class="form-check mb-2">
+              <input type="checkbox" class="form-check-input" id="col_supervisor" checked>
+              <label class="form-check-label" for="col_supervisor">Supervisor</label>
             </div>
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-              Cerrar
-            </button>
+          
+          <div class="col-md-4">
+            <div class="form-check mb-2">
+              <input type="checkbox" class="form-check-input" id="col_estado" checked>
+              <label class="form-check-label" for="col_estado">Estado</label>
+            </div>
+            <div class="form-check mb-2">
+              <input type="checkbox" class="form-check-input" id="col_valor" checked>
+              <label class="form-check-label" for="col_valor">Valor Contrato</label>
+            </div>
+            <div class="form-check mb-2">
+              <input type="checkbox" class="form-check-input" id="col_valor_mes" checked>
+              <label class="form-check-label" for="col_valor_mes">Valor Mes</label>
+            </div>
+            <div class="form-check mb-2">
+              <input type="checkbox" class="form-check-input" id="col_fechas" checked>
+              <label class="form-check-label" for="col_fechas">Fechas</label>
+            </div>
           </div>
-
+        </div>
+        
+        <hr class="my-3">
+        
+        <div class="form-check">
+          <input type="checkbox" class="form-check-input" id="seleccionar_todos_columnas" checked>
+          <label class="form-check-label fw-bold" for="seleccionar_todos_columnas">
+            Seleccionar/Deseleccionar todos
+          </label>
         </div>
       </div>
-    </div>
-
-    <!-- modal agregar -->
-
-    <div class="modal fade" id="ModalAgregar" tabindex="-1">
-      <div class="modal-dialog">
-        <div class="modal-content">
-
-          <form id="formInstructor">
-
-            <div class="modal-header">
-              <h5 class="modal-title">Agregar Instructor</h5>
-              <button type="button" class="btn btn-danger" data-bs-dismiss="modal">X</button>
-            </div>
-
-            <div class="modal-body">
-
-              <div class="row">
-                <div class="col">
-                  <label>Nombre</label>
-                  <input class="form-control" type="text" id="nombre" required>
-                </div>
-                <div class="col">
-                  <label>Apellido</label>
-                  <input class="form-control" type="text" id="apellido" required>
-                </div>
-              </div>
-
-              <div class="row mt-2">
-                <div class="col">
-                  <label>Tipo documento</label>
-                  <select id="tipo_documento" class="form-control" required>
-                    <option value="CC">CC</option>
-                    <option value="CE">CE</option>
-                    <option value="TI">TI</option>
-                  </select>
-                </div>
-                <div class="col">
-                  <label>Número documento</label>
-                  <input class="form-control" type="number" id="documento" required>
-                </div>
-              </div>
-
-              <div class="row mt-2">
-                <div class="col">
-                  <label>Fecha nacimiento</label>
-                  <input class="form-control" type="date" id="fecha_nacimiento" required>
-                </div>
-                <div class="col">
-                  <label>Fecha expedición</label>
-                  <input class="form-control" type="date" id="fecha_expedicion" required>
-                </div>
-              </div>
-              <div class="row mt-2">
-                <div class="col">
-                  <select name="" id="selectSupervisor" class="form-control"></select>
-                </div>
-                <div class="col">
-                  <select name="" id="selectArl" class="form-control">
-                    <option value="" selected disabled>Seleccione ARL</option>
-                    <option value="">Positiva</option>
-                    <option value="">Sura</option>
-                    <option value="">Colmena</option>
-                    <option value="">Otra</option>
-                  </select>
-                </div>
-              </div>
-
-            </div>
-
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                Cancelar
-              </button>
-              <button type="submit" class="btn btn-primary">
-                Guardar
-              </button>
-            </div>
-
-          </form>
-
-        </div>
+      
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-success" id="btnExportarSeleccion">
+          <i class="bi bi-file-earmark-excel"></i> Exportar
+        </button>
       </div>
     </div>
-
-    <!-- modal Actualizar -->
-
-    <div class="modal fade" id="ModalActualizar" tabindex="-1">
-      <div class="modal-dialog">
-        <div class="modal-content">
-
-          <form id="formInstructorActualizar">
-
-            <div class="modal-header">
-              <h5 class="modal-title">Actualizar Instructor</h5>
-              <button type="button" class="btn btn-danger" data-bs-dismiss="modal">X</button>
-            </div>
-
-            <div class="modal-body">
-
-              <div class="row">
-                <input type="hidden" id="idInstructorActualizar">
-                <div class="col">
-                  <label>Nombre</label>
-                  <input class="form-control" type="text" id="nombreActualizar" required>
-                </div>
-                <div class="col">
-                  <label>Apellido</label>
-                  <input class="form-control" type="text" id="apellidoActualizar" required>
-                </div>
-              </div>
-
-              <div class="row mt-2">
-                <div class="col">
-                  <label>Tipo documento</label>
-                  <select id="tipo_documentoActualizar" class="form-control" required>
-                    <option value="CC">CC</option>
-                    <option value="CE">CE</option>
-                    <option value="TI">TI</option>
-                  </select>
-                </div>
-                <div class="col">
-                  <label>Número documento</label>
-                  <input class="form-control" type="number" id="numero_documentoActualizar" required>
-                </div>
-              </div>
-
-              <div class="row mt-2">
-                <div class="col">
-                  <label>Fecha nacimiento</label>
-                  <input class="form-control" type="date" id="fecha_nacimientoActualizar" required>
-                </div>
-                <div class="col">
-                  <label>Fecha expedición</label>
-                  <input class="form-control" type="date" id="fecha_expedicionActualizar" required>
-                </div>
-              </div>
-              <div class="row mt-2">
-                <div class="col">
-                  <select name="" id="selectActualizar" class="form-control"></select>
-                  <input type="hidden" name="" id="instructorId">
-                </div>
-              </div>
-
-            </div>
-
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                Cancelar
-              </button>
-              <button type="submit" class="btn btn-primary">
-                Guardar
-              </button>
-            </div>
-
-          </form>
-
-        </div>
-      </div>
-    </div>
-
-    <!-- Modal para fecha_nac y fecha_exp -->
-
-    <div class="modal fade" id="ModalFecha" tabindex="-1">
-      <div class="modal-dialog">
-        <div class="modal-content">
-
-          <form id="formInstructorActualizar">
-
-            <div class="modal-header">
-              <h5 class="modal-title">Actualizar Instructor</h5>
-              <button type="button" class="btn btn-danger" data-bs-dismiss="modal">X</button>
-            </div>
-
-            <div class="modal-body">
-
-              <table class="table table-bordered">
-                <thead>
-                  <tr>
-                    <td>No.Documento</td>
-                    <td>Fecha Nacimiento</td>
-                    <td>Fecha expedición</td>
-                  </tr>
-                </thead>
-                <tbody class="cuerpoFecha">
-
-                </tbody>
-              </table>
-
-
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                  Cancelar
-                </button>
-                <button type="submit" class="btn btn-primary">
-                  Guardar
-                </button>
-              </div>
-
-          </form>
-
-        </div>
-      </div>
-    </div>
+  </div>
+</div>
