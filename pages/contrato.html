@@ -1,7 +1,7 @@
 <!-- contrato.html -->
 <div class="container-fluid">
     <h2>Gestión de Contratos</h2>
-    
+
     <table id="dataTableContrato" class="table table-striped table-bordered" style="width:100%">
         <thead>
             <tr>
@@ -10,8 +10,9 @@
                 <th>No. Contrato</th>
                 <th>Nombres</th>
                 <th>Documento</th>
-               <th>CRP</th>
-               <th>CDP</th>
+                <th>CRP</th>
+                <th>CDP</th>
+                <th>Modificaciones</th>
             </tr>
         </thead>
         <tbody>
@@ -21,7 +22,8 @@
 </div>
 
 <!-- Modal Agregar Contrato -->
-<div class="modal fade" id="ModalAgregarContrato" tabindex="-1" aria-labelledby="ModalAgregarContratoLabel" aria-hidden="true">
+<div class="modal fade" id="ModalAgregarContrato" tabindex="-1" aria-labelledby="ModalAgregarContratoLabel"
+    aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <form id="formContrato">
@@ -118,3 +120,92 @@
         </div>
     </div>
 </div>
+
+
+<!-- Modal de Modificar contrato -->
+<div class="modal fade" id="ModalModificarContrato" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modificar Contrato</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="formModificarContrato">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col">
+                            <!-- CAMBIA este ID a id_contrato_eliminar -->
+                            <input type="hidden" id="id_contrato" name="id_contrato">
+                            <input type="hidden" id="id_usuario" name="id_usuario">
+                            <p>¿Está seguro que desea modificar este contrato?</p>
+                            <p class="text-danger">Esta acción no se puede deshacer.</p>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <div class="row">
+                                <div class="col">
+                                    <div>
+                                        <select name="" id="tipo_modificacion" class="form-select">
+                                            <option value="" selected disabled>Seleccionar tipo de modificación</option>
+                                            <option value="cesion">Cesión</option>
+                                            <option value="modificacion">Modificación</option>
+                                        </select>
+                                    </div>
+
+                                        <div class="col">
+                                            <label for="fecha_modificacion" class="form-label">Fecha de Modificación
+                                                *</label>
+                                            <input class="form-control" type="date" id="fecha_modificacion" required>
+                                        </div>
+
+                                    <div class="contenedor_modificacion d-none mt-3" id="contenedor_modificacion">
+
+                                        <div class="col modificacion mt-3">
+                                            <label for="select_tipo">Seleccione el tipo de modificación</label>
+                                            <select name="" id="select_tipo" class="form-select">
+                                                <option value="" selected disabled>Seleccione el tipo de modificación
+                                                </option>
+                                                <option value="adicion">Adición</option>
+                                                <option value="disminucion">Disminución</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col valorAdDi">
+                                            <label for="valorAdDi" class="form-label">ingrese el valor</label>
+                                            <input type="number" id="valorAdDi" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="contenedor_cesion d-none mt-3">
+                                        <div class="col">
+                                            <label for="fecha_cesion" class="form-label">Fecha de Cesión *</label>
+                                            <input class="form-control" type="date" id="fecha_cesion" required>
+                                        </div>
+                                        <div class="col">
+                                            <label for="nombre_nuevo_instructor" class="form-label">Nombre del nuevo
+                                                instructor *</label>
+                                                <select name="id_nuevo_instructor" id="id_nuevo_instructor" class="form-select">
+                                                    <option value="" selected disabled>Seleccione el nuevo instructor</option>
+                                                    <!-- Opciones de instructores -->
+                                                </select>
+                                        </div>
+                                        <div>
+                                            <input type="hidden" name="id_instructor" id="id_instructor">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-warning">Modificar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+

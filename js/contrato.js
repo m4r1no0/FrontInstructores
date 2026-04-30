@@ -1,5 +1,6 @@
 // initContrato.js
 import { ContratoService } from './contrato.service.js';
+import { InstructorService } from './instructor.service.js';
 
 export async function initContrato() {
     console.log("=== INITCONTRATO EJECUTÁNDOSE ===");
@@ -19,6 +20,68 @@ export async function initContrato() {
     } catch (error) {
         console.error("Error en initContrato:", error);
     }
+
+    
+    const SelectTipoModificacion = document.getElementById('tipo_modificacion');
+    
+    if (!SelectTipoModificacion) {
+        console.error('ERROR: No existe el elemento con id="tipo_modificacion"');
+        return;
+    }
+    
+    SelectTipoModificacion.addEventListener('change', function() {
+    const valorSeleccionado = this.value;
+    console.log("Tipo de modificación seleccionado:", valorSeleccionado);
+    
+    const contenedorModificacion = document.querySelector('.contenedor_modificacion');
+    const contenedorCesion = document.querySelector('.contenedor_cesion');
+
+    console.log("Contenedor Modificación:", contenedorModificacion);
+    console.log("Contenedor Cesión:", contenedorCesion);
+    
+    // Cambia estas comparaciones según los valores reales
+    if (valorSeleccionado === 'modificacion') {
+        contenedorModificacion.classList.remove('d-none');
+        contenedorCesion.classList.add('d-none');
+    } else if (valorSeleccionado === 'cesion') {
+        contenedorModificacion.classList.add('d-none');
+        contenedorCesion.classList.remove('d-none');
+    } else {
+        contenedorModificacion.classList.add('d-none');
+        contenedorCesion.classList.add('d-none');
+    }
+
+    const selectNuevoInstructor = document.getElementById('id_nuevo_instructor');
+
+    async function cargarInstructores() {
+        try {
+            const response = await InstructorService.get_all_instructores_paginated(1,200);
+            const instructores = response.data;
+
+            selectNuevoInstructor.innerHTML = '<option value="">Seleccione un nuevo instructor</option>';
+            instructores.forEach(instructor => {
+                const option = document.createElement('option');
+                option.value = instructor.id_instructor;
+                option.textContent = `${instructor.instructor_nombre}`;
+                selectNuevoInstructor.appendChild(option);
+            });
+        }
+        
+            catch (error) {
+            console.error("Error al cargar instructores:", error);
+        }
+    }
+    cargarInstructores();
+
+
+
+
+
+    
+});
+
+
+
 }
 
 // =============================
@@ -84,6 +147,7 @@ function initializeTable(contratoLeft) {
                     <td>${contrato.numero_documento || ''}</td>
                     <td>${contrato.crp || ''}</td>
                     <td>${contrato.cdp || ''}</td>
+                    <td><button class="btn btn-warning btn-sm btn-modificar-contrato" data-bs-toggle="modal" data-bs-target="#ModalModificarContrato" data-id-contrato="${contrato.id_contrato}">Modificar</button></td>
                 </tr>
             `;
             $tbody.append(row);
