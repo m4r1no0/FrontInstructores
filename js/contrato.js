@@ -4,7 +4,7 @@ import { InstructorService } from './instructor.service.js';
 
 export async function initContrato() {
     console.log("=== INITCONTRATO EJECUTÁNDOSE ===");
-    
+
     try {
         const contratos = await ContratoService.get_contrato_instructor();
         let contratoLeft = contratos.data;
@@ -16,71 +16,68 @@ export async function initContrato() {
 
         // Inicializar la tabla
         initializeTable(contratoLeft);
-        
+
     } catch (error) {
         console.error("Error en initContrato:", error);
     }
 
-    
+
     const SelectTipoModificacion = document.getElementById('tipo_modificacion');
-    
+
     if (!SelectTipoModificacion) {
         console.error('ERROR: No existe el elemento con id="tipo_modificacion"');
         return;
     }
-    
-    SelectTipoModificacion.addEventListener('change', function() {
-    const valorSeleccionado = this.value;
-    console.log("Tipo de modificación seleccionado:", valorSeleccionado);
-    
-    const contenedorModificacion = document.querySelector('.contenedor_modificacion');
-    const contenedorCesion = document.querySelector('.contenedor_cesion');
 
-    console.log("Contenedor Modificación:", contenedorModificacion);
-    console.log("Contenedor Cesión:", contenedorCesion);
-    
-    // Cambia estas comparaciones según los valores reales
-    if (valorSeleccionado === 'modificacion') {
-        contenedorModificacion.classList.remove('d-none');
-        contenedorCesion.classList.add('d-none');
-    } else if (valorSeleccionado === 'cesion') {
-        contenedorModificacion.classList.add('d-none');
-        contenedorCesion.classList.remove('d-none');
-    } else {
-        contenedorModificacion.classList.add('d-none');
-        contenedorCesion.classList.add('d-none');
-    }
+    SelectTipoModificacion.addEventListener('change', function () {
+        const valorSeleccionado = this.value;
+        console.log("Tipo de modificación seleccionado:", valorSeleccionado);
 
-    const selectNuevoInstructor = document.getElementById('id_nuevo_instructor');
+        const contenedorModificacion = document.querySelector('.contenedor_modificacion');
+        const contenedorCesion = document.querySelector('.contenedor_cesion');
 
-    async function cargarInstructores() {
-        try {
-            const response = await InstructorService.get_all_instructores_paginated(1,200);
-            const instructores = response.data;
+        console.log("Contenedor Modificación:", contenedorModificacion);
+        console.log("Contenedor Cesión:", contenedorCesion);
 
-            selectNuevoInstructor.innerHTML = '<option value="">Seleccione un nuevo instructor</option>';
-            instructores.forEach(instructor => {
-                const option = document.createElement('option');
-                option.value = instructor.id_instructor;
-                option.textContent = `${instructor.instructor_nombre}`;
-                selectNuevoInstructor.appendChild(option);
-            });
+        // Cambia estas comparaciones según los valores reales
+        if (valorSeleccionado === 'modificacion') {
+            contenedorModificacion.classList.remove('d-none');
+            contenedorCesion.classList.add('d-none');
+        } else if (valorSeleccionado === 'cesion') {
+            contenedorModificacion.classList.add('d-none');
+            contenedorCesion.classList.remove('d-none');
+        } else {
+            contenedorModificacion.classList.add('d-none');
+            contenedorCesion.classList.add('d-none');
         }
-        
+
+        const selectNuevoInstructor = document.getElementById('id_nuevo_instructor');
+
+        async function cargarInstructores() {
+            try {
+                const response = await InstructorService.get_all_instructores_paginated(1, 200);
+                const instructores = response.data;
+
+                selectNuevoInstructor.innerHTML = '<option value="">Seleccione un nuevo instructor</option>';
+                console.log("Instructores cargados:", instructores); 
+                    instructores.forEach(instructor => {
+                        if (instructor.numero_contrato === null){
+                        const option = document.createElement('option');
+                        option.value = instructor.id_instructor;
+                        option.textContent = `${instructor.instructor_nombre}`;
+                        selectNuevoInstructor.appendChild(option);
+                        }
+                    });
+                
+            }
+
             catch (error) {
-            console.error("Error al cargar instructores:", error);
+                console.error("Error al cargar instructores:", error);
+            }
         }
-    }
-    cargarInstructores();
+        cargarInstructores();
 
-
-
-
-
-    
-});
-
-
+    });
 
 }
 
@@ -89,39 +86,39 @@ export async function initContrato() {
 // =============================
 function initializeTable(contratoLeft) {
     console.log("Inicializando tabla...");
-    
+
     // Verificar que la tabla existe
     const tabla = document.getElementById('dataTableContrato');
     if (!tabla) {
         console.error("❌ No se encontró la tabla");
         return;
     }
-    
+
     // Verificar jQuery y DataTable
     if (typeof $ === 'undefined') {
         console.error("❌ jQuery no está cargado");
         return;
     }
-    
+
     if (typeof $.fn.DataTable === 'undefined') {
         console.error("❌ DataTable no está cargado");
         return;
     }
-    
+
     console.log("✅ jQuery y DataTable disponibles");
-    
+
     const $table = $('#dataTableContrato');
-    
+
     // Destruir instancia anterior si existe
     if ($.fn.DataTable.isDataTable('#dataTableContrato')) {
         console.log("Destruyendo DataTable existente");
         $table.DataTable().destroy();
     }
-    
+
     // Limpiar el tbody
     const $tbody = $table.find('tbody');
     $tbody.empty();
-    
+
     // Llenar los datos manualmente
     if (contratoLeft && contratoLeft.length > 0) {
         contratoLeft.forEach((contrato) => {
@@ -156,7 +153,7 @@ function initializeTable(contratoLeft) {
     } else {
         $tbody.append('<tr><td colspan="7" class="text-center">No hay contratos disponibles</td></tr>');
     }
-    
+
     // Inicializar DataTable
     try {
         const dataTable = $table.DataTable({
@@ -179,9 +176,9 @@ function initializeTable(contratoLeft) {
                 }
             ]
         });
-        
+
         console.log("✅ DataTable inicializada con éxito");
-        
+
     } catch (error) {
         console.error("Error al inicializar DataTable:", error);
     }
@@ -192,11 +189,11 @@ function initializeTable(contratoLeft) {
 // =============================
 function setupModalButtons() {
     // Botón para AGREGAR contrato
-    $(document).on('click', '.btn-agregar-contrato', function(e) {
+    $(document).on('click', '.btn-agregar-contrato', function (e) {
         const id_instructor = $(this).data('id');
-        
+
         console.log("🔑 ID Instructor capturado del botón:", id_instructor);
-        
+
         const inputIdInstructor = document.getElementById('id_instructor');
         if (inputIdInstructor) {
             inputIdInstructor.value = id_instructor;
@@ -204,59 +201,59 @@ function setupModalButtons() {
         } else {
             console.error("❌ No se encontró el input hidden 'id_instructor'");
         }
-        
+
         const nombreInstructor = $(this).closest('tr').find('td:eq(3)').text();
         console.log("📌 Instructor seleccionado:", nombreInstructor);
     });
-    
+
     // Botón para ELIMINAR contrato
-$(document).on('click', '.btn-eliminar-contrato', function(e) {
-    // jQuery convierte data-id-contrato a dataIdContrato (camelCase)
-    const id_contrato = $(this).data('idContrato');  // ← Así se escribe
-    
-    console.log("🔑 ID Contrato capturado del botón:", id_contrato);
-    console.log("Data attributes completos:", $(this).data()); // Para depuración
-    
-    const inputIdContrato = document.getElementById('id_contrato_eliminar');
-    if (inputIdContrato && id_contrato) {
-        inputIdContrato.value = id_contrato;
-        console.log("✅ ID Contrato asignado al input hidden:", inputIdContrato.value);
-    } else {
-        console.error("❌ No se encontró el ID del contrato");
-    }
-});
-    
+    $(document).on('click', '.btn-eliminar-contrato', function (e) {
+        // jQuery convierte data-id-contrato a dataIdContrato (camelCase)
+        const id_contrato = $(this).data('idContrato');  // ← Así se escribe
+
+        console.log("🔑 ID Contrato capturado del botón:", id_contrato);
+        console.log("Data attributes completos:", $(this).data()); // Para depuración
+
+        const inputIdContrato = document.getElementById('id_contrato_eliminar');
+        if (inputIdContrato && id_contrato) {
+            inputIdContrato.value = id_contrato;
+            console.log("✅ ID Contrato asignado al input hidden:", inputIdContrato.value);
+        } else {
+            console.error("❌ No se encontró el ID del contrato");
+        }
+    });
+
     // Evento show.bs.modal para AGREGAR (método alternativo)
-    $('#ModalAgregarContrato').on('show.bs.modal', function(e) {
+    $('#ModalAgregarContrato').on('show.bs.modal', function (e) {
         const button = $(e.relatedTarget);
         const id_instructor = button.data('id');
-        
+
         if (id_instructor) {
             document.getElementById('id_instructor').value = id_instructor;
             console.log("🎯 Modal Agregar abierto - ID asignado:", id_instructor);
         }
     });
-    
+
     // Evento show.bs.modal para ELIMINAR (método alternativo)
-    $('#ModalEliminarContrato').on('show.bs.modal', function(e) {
+    $('#ModalEliminarContrato').on('show.bs.modal', function (e) {
         const button = $(e.relatedTarget);
         const id_contrato = button.data('id-contrato');
-        
+
         if (id_contrato) {
             document.getElementById('id_contrato').value = id_contrato;
             console.log("🎯 Modal Eliminar abierto - ID Contrato asignado:", id_contrato);
         }
     });
-    
+
     // Limpiar inputs cuando los modales se cierran
-    $('#ModalAgregarContrato').on('hidden.bs.modal', function() {
+    $('#ModalAgregarContrato').on('hidden.bs.modal', function () {
         const inputIdInstructor = document.getElementById('id_instructor');
         if (inputIdInstructor) {
             console.log("Modal Agregar cerrado, ID actual:", inputIdInstructor.value);
         }
     });
-    
-    $('#ModalEliminarContrato').on('hidden.bs.modal', function() {
+
+    $('#ModalEliminarContrato').on('hidden.bs.modal', function () {
         const inputIdContrato = document.getElementById('id_contrato');
         if (inputIdContrato) {
             inputIdContrato.value = '';
@@ -302,15 +299,15 @@ async function handleCreateSubmit(event) {
 
     const idInstructorInput = document.getElementById('id_instructor');
     const id_instructor = idInstructorInput ? idInstructorInput.value : null;
-    
+
     console.log("📌 ID Instructor a enviar:", id_instructor);
-    
+
     if (!id_instructor || id_instructor === '') {
         console.error("❌ No se ha seleccionado ningún instructor");
         alert("Error: Por favor seleccione un instructor de la tabla primero");
         return;
     }
-    
+
     const numero_contrato = document.getElementById('numero_contrato')?.value || '';
     if (!numero_contrato) {
         console.error("❌ Número de contrato es requerido");
@@ -331,9 +328,9 @@ async function handleCreateSubmit(event) {
         valor_mes: parseFloat(document.getElementById('valorMes').value),
         estado: 'Activo',
         vigencia: document.getElementById('fecha_fin')?.value || '',
-        valorAdDi: null 
+        valorAdDi: null
     };
-    
+
     console.log("📦 Datos a enviar:", newData);
 
     try {
@@ -353,7 +350,7 @@ async function handleCreateSubmit(event) {
         }
 
         event.target.reset();
-        
+
         if (idInstructorInput) {
             idInstructorInput.value = '';
         }
@@ -376,15 +373,15 @@ async function handleDeleteSubmit(event) {
 
     const idContratoInput = document.getElementById('id_contrato');
     const id_contrato = idContratoInput ? idContratoInput.value : null;
-    
+
     console.log("📌 ID Contrato a enviar:", id_contrato);
-    
+
     if (!id_contrato || id_contrato === '') {
         console.error("❌ No se ha seleccionado ningún contrato");
         alert("Error: Por favor seleccione un contrato de la tabla primero");
         return;
     }
-    
+
     // Confirmar eliminación
     const confirmar = confirm(`¿Está seguro que desea eliminar el contrato #${id_contrato}?`);
     if (!confirmar) {
@@ -396,7 +393,7 @@ async function handleDeleteSubmit(event) {
         console.log("🚀 Enviando datos al servidor...");
         await ContratoService.delete_contrato(id_contrato);
         console.log("✅ Contrato eliminado exitosamente");
-        
+
         const modalElement = document.getElementById("ModalEliminarContrato");
         if (modalElement) {
             const modal = bootstrap.Modal.getInstance(modalElement);
@@ -404,9 +401,9 @@ async function handleDeleteSubmit(event) {
                 modal.hide();
             }
         }
-        
+
         alert("Contrato eliminado exitosamente");
-        
+
         // Limpiar el input hidden
         if (idContratoInput) {
             idContratoInput.value = '';
