@@ -81,9 +81,31 @@
                             <label for="valorContrato" class="form-label">Valor Contrato</label>
                             <input type="number" id="valor_contrato" class="form-control">
                         </div>
+                        <div class="col">
+                            <label for="forma_pago" class="form-label">Forma de pago</label>
+                            <select name="" id="forma_pago" class="form-control">
+                                <option value="0" selected disabled>Seleccione forma de pago</option>
+                                <option value="1">Todos los meses iguales</option>
+                                <option value="3">primero y ultimo pago diferentes</option>
+                                <option value="4">primero pago diferente</option>
+                                <option value="5">ultimo pago diferente</option>
+                            </select>
+                        </div>
                         <div class="col-md-6">
                             <label for="valorMes" class="form-label">Valor Mes</label>
                             <input type="number" id="valorMes" class="form-control">
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col mes_uno d-none">
+                                    <label for="valorMes" class="form-label">Valor 1er Mes</label>
+                                    <input type="number" id="valorMes" class="form-control">
+                                </div>
+                                <div class="col mes_final d-none">
+                                    <label for="valorMes" class="form-label">Valor Ultimo mes</label>
+                                    <input type="number" id="valorMes" class="form-control">
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -154,11 +176,11 @@
                                         </select>
                                     </div>
 
-                                        <div class="col">
-                                            <label for="fecha_modificacion" class="form-label">Fecha de Modificación
-                                                *</label>
-                                            <input class="form-control" type="date" id="fecha_modificacion" required>
-                                        </div>
+                                    <div class="col">
+                                        <label for="fecha_modificacion" class="form-label">Fecha de Modificación
+                                            *</label>
+                                        <input class="form-control" type="date" id="fecha_modificacion" required>
+                                    </div>
 
                                     <div class="contenedor_modificacion d-none mt-3" id="contenedor_modificacion">
 
@@ -192,10 +214,12 @@
                                         <div class="col">
                                             <label for="nombre_nuevo_instructor" class="form-label">Nombre del nuevo
                                                 instructor *</label>
-                                                <select name="id_nuevo_instructor" id="id_nuevo_instructor" class="form-control">
-                                                    <option value="" selected disabled>Seleccione el nuevo instructor</option>
-                                                    <!-- Opciones de instructores -->
-                                                </select>
+                                            <select name="id_nuevo_instructor" id="id_nuevo_instructor"
+                                                class="form-control">
+                                                <option value="" selected disabled>Seleccione el nuevo instructor
+                                                </option>
+                                                <!-- Opciones de instructores -->
+                                            </select>
                                         </div>
                                         <div>
                                             <input type="hidden" name="id_instructor" id="id_instructor">
@@ -214,5 +238,3 @@
         </div>
     </div>
 </div>
-
-
