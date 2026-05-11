@@ -147,7 +147,7 @@
                             <div class="row">
                                 <div class="col">
                                     <div>
-                                        <select name="" id="tipo_modificacion" class="form-select">
+                                        <select name="" id="tipo_modificacion" class="form-control">
                                             <option value="" selected disabled>Seleccionar tipo de modificación</option>
                                             <option value="cesion">Cesión</option>
                                             <option value="modificacion">Modificación</option>
@@ -164,7 +164,7 @@
 
                                         <div class="col modificacion mt-3">
                                             <label for="select_tipo">Seleccione el tipo de modificación</label>
-                                            <select name="" id="select_tipo" class="form-select">
+                                            <select name="" id="select_tipo" class="form-control">
                                                 <option value="" selected disabled>Seleccione el tipo de modificación
                                                 </option>
                                                 <option value="adicion">Adición</option>
@@ -178,14 +178,21 @@
                                         </div>
                                     </div>
                                     <div class="contenedor_cesion d-none mt-3">
-                                        <div class="col">
-                                            <label for="fecha_cesion" class="form-label">Fecha de Cesión *</label>
-                                            <input class="form-control" type="date" id="fecha_cesion" required>
+                                        <div class="row">
+                                            <div class="col">
+                                                <label for="fecha_cesion" class="form-label">Fecha de Inicio *</label>
+                                                <input class="form-control" type="date" id="fecha_cesion" required>
+                                            </div>
+                                            <div class="col">
+                                                <label for="fecha_cesion" class="form-label">Fecha de Cesión *</label>
+                                                <input class="form-control" type="date" id="fecha_cesion" required>
+                                            </div>
                                         </div>
+
                                         <div class="col">
                                             <label for="nombre_nuevo_instructor" class="form-label">Nombre del nuevo
                                                 instructor *</label>
-                                                <select name="id_nuevo_instructor" id="id_nuevo_instructor" class="form-select">
+                                                <select name="id_nuevo_instructor" id="id_nuevo_instructor" class="form-control">
                                                     <option value="" selected disabled>Seleccione el nuevo instructor</option>
                                                     <!-- Opciones de instructores -->
                                                 </select>
