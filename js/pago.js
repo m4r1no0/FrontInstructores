@@ -1,5 +1,3 @@
-// pago.js
-import { PagoService } from './pago.service.js';
 import { ContratoService } from './contrato.service.js';
 
 export async function initPago() {
@@ -15,7 +13,7 @@ export async function initPago() {
         // Cargar contratos para el selector
         await cargarContratos();
         
-        const pagos = await PagoService.get_all_pagos();
+        const pagos = await ContratoService.get_all_pagos();
         let pagosData = pagos.data || pagos;
         console.log("Datos recibidos:", pagosData);
 
