@@ -1,0 +1,179 @@
+<div class="card-body">
+    <div class="table-responsive">
+        <table class="table table-bordered" id="dataTablePoliza" width="100%" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Acciones</th>
+                    <th>ID</th>
+                    <th>Instructor</th>
+                    <th>N° Póliza</th>
+                    <th>Tipo</th>
+                    <th>Aseguradora</th>
+                    <th>Fecha Inicio</th>
+                    <th>Fecha Fin</th>
+                    <th>Valor Asegurado</th>
+                    <th>Estado</th>
+                    <th>Observaciones</th>
+                </tr>
+            </thead>
+            <tbody class="cuerpoTabla">
+                <!-- Los datos se llenarán dinámicamente -->
+            </tbody>
+        </table>
+    </div>
+</div>
+    <!-- Modal AGREGAR Póliza -->
+<div class="modal fade" id="ModalAgregarPoliza" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Agregar Póliza</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="formPoliza">
+                <div class="modal-body">
+                    <input type="hidden" id="id_instructor_poliza">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label>Número de Póliza *</label>
+                            <input type="text" id="numero_poliza" class="form-control" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label>Tipo de Póliza *</label>
+                            <select id="tipo_poliza" class="form-control" required>
+                                <option value="">Seleccione...</option>
+                                <option value="Seguro de Vida">Seguro de Vida</option>
+                                <option value="Seguro de Salud">Seguro de Salud</option>
+                                <option value="Seguro de Accidentes">Seguro de Accidentes</option>
+                                <option value="Seguro Educativo">Seguro Educativo</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label>Aseguradora *</label>
+                            <input type="text" id="aseguradora" class="form-control" required>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label>Fecha Inicio</label>
+                            <input type="date" id="fecha_inicio" class="form-control">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label>Fecha Fin</label>
+                            <input type="date" id="fecha_fin" class="form-control">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label>Valor Asegurado</label>
+                            <input type="number" id="valor_asegurado" class="form-control" step="0.01">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label>Estado</label>
+                            <select id="estado" class="form-control">
+                                <option value="ACTIVA">Activa</option>
+                                <option value="VENCIDA">Vencida</option>
+                                <option value="CANCELADA">Cancelada</option>
+                                <option value="SUSPENDIDA">Suspendida</option>
+                            </select>
+                        </div>
+                        <div class="col-12 mb-3">
+                            <label>Observaciones</label>
+                            <textarea id="observaciones" class="form-control" rows="3"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Póliza</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal EDITAR Póliza -->
+<div class="modal fade" id="ModalEditarPoliza" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Editar Póliza</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="formEditarPoliza">
+                <div class="modal-body">
+                    <input type="hidden" id="edit_id_poliza">
+                    <input type="hidden" id="edit_id_instructor">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label>Número de Póliza</label>
+                            <input type="text" id="edit_numero_poliza" class="form-control" readonly>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label>Tipo de Póliza</label>
+                            <select id="edit_tipo_poliza" class="form-control" required>
+                                <option value="Seguro de Vida">Seguro de Vida</option>
+                                <option value="Seguro de Salud">Seguro de Salud</option>
+                                <option value="Seguro de Accidentes">Seguro de Accidentes</option>
+                                <option value="Seguro Educativo">Seguro Educativo</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label>Aseguradora</label>
+                            <input type="text" id="edit_aseguradora" class="form-control" required>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label>Fecha Inicio</label>
+                            <input type="date" id="edit_fecha_inicio" class="form-control">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label>Fecha Fin</label>
+                            <input type="date" id="edit_fecha_fin" class="form-control">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label>Valor Asegurado</label>
+                            <input type="number" id="edit_valor_asegurado" class="form-control" step="0.01">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label>Estado</label>
+                            <select id="edit_estado" class="form-control">
+                                <option value="ACTIVA">Activa</option>
+                                <option value="VENCIDA">Vencida</option>
+                                <option value="CANCELADA">Cancelada</option>
+                                <option value="SUSPENDIDA">Suspendida</option>
+                                <option value="RENOVADA">Renovada</option>
+                            </select>
+                        </div>
+                        <div class="col-12 mb-3">
+                            <label>Observaciones</label>
+                            <textarea id="edit_observaciones" class="form-control" rows="3"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Actualizar Póliza</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal ELIMINAR Póliza -->
+<div class="modal fade" id="ModalEliminarPoliza" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Eliminar Póliza</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="formEliminarPoliza">
+                <div class="modal-body">
+                    <input type="hidden" id="id_poliza_eliminar">
+                    <p>¿Está seguro que desea eliminar esta póliza?</p>
+                    <p class="text-danger">Esta acción no se puede deshacer.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger">Eliminar Póliza</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
