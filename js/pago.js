@@ -13,9 +13,9 @@ export async function initPago() {
         // Cargar contratos para el selector
         await cargarContratos();
         
-        const pagos = await ContratoService.get_all_pagos();
-        let pagosData = pagos.data || pagos;
-        console.log("Datos recibidos:", pagosData);
+        const pagos = await ContratoService.get_contratos_by_instructor();
+        console.log("Respuesta de contratos:", pagos);
+        const pagosData = pagos.data || pagos;
 
         setupFormHandler();
         setupDeleteFormHandler();
@@ -33,7 +33,7 @@ export async function initPago() {
 // =============================
 async function cargarContratos() {
     try {
-        const response = await ContratoService.get_contrato_instructor();
+        const response = await ContratoService.get_contratos_by_instructor();
         const contratos = response.data || response;
         
         const selectContrato = document.getElementById('id_contrato');
@@ -44,7 +44,7 @@ async function cargarContratos() {
             contratos.forEach(contrato => {
                 const option = document.createElement('option');
                 option.value = contrato.id_contrato;
-                option.textContent = `${contrato.numero_contrato} - ${contrato.nombres} ${contrato.apellidos}`;
+                option.textContent = `${contrato.numero_contrato} - ${contrato.nombre_completo}`;
                 selectContrato.appendChild(option);
             });
         }
@@ -54,7 +54,7 @@ async function cargarContratos() {
             contratos.forEach(contrato => {
                 const option = document.createElement('option');
                 option.value = contrato.id_contrato;
-                option.textContent = `${contrato.numero_contrato} - ${contrato.nombres} ${contrato.apellidos}`;
+                option.textContent = `${contrato.numero_contrato} - ${contrato.nombre_completo}`;
                 selectEditContrato.appendChild(option);
             });
         }
@@ -131,15 +131,15 @@ function initializeTable(pagosData) {
                             <i class="bi bi-trash-fill"></i>
                         </button>
                     </td>
-                    <td>${pago.id_pago || ''}</td>
                     <td>${pago.numero_contrato || ''}</td>
-                    <td>${pago.instructor_nombre || ''}</td>
-                    <td>${pago.mes || ''}</td>
-                    <td class="text-end">${formatMoney(pago.valor_base)}</td>
-                    <td class="text-end">${formatMoney(pago.ajuste)}</td>
+                    <td>${pago.nombre_completo || ''}</td>
+                    <td>${pago.fecha_inicio || ''}</td>
+                    <td class="text-end">${formatMoney(pago.valor_mes)}</td>
+                    <td class="text-end">${formatMoney(pago.valor_contrato)}</td>
                     <td class="text-end">${formatMoney(pago.valor_pagado)}</td>
-                    <td class="text-end ${saldoClass}">${formatMoney(pago.saldo)}</td>
-                    <td>${formatDate(pago.created_at)}</td>
+                    <td class="text-end ${saldoClass}">${formatMoney(pago.valorAdDi)}</td>
+                    <td>${formatDate(pago.fecha_fin)}</td>
+                    <td>${formatDate(pago.vigencia)}</td>
                 </tr>
             `;
             cuerpoTabla.innerHTML += row;
@@ -252,17 +252,17 @@ function setupModalButtons() {
         const id_pago = $(this).data('id-pago');
         if (id_pago) {
             try {
-                const response = await PagoService.get_pago_by_id(id_pago);
-                const pago = response.data || response;
+                // const response = await PagoService.get_pago_by_id(id_pago);
+                // const pago = response.data || response;
                 
-                document.getElementById('edit_id_pago').value = pago.id_pago;
-                document.getElementById('edit_id_contrato').value = pago.id_contrato;
-                document.getElementById('edit_mes').value = pago.mes;
-                document.getElementById('edit_valor_base').value = pago.valor_base;
-                document.getElementById('edit_ajuste').value = pago.ajuste;
-                document.getElementById('edit_valor_pagado').value = pago.valor_pagado;
+                // document.getElementById('edit_id_pago').value = pago.id_pago;
+                // document.getElementById('edit_id_contrato').value = pago.id_contrato;
+                // document.getElementById('edit_mes').value = pago.mes;
+                // document.getElementById('edit_valor_base').value = pago.valor_base;
+                // document.getElementById('edit_ajuste').value = pago.ajuste;
+                // document.getElementById('edit_valor_pagado').value = pago.valor_pagado;
                 
-                calcularSaldoEdicion();
+                // calcularSaldoEdicion();
             } catch (error) {
                 console.error("Error cargando pago:", error);
             }
@@ -309,14 +309,14 @@ async function handleCreateSubmit(event) {
     };
     
     try {
-        await PagoService.create_pago(data);
+        // await PagoService.create_pago(data);
         
-        const modal = bootstrap.Modal.getInstance(document.getElementById("ModalAgregarPago"));
-        if (modal) modal.hide();
+        // const modal = bootstrap.Modal.getInstance(document.getElementById("ModalAgregarPago"));
+        // if (modal) modal.hide();
         
-        event.target.reset();
-        alert("Pago registrado exitosamente");
-        await initPago();
+        // event.target.reset();
+        // alert("Pago registrado exitosamente");
+        // await initPago();
     } catch (error) {
         console.error("Error:", error);
         alert("Error al registrar pago");
@@ -338,12 +338,12 @@ async function handleUpdateSubmit(event) {
     };
     
     try {
-        await PagoService.update_pago(id_pago, data);
+        // await PagoService.update_pago(id_pago, data);
         
-        const modal = bootstrap.Modal.getInstance(document.getElementById("ModalEditarPago"));
-        if (modal) modal.hide();
+        // const modal = bootstrap.Modal.getInstance(document.getElementById("ModalEditarPago"));
+        // if (modal) modal.hide();
         
-        alert("Pago actualizado exitosamente");
+        // alert("Pago actualizado exitosamente");
         await initPago();
     } catch (error) {
         console.error("Error:", error);
@@ -360,13 +360,13 @@ async function handleDeleteSubmit(event) {
     if (!confirm("¿Está seguro de eliminar este pago?")) return;
     
     try {
-        await PagoService.delete_pago(id_pago);
+        // await PagoService.delete_pago(id_pago);
         
-        const modal = bootstrap.Modal.getInstance(document.getElementById("ModalEliminarPago"));
-        if (modal) modal.hide();
+        // const modal = bootstrap.Modal.getInstance(document.getElementById("ModalEliminarPago"));
+        // if (modal) modal.hide();
         
-        alert("Pago eliminado exitosamente");
-        await initPago();
+        // alert("Pago eliminado exitosamente");
+        // await initPago();
     } catch (error) {
         console.error("Error:", error);
         alert("Error al eliminar pago");
