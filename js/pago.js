@@ -152,6 +152,8 @@ function initializeTable(pagosData) {
     try {
         $table.DataTable({
             responsive: true,
+            dom: 'lBfrtip',  // La 'B' es crucial para botones
+            buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
             language: {
                 "decimal": "",
                 "emptyTable": "No hay pagos disponibles",

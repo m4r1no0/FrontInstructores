@@ -1,12 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<script>
-if (!localStorage.getItem("access_token")) {
-    window.location.href = "index.html";
-}
-</script>
-
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -16,25 +10,49 @@ if (!localStorage.getItem("access_token")) {
 
     <title>Dashboard Instructores</title>
 
+    <!-- Script de verificación de TOKEN - DEBE IR AQUÍ AL PRINCIPIO -->
+    <script>
+        // Verificación inmediata del token
+        (function() {
+            const token = localStorage.getItem("access_token");
+            if (!token) {
+                // Redirigir inmediatamente si no hay token
+                window.location.replace("index.html");
+                return;
+            }
+            
+            // Opcional: Verificar si el token es válido (no vacío)
+            if (token.trim() === "") {
+                window.location.replace("index.html");
+                return;
+            }
+        })();
+    </script>
+
     <!-- Custom fonts for this template-->
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-    <link
-        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
 
     <!-- Custom styles for this template-->
-     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-
-    <!-- 🔵 ESTILO PARA BOTONES DE DATATABLE -->
+    
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
-
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
-
-    <link href="css/sb-admin-2.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-
+    
+    <!-- Ocultar contenido hasta verificar token -->
+    <style>
+        body {
+            visibility: hidden;
+        }
+        body.token-verified {
+            visibility: visible;
+        }
+    </style>
 </head>
 
 <body id="page-top">
@@ -73,7 +91,7 @@ if (!localStorage.getItem("access_token")) {
 
             <!-- Nav Item - Pages Collapse Menu -->
             <li class="nav-item">
-                <a class="nav-link collapsed"  href="#" data-toggle="collapse" data-target="#collapseTwo"
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
                     aria-expanded="true" aria-controls="collapseTwo">
                     <i class="fas fa-fw fa-cog"></i>
                     <span>Instructores</span>
@@ -82,8 +100,9 @@ if (!localStorage.getItem("access_token")) {
                     <div class="bg-white py-2 collapse-inner rounded">
                         <a href="#" data-page="pages/tabla.html" class="collapse-item" id="btn-instructores">Instructores</a>
                         <a class="collapse-item" data-page="pages/direccion.html">Direccion</a>
-                        <a class="collapse-item" data-page="pages/contacto.html"  href="#">Contacto</a>
+                        <a class="collapse-item" data-page="pages/contacto.html" href="#">Contacto</a>
                         <a class="collapse-item" data-page="pages/poliza.html">Poliza</a>
+                        <a class="collapse-item" data-page="pages/area_formacion.html">Area Formacion</a>
                     </div>
                 </div>
             </li>
@@ -153,60 +172,11 @@ if (!localStorage.getItem("access_token")) {
 
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
-
-
-                            <!-- Dropdown - Alerts -->
-                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                                aria-labelledby="alertsDropdown">
-                                <h6 class="dropdown-header">
-                                    Alerts Center
-                                </h6>
-                                <a class="dropdown-item d-flex align-items-center" href="#">
-                                    <div class="mr-3">
-                                        <div class="icon-circle bg-primary">
-                                            <i class="fas fa-file-alt text-white"></i>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="small text-gray-500">December 12, 2019</div>
-                                        <span class="font-weight-bold">A new monthly report is ready to download!</span>
-                                    </div>
-                                </a>
-                                <a class="dropdown-item d-flex align-items-center" href="#">
-                                    <div class="mr-3">
-                                        <div class="icon-circle bg-success">
-                                            <i class="fas fa-donate text-white"></i>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="small text-gray-500">December 7, 2019</div>
-                                        $290.29 has been deposited into your account!
-                                    </div>
-                                </a>
-                                <a class="dropdown-item d-flex align-items-center" href="#">
-                                    <div class="mr-3">
-                                        <div class="icon-circle bg-warning">
-                                            <i class="fas fa-exclamation-triangle text-white"></i>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="small text-gray-500">December 2, 2019</div>
-                                        Spending Alert: We've noticed unusually high spending for your account.
-                                    </div>
-                                </a>
-                                <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
-                            </div>
-                        </li>
-
-                        <div class="topbar-divider d-none d-sm-block"></div>
-
-                        <!-- Nav Item - User Information -->
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">Douglas McGee</span>
-                                <img class="img-profile rounded-circle"
-                                    src="img/undraw_profile.svg">
+                                <img class="img-profile rounded-circle" src="img/undraw_profile.svg">
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -224,13 +194,12 @@ if (!localStorage.getItem("access_token")) {
                                     Activity Log
                                 </a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="index.html" data-toggle="modal" data-target="#logoutModal">
+                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
                                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Logout
                                 </a>
                             </div>
                         </li>
-
                     </ul>
 
                 </nav>
@@ -332,58 +301,59 @@ if (!localStorage.getItem("access_token")) {
         </div>
     </div>
 
+    <!-- Scripts - Orden CORREGIDO -->
+    <!-- jQuery -->
+    <script src="vendor/jquery/jquery.min.js"></script>
 
+    <!-- Bootstrap 4 (solo una versión) -->
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
+    <!-- jQuery Easing y SB Admin -->
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="js/sb-admin-2.min.js"></script>
 
+    <!-- DataTables Core -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
+    <!-- Extensiones DataTables -->
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
 
+    <!-- BUTTONS - Core y dependencias para exportación -->
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
 
+    <!-- SweetAlert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <!-- Script para mostrar contenido solo si hay token -->
+    <script>
+        // Mostrar el contenido solo si el token es válido
+        (function() {
+            const token = localStorage.getItem("access_token");
+            if (token && token.trim() !== "") {
+                // Mostrar el body
+                document.body.classList.add("token-verified");
+            }
+        })();
+    </script>
 
+    <!-- Tu script principal -->
+    <script type="module" src="js/main.js"></script>
 
-<!-- jQuery -->
-<script src="vendor/jquery/jquery.min.js"></script>
-
-<!-- Bootstrap -->
-<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-<!-- jQuery Easing -->
-<script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-
-<!-- SB Admin -->
-<script src="js/sb-admin-2.min.js"></script>
-
-<!-- jQuery (solo una vez, quita la segunda llamada) -->
-<!-- <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script> --> <!-- ✅ ELIMINA ESTA LÍNEA, ya tienes jQuery arriba -->
-
-<!-- DataTables JS -->
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-
-<!-- Después de DataTables JS, agrega: -->
-<script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
-
-<!-- 🔵 DEPENDENCIAS PARA BOTONES DE DATATABLE (AGREGAR AQUÍ) -->
-<script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
-
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
-<!-- TU SCRIPT (SIEMPRE AL FINAL) -->
-<script type="module" src="js/main.js"></script>
-
-<script>
-    let botonNav = document.getElementById("boton_nav");
-    botonNav.addEventListener("click", function() {
-        let sidebar = document.getElementById("accordionSidebar");
-        sidebar.classList.toggle("toggled");
-    });
-</script>
-
+    <!-- Script de interacción del botón de navegación -->
+    <script>
+        let botonNav = document.getElementById("boton_nav");
+        if (botonNav) {
+            botonNav.addEventListener("click", function() {
+                let sidebar = document.getElementById("accordionSidebar");
+                sidebar.classList.toggle("toggled");
+            });
+        }
+    </script>
 
 </body>
 
