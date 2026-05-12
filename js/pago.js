@@ -2,17 +2,17 @@ import { ContratoService } from './contrato.service.js';
 
 export async function initPago() {
     console.log("=== INITPAGO EJECUTÁNDOSE ===");
-    
+
     const tabla = document.getElementById('dataTablePago');
     if (!tabla) {
         console.warn("⚠️ La tabla 'dataTablePago' no existe en el DOM");
         return;
     }
-    
+
     try {
         // Cargar contratos para el selector
         await cargarContratos();
-        
+
         const pagos = await ContratoService.get_contratos_by_instructor();
         console.log("Respuesta de contratos:", pagos);
         const pagosData = pagos.data || pagos;
@@ -22,7 +22,7 @@ export async function initPago() {
         setupUpdateFormHandler();
         setupModalButtons();
         initializeTable(pagosData);
-        
+
     } catch (error) {
         console.error("Error en initPago:", error);
     }
@@ -35,10 +35,10 @@ async function cargarContratos() {
     try {
         const response = await ContratoService.get_contratos_by_instructor();
         const contratos = response.data || response;
-        
+
         const selectContrato = document.getElementById('id_contrato');
         const selectEditContrato = document.getElementById('edit_id_contrato');
-        
+
         if (selectContrato) {
             selectContrato.innerHTML = '<option value="">Seleccione un contrato...</option>';
             contratos.forEach(contrato => {
@@ -48,7 +48,7 @@ async function cargarContratos() {
                 selectContrato.appendChild(option);
             });
         }
-        
+
         if (selectEditContrato) {
             selectEditContrato.innerHTML = '<option value="">Seleccione un contrato...</option>';
             contratos.forEach(contrato => {
@@ -58,7 +58,7 @@ async function cargarContratos() {
                 selectEditContrato.appendChild(option);
             });
         }
-        
+
         console.log("✅ Contratos cargados:", contratos.length);
     } catch (error) {
         console.error("Error cargando contratos:", error);
@@ -72,16 +72,16 @@ function calcularSaldo() {
     const valorBase = parseFloat(document.getElementById('valor_base')?.value || 0);
     const ajuste = parseFloat(document.getElementById('ajuste')?.value || 0);
     const valorPagado = parseFloat(document.getElementById('valor_pagado')?.value || 0);
-    
+
     const valorAPagar = valorBase + ajuste;
     const saldo = valorAPagar - valorPagado;
-    
+
     const saldoField = document.getElementById('saldo_calculado');
     if (saldoField) {
         saldoField.value = formatMoney(saldo);
         saldoField.style.color = saldo > 0 ? 'red' : (saldo < 0 ? 'green' : 'black');
     }
-    
+
     return saldo;
 }
 
@@ -90,28 +90,28 @@ function calcularSaldo() {
 // =============================
 function initializeTable(pagosData) {
     console.log("Inicializando tabla de pagos...");
-    
+
     const tabla = document.getElementById('dataTablePago');
     if (!tabla) {
         console.error("❌ No se encontró la tabla");
         return;
     }
-    
+
     if (typeof $ === 'undefined' || typeof $.fn.DataTable === 'undefined') {
         console.error("❌ jQuery o DataTable no están cargados");
         return;
     }
-    
+
     const $table = $('#dataTablePago');
-    
+
     if ($.fn.DataTable.isDataTable('#dataTablePago')) {
         $table.DataTable().destroy();
     }
-    
+
     const cuerpoTabla = document.querySelector('.cuerpoTabla');
     if (!cuerpoTabla) return;
     cuerpoTabla.innerHTML = '';
-    
+
     if (pagosData && pagosData.length > 0) {
         pagosData.forEach((pago) => {
             const saldoClass = pago.saldo > 0 ? 'text-danger' : (pago.saldo < 0 ? 'text-success' : '');
@@ -148,7 +148,7 @@ function initializeTable(pagosData) {
     } else {
         cuerpoTabla.innerHTML = '<tr><td colspan="10" class="text-center">No hay pagos registrados</td></tr>';
     }
-    
+
     try {
         $table.DataTable({
             responsive: true,
@@ -211,7 +211,7 @@ function setupFormHandler() {
     if (form) {
         form.removeEventListener('submit', handleCreateSubmit);
         form.addEventListener('submit', handleCreateSubmit);
-        
+
         // Event listeners para calcular saldo automáticamente
         ['valor_base', 'ajuste', 'valor_pagado'].forEach(id => {
             const input = document.getElementById(id);
@@ -228,7 +228,7 @@ function setupUpdateFormHandler() {
     if (form) {
         form.removeEventListener('submit', handleUpdateSubmit);
         form.addEventListener('submit', handleUpdateSubmit);
-        
+
         ['edit_valor_base', 'edit_ajuste', 'edit_valor_pagado'].forEach(id => {
             const input = document.getElementById(id);
             if (input) {
@@ -248,28 +248,28 @@ function setupDeleteFormHandler() {
 }
 
 function setupModalButtons() {
-    $(document).on('click', '.btn-editar-pago', async function(e) {
+    $(document).on('click', '.btn-editar-pago', async function (e) {
         const id_pago = $(this).data('id-pago');
         if (id_pago) {
             try {
                 // const response = await PagoService.get_pago_by_id(id_pago);
                 // const pago = response.data || response;
-                
+
                 // document.getElementById('edit_id_pago').value = pago.id_pago;
                 // document.getElementById('edit_id_contrato').value = pago.id_contrato;
                 // document.getElementById('edit_mes').value = pago.mes;
                 // document.getElementById('edit_valor_base').value = pago.valor_base;
                 // document.getElementById('edit_ajuste').value = pago.ajuste;
                 // document.getElementById('edit_valor_pagado').value = pago.valor_pagado;
-                
+
                 // calcularSaldoEdicion();
             } catch (error) {
                 console.error("Error cargando pago:", error);
             }
         }
     });
-    
-    $(document).on('click', '.btn-eliminar-pago', function(e) {
+
+    $(document).on('click', '.btn-eliminar-pago', function (e) {
         const id_pago = $(this).data('id-pago');
         document.getElementById('id_pago_eliminar').value = id_pago;
     });
@@ -279,7 +279,7 @@ function calcularSaldoEdicion() {
     const valorBase = parseFloat(document.getElementById('edit_valor_base')?.value || 0);
     const ajuste = parseFloat(document.getElementById('edit_ajuste')?.value || 0);
     const valorPagado = parseFloat(document.getElementById('edit_valor_pagado')?.value || 0);
-    
+
     const saldo = (valorBase + ajuste) - valorPagado;
     const saldoField = document.getElementById('edit_saldo_calculado');
     if (saldoField) {
@@ -293,13 +293,13 @@ function calcularSaldoEdicion() {
 // =============================
 async function handleCreateSubmit(event) {
     event.preventDefault();
-    
+
     const id_contrato = document.getElementById('id_contrato')?.value;
     if (!id_contrato) {
         alert("Seleccione un contrato");
         return;
     }
-    
+
     const data = {
         id_contrato: parseInt(id_contrato),
         mes: document.getElementById('mes')?.value,
@@ -307,13 +307,13 @@ async function handleCreateSubmit(event) {
         ajuste: parseFloat(document.getElementById('ajuste')?.value || 0),
         valor_pagado: parseFloat(document.getElementById('valor_pagado')?.value || 0)
     };
-    
+
     try {
         // await PagoService.create_pago(data);
-        
+
         // const modal = bootstrap.Modal.getInstance(document.getElementById("ModalAgregarPago"));
         // if (modal) modal.hide();
-        
+
         // event.target.reset();
         // alert("Pago registrado exitosamente");
         // await initPago();
@@ -325,10 +325,10 @@ async function handleCreateSubmit(event) {
 
 async function handleUpdateSubmit(event) {
     event.preventDefault();
-    
+
     const id_pago = document.getElementById('edit_id_pago')?.value;
     if (!id_pago) return;
-    
+
     const data = {
         id_contrato: parseInt(document.getElementById('edit_id_contrato')?.value),
         mes: document.getElementById('edit_mes')?.value,
@@ -336,13 +336,13 @@ async function handleUpdateSubmit(event) {
         ajuste: parseFloat(document.getElementById('edit_ajuste')?.value || 0),
         valor_pagado: parseFloat(document.getElementById('edit_valor_pagado')?.value || 0)
     };
-    
+
     try {
         // await PagoService.update_pago(id_pago, data);
-        
+
         // const modal = bootstrap.Modal.getInstance(document.getElementById("ModalEditarPago"));
         // if (modal) modal.hide();
-        
+
         // alert("Pago actualizado exitosamente");
         await initPago();
     } catch (error) {
@@ -353,18 +353,18 @@ async function handleUpdateSubmit(event) {
 
 async function handleDeleteSubmit(event) {
     event.preventDefault();
-    
+
     const id_pago = document.getElementById('id_pago_eliminar')?.value;
     if (!id_pago) return;
-    
+
     if (!confirm("¿Está seguro de eliminar este pago?")) return;
-    
+
     try {
         // await PagoService.delete_pago(id_pago);
-        
+
         // const modal = bootstrap.Modal.getInstance(document.getElementById("ModalEliminarPago"));
         // if (modal) modal.hide();
-        
+
         // alert("Pago eliminado exitosamente");
         // await initPago();
     } catch (error) {
