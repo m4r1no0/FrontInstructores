@@ -59,16 +59,28 @@ export async function initContrato() {
                 const instructores = response.data;
 
                 selectNuevoInstructor.innerHTML = '<option value="">Seleccione un nuevo instructor</option>';
+<<<<<<< HEAD
                 console.log("Instructores cargados:", instructores); 
                     instructores.forEach(instructor => {
                         if (instructor.numero_contrato === null){
+=======
+                console.log("Instructores cargados:", instructores);
+                instructores.forEach(instructor => {
+                    if (instructor.numero_contrato === null) {
+>>>>>>> 1e07be78a3d1e1784ca46af8d5bb05c8d9c5bab7
                         const option = document.createElement('option');
                         option.value = instructor.id_instructor;
                         option.textContent = `${instructor.instructor_nombre}`;
                         selectNuevoInstructor.appendChild(option);
+<<<<<<< HEAD
                         }
                     });
                 
+=======
+                    }
+                });
+
+>>>>>>> 1e07be78a3d1e1784ca46af8d5bb05c8d9c5bab7
             }
 
             catch (error) {
