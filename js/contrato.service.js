@@ -19,11 +19,7 @@ export const ContratoService = {
     },
 
     get_contratos_by_instructor:() =>{
-<<<<<<< HEAD
-        return request (`/contrato/pagos/`)
-=======
         return request ('/contrato/pagos')
->>>>>>> 1e07be78a3d1e1784ca46af8d5bb05c8d9c5bab7
     },
 
     delete_contrato:(id) =>{
