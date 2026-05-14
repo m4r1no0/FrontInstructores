@@ -200,10 +200,6 @@ document
           extend: 'excel',
           text: '<i class="bi bi-file-earmark-excel"></i> Excel',
           className: 'btn btn-success btn-sm',
-          attr: {
-            'data-bs-toggle': 'modal',
-            'data-bs-target': '#ModalExportacion'
-          },
           title: 'Instructores',
 
           action: function (e, dt, node, config) {
