@@ -16,103 +16,76 @@ export async function init() {
     instructoresGlobal = response.data;
 
     // =========================================
-// EXPORTAR EXCEL DINÁMICO
-// =========================================
-window.exportarContratosExcel = function () {
+    // =========================================
+    // EXPORTAR EXCEL SOLO CON MAP
+    // =========================================
+    window.exportarContratosExcel = function () {
 
-  // Obtener checkbox seleccionados
-  const checks = document.querySelectorAll(".campo-exportar:checked");
+      // Obtener campos seleccionados
+      const camposSeleccionados = Array
+        .from(document.querySelectorAll(".campo-exportar:checked"))
+        .map(check => check.value);
 
-  // Campos elegidos
-  const camposSeleccionados = Array.from(checks).map(c => c.value);
+      // Nombres personalizados columnas
+      const nombresColumnas = {
 
-  console.log("Campos:", camposSeleccionados);
+        id_instructor: "ID Instructor",
+        instructor_nombre: "Instructor",
+        numero_documento: "Documento",
+        tipo_documento: "Tipo Documento",
+        numero_contrato: "Contrato",
+        cdp: "CDP",
+        crp: "CRP",
+        rubro: "Rubro",
+        dependencia: "Dependencia",
+        valor_contrato: "Valor Contrato",
+        valor_mes: "Valor Mensual",
+        fecha_inicio: "Fecha Inicio",
+        fecha_fin: "Fecha Fin",
+        estado: "Estado"
 
-  // Construir JSON dinámico
-  const datosFiltrados = instructoresGlobal.map(item => {
+      };
 
-    let nuevoObjeto = {};
+      // =========================================
+      // FILTRAR DATOS CON MAP
+      // =========================================
+      const datosFiltrados = instructoresGlobal.map(item => {
 
-    camposSeleccionados.forEach(campo => {
+        let objeto = {};
 
-      // Cambiar nombre columnas
-      switch (campo) {
+        camposSeleccionados.map(campo => {
 
-        case "id_instructor":
-          nuevoObjeto["ID Instructor"] = item[campo];
-          break;
+          objeto[nombresColumnas[campo]] = item[campo];
 
-        case "instructor_nombre":
-          nuevoObjeto["Instructor"] = item[campo];
-          break;
+        });
 
-        case "numero_documento":
-          nuevoObjeto["Documento"] = item[campo];
-          break;
+        return objeto;
 
-        case "tipo_documento":
-          nuevoObjeto["Tipo Documento"] = item[campo];
-          break;
+      });
 
-        case "numero_contrato":
-          nuevoObjeto["Contrato"] = item[campo];
-          break;
+      console.log(datosFiltrados);
 
-        case "valor_contrato":
-          nuevoObjeto["Valor Contrato"] = item[campo];
-          break;
+      // Crear hoja Excel
+      const ws = XLSX.utils.json_to_sheet(datosFiltrados);
 
-        case "valor_mes":
-          nuevoObjeto["Valor Mensual"] = item[campo];
-          break;
+      // Crear libro
+      const wb = XLSX.utils.book_new();
 
-        case "fecha_inicio":
-          nuevoObjeto["Fecha Inicio"] = item[campo];
-          break;
+      // Agregar hoja
+      XLSX.utils.book_append_sheet(wb, ws, "Contratos");
 
-        case "fecha_fin":
-          nuevoObjeto["Fecha Fin"] = item[campo];
-          break;
+      // Descargar archivo
+      XLSX.writeFile(wb, "contratos.xlsx");
 
-        default:
-          nuevoObjeto[campo.toUpperCase()] = item[campo];
-          break;
+    };
 
-      }
+    // =========================================
+    // BOTÓN EXPORTAR
+    // =========================================
+    document
+      .getElementById("btnDescargarExcel")
+      .addEventListener("click", exportarContratosExcel);
 
-    });
-
-    return nuevoObjeto;
-
-  });
-
-  console.log(datosFiltrados);
-
-  // Crear hoja
-  const ws = XLSX.utils.json_to_sheet(datosFiltrados);
-
-  // Crear libro
-  const wb = XLSX.utils.book_new();
-
-  // Agregar hoja
-  XLSX.utils.book_append_sheet(wb, ws, "Contratos");
-
-  // Descargar
-  XLSX.writeFile(wb, "contratos.xlsx");
-
-};
-
-// =========================================
-// BOTON EXPORTAR
-// =========================================
-document
-  .getElementById("btnDescargarExcel")
-  .addEventListener("click", () => {
-
-    exportarContratosExcel();
-
-});
-  
 
 
     // 🔵 LLENAR MODALES DE CONTRATO
