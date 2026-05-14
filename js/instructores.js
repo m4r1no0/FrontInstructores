@@ -1,7 +1,10 @@
 // js/instructor.js
 import { InstructorService } from './instructor.service.js';
 
+
+
 let instructoresGlobal = [];
+let filtrado = [];
 
 export async function init() {
   const tabla = document.querySelector(".cuerpoTabla");
@@ -11,6 +14,106 @@ export async function init() {
     // 🔵 Obtener datos
     const response = await InstructorService.get_all_instructores_paginated(1, 200);
     instructoresGlobal = response.data;
+
+    // =========================================
+// EXPORTAR EXCEL DINÁMICO
+// =========================================
+window.exportarContratosExcel = function () {
+
+  // Obtener checkbox seleccionados
+  const checks = document.querySelectorAll(".campo-exportar:checked");
+
+  // Campos elegidos
+  const camposSeleccionados = Array.from(checks).map(c => c.value);
+
+  console.log("Campos:", camposSeleccionados);
+
+  // Construir JSON dinámico
+  const datosFiltrados = instructoresGlobal.map(item => {
+
+    let nuevoObjeto = {};
+
+    camposSeleccionados.forEach(campo => {
+
+      // Cambiar nombre columnas
+      switch (campo) {
+
+        case "id_instructor":
+          nuevoObjeto["ID Instructor"] = item[campo];
+          break;
+
+        case "instructor_nombre":
+          nuevoObjeto["Instructor"] = item[campo];
+          break;
+
+        case "numero_documento":
+          nuevoObjeto["Documento"] = item[campo];
+          break;
+
+        case "tipo_documento":
+          nuevoObjeto["Tipo Documento"] = item[campo];
+          break;
+
+        case "numero_contrato":
+          nuevoObjeto["Contrato"] = item[campo];
+          break;
+
+        case "valor_contrato":
+          nuevoObjeto["Valor Contrato"] = item[campo];
+          break;
+
+        case "valor_mes":
+          nuevoObjeto["Valor Mensual"] = item[campo];
+          break;
+
+        case "fecha_inicio":
+          nuevoObjeto["Fecha Inicio"] = item[campo];
+          break;
+
+        case "fecha_fin":
+          nuevoObjeto["Fecha Fin"] = item[campo];
+          break;
+
+        default:
+          nuevoObjeto[campo.toUpperCase()] = item[campo];
+          break;
+
+      }
+
+    });
+
+    return nuevoObjeto;
+
+  });
+
+  console.log(datosFiltrados);
+
+  // Crear hoja
+  const ws = XLSX.utils.json_to_sheet(datosFiltrados);
+
+  // Crear libro
+  const wb = XLSX.utils.book_new();
+
+  // Agregar hoja
+  XLSX.utils.book_append_sheet(wb, ws, "Contratos");
+
+  // Descargar
+  XLSX.writeFile(wb, "contratos.xlsx");
+
+};
+
+// =========================================
+// BOTON EXPORTAR
+// =========================================
+document
+  .getElementById("btnDescargarExcel")
+  .addEventListener("click", () => {
+
+    exportarContratosExcel();
+
+});
+  
+
 
     // 🔵 LLENAR MODALES DE CONTRATO
     const cuerpoContratoDos = document.querySelector('.cuerpoContratoDos');
@@ -25,7 +128,7 @@ export async function init() {
     // Llenar con el primer contrato o mostrar vacío
     if (instructoresGlobal && instructoresGlobal.length > 0) {
       const primerContrato = instructoresGlobal[0];
-      
+
       if (cuerpoContratoDos) {
         cuerpoContratoDos.innerHTML = `
           <tr>
@@ -98,22 +201,22 @@ export async function init() {
           text: '<i class="bi bi-file-earmark-excel"></i> Excel',
           className: 'btn btn-success btn-sm',
           attr: {
-        'data-bs-toggle': 'modal',
-        'data-bs-target': '#ModalExportacion'
-        },
-          title: 'Instructores',  
-          
+            'data-bs-toggle': 'modal',
+            'data-bs-target': '#ModalExportacion'
+          },
+          title: 'Instructores',
+
           action: function (e, dt, node, config) {
             console.log('Botón Excel clickeado');
-            
-            columns = [ 7, 8, 9, 10, 11, 12, 13];
+
+            columns = [7, 8, 9, 10, 11, 12, 13];
             config.exportOptions.columns = columns;
             oldExportAction.call(this, e, dt, node, config);
           },
           exportOptions: {
             columns: columns,
             format: {
-              body: function(data, type, row, meta) {
+              body: function (data, type, row, meta) {
                 if (meta.col === 0) {
                   return 'Ver Contrato';
                 }
@@ -127,9 +230,9 @@ export async function init() {
                 return data.replace(/<[^>]*>/g, '').trim();
               }
             },
-            
+
           }
-          
+
         },
         {
           extend: 'pdf',
@@ -139,7 +242,7 @@ export async function init() {
           exportOptions: {
             columns: [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13],
             format: {
-              body: function(data, type, row, meta) {
+              body: function (data, type, row, meta) {
                 if (meta.col === 0) {
                   return 'Ver Contrato';
                 }
@@ -165,7 +268,7 @@ export async function init() {
           exportOptions: {
             columns: [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13],
             format: {
-              body: function(data, type, row, meta) {
+              body: function (data, type, row, meta) {
                 if (meta.col === 0) {
                   return 'Ver Contrato';
                 }
@@ -198,7 +301,7 @@ export async function init() {
           exportOptions: {
             columns: [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13],
             format: {
-              body: function(data, type, row, meta) {
+              body: function (data, type, row, meta) {
                 if (meta.col === 0) {
                   return 'Ver Contrato';
                 }
@@ -295,22 +398,22 @@ function renderSupervisorSelectActualizar() {
 
 async function recargarTabla() {
   console.log("🔄 Recargando tabla de instructores...");
-  
+
   try {
     // Recargar instructores
     const response = await InstructorService.get_all_instructores_paginated(1, 200);
     instructoresGlobal = response.data;
     console.log(`✅ Instructores cargados: ${instructoresGlobal.length}`);
-    
+
     // Destruir DataTable si existe
     if ($.fn.DataTable.isDataTable('#dataTableInstru')) {
       $('#dataTableInstru').DataTable().destroy();
       console.log("🗑️ DataTable anterior destruida");
     }
-    
+
     // Volver a renderizar el tbody con los nuevos datos
     renderTable();
-    
+
     // Reinicializar DataTable con la configuración completa
     $('#dataTableInstru').DataTable({
       responsive: true,
@@ -325,7 +428,7 @@ async function recargarTabla() {
           exportOptions: {
             columns: [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13],
             format: {
-              body: function(data, type, row, meta) {
+              body: function (data, type, row, meta) {
                 if (meta.col === 0) {
                   return 'Ver Contrato';
                 }
@@ -349,7 +452,7 @@ async function recargarTabla() {
           exportOptions: {
             columns: [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13],
             format: {
-              body: function(data, type, row, meta) {
+              body: function (data, type, row, meta) {
                 if (meta.col === 0) {
                   return 'Ver Contrato';
                 }
@@ -375,7 +478,7 @@ async function recargarTabla() {
           exportOptions: {
             columns: [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13],
             format: {
-              body: function(data, type, row, meta) {
+              body: function (data, type, row, meta) {
                 if (meta.col === 0) {
                   return 'Ver Contrato';
                 }
@@ -408,7 +511,7 @@ async function recargarTabla() {
           exportOptions: {
             columns: [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13],
             format: {
-              body: function(data, type, row, meta) {
+              body: function (data, type, row, meta) {
                 if (meta.col === 0) {
                   return 'Ver Contrato';
                 }
@@ -448,9 +551,9 @@ async function recargarTabla() {
         }
       }
     });
-    
+
     console.log(`✅ Tabla recargada exitosamente. Total registros: ${instructoresGlobal.length}`);
-    
+
   } catch (error) {
     console.error("❌ Error al recargar la tabla:", error);
     alert("Error al recargar los datos. Por favor recargue la página.");
@@ -460,7 +563,7 @@ async function recargarTabla() {
 function renderTable() {
   const tabla = document.querySelector(".cuerpoTabla");
   if (!tabla) return;
-  
+
   tabla.innerHTML = "";
 
   instructoresGlobal.forEach(inst => {
@@ -525,7 +628,7 @@ function handleTableClick(event) {
   if (botonContrato) {
     const instructorId = botonContrato.dataset.id;
     const contrato = instructoresGlobal.find(c => c.id_instructor == instructorId);
-    
+
     // Actualizar modales con los datos del contrato seleccionado
     const cuerpoContratoDos = document.querySelector('.cuerpoContratoDos');
     const cuerpoFechaContrato = document.querySelector('.cuerpoFechaContrato');
@@ -693,7 +796,7 @@ async function handleCreateInstructorSubmit(event) {
     console.log("Enviando datos:", newData);
     await InstructorService.create_instructor(newData);
     console.log("✅ Instructor creado exitosamente");
-    
+
     // Cerrar modal
     const modalElement = document.getElementById("ModalAgregar");
     if (modalElement) {
@@ -708,7 +811,7 @@ async function handleCreateInstructorSubmit(event) {
 
     // 🔥 IMPORTANTE: Recargar los datos globales y la tabla
     await recargarDatosCompletos();
-    
+
   } catch (error) {
     console.error("❌ Error al crear instructor:", error);
     alert("Error al crear el instructor. Por favor verifique los datos e intente nuevamente.");
@@ -718,7 +821,7 @@ async function handleCreateInstructorSubmit(event) {
 async function eliminarInstructor(id) {
   const confirmacion = confirm("¿Está seguro de eliminar este instructor?");
   if (!confirmacion) return;
-  
+
   try {
     await InstructorService.delete_instructor(id);
     console.log("✅ Instructor eliminado");
@@ -732,27 +835,27 @@ async function eliminarInstructor(id) {
 // Función para recargar todos los datos globales y actualizar la tabla
 async function recargarDatosCompletos() {
   console.log("🔄 Recargando datos completos...");
-  
+
   try {
     // Recargar instructores
     const response = await InstructorService.get_all_instructores_paginated(1, 200);
     instructoresGlobal = response.data;
-  
-    
+
+
     // 🔥 IMPORTANTE: Destruir el DataTable actual
     if ($.fn.DataTable.isDataTable('#dataTableInstru')) {
       $('#dataTableInstru').DataTable().destroy();
       console.log("🗑️ DataTable destruida");
     }
-    
+
     // Volver a renderizar la tabla con los nuevos datos
     renderTable();
-    
+
     // Reinicializar DataTable con la misma configuración
     reinicializarDataTable();
-    
+
     console.log("✅ Tabla recargada exitosamente");
-    
+
   } catch (error) {
     console.error("❌ Error al recargar datos:", error);
   }
@@ -761,7 +864,7 @@ async function recargarDatosCompletos() {
 // Función para reinicializar DataTable
 function reinicializarDataTable() {
   console.log("🔄 Reinicializando DataTable...");
-  
+
   $('#dataTableInstru').DataTable({
     responsive: true,
     autoWidth: false,
@@ -775,7 +878,7 @@ function reinicializarDataTable() {
         exportOptions: {
           columns: [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13],
           format: {
-            body: function(data, type, row, meta) {
+            body: function (data, type, row, meta) {
               if (meta.col === 0) return 'Ver Contrato';
               if (meta.col === 3) {
                 const match = data.match(/\d+/);
@@ -795,7 +898,7 @@ function reinicializarDataTable() {
         exportOptions: {
           columns: [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13],
           format: {
-            body: function(data, type, row, meta) {
+            body: function (data, type, row, meta) {
               if (meta.col === 0) return 'Ver Contrato';
               if (meta.col === 3) {
                 const match = data.match(/\d+/);
@@ -817,7 +920,7 @@ function reinicializarDataTable() {
         exportOptions: {
           columns: [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13],
           format: {
-            body: function(data, type, row, meta) {
+            body: function (data, type, row, meta) {
               if (meta.col === 0) return 'Ver Contrato';
               if (meta.col === 3) {
                 const match = data.match(/\d+/);
@@ -846,7 +949,7 @@ function reinicializarDataTable() {
         exportOptions: {
           columns: [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13],
           format: {
-            body: function(data, type, row, meta) {
+            body: function (data, type, row, meta) {
               if (meta.col === 0) return 'Ver Contrato';
               if (meta.col === 3) {
                 const match = data.match(/\d+/);
@@ -882,6 +985,6 @@ function reinicializarDataTable() {
       }
     }
   });
-  
+
   console.log("✅ DataTable reinicializada correctamente");
 }
