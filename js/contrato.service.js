@@ -18,8 +18,8 @@ export const ContratoService = {
     return request('/contrato')
     },
 
-    get_contratos_by_instructor:(id) =>{
-        return request (`/contrato/instructor/${id}`)
+    get_contratos_by_instructor:() =>{
+        return request (`/contrato/pagos/`)
     },
 
     delete_contrato:(id) =>{

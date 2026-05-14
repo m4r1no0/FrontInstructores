@@ -1,5 +1,5 @@
 // pago.js
-import { PagoService } from './pago.service.js';
+// import { PagoService } from './pago.service.js';
 import { ContratoService } from './contrato.service.js';
 
 export async function initPago() {
@@ -15,7 +15,7 @@ export async function initPago() {
         // Cargar contratos para el selector
         await cargarContratos();
         
-        const pagos = await PagoService.get_all_pagos();
+        const pagos = await ContratoService.get_contratos_by_instructor();
         let pagosData = pagos.data || pagos;
         console.log("Datos recibidos:", pagosData);
 
@@ -133,14 +133,14 @@ function initializeTable(pagosData) {
                             <i class="bi bi-trash-fill"></i>
                         </button>
                     </td>
-                    <td>${pago.id_pago || ''}</td>
                     <td>${pago.numero_contrato || ''}</td>
-                    <td>${pago.instructor_nombre || ''}</td>
-                    <td>${pago.mes || ''}</td>
-                    <td class="text-end">${formatMoney(pago.valor_base)}</td>
-                    <td class="text-end">${formatMoney(pago.ajuste)}</td>
-                    <td class="text-end">${formatMoney(pago.valor_pagado)}</td>
-                    <td class="text-end ${saldoClass}">${formatMoney(pago.saldo)}</td>
+                    <td>${pago.nombre_completo || ''}</td>
+                    <td>${pago.fecha_inicio || ''}</td>
+                    <td>${pago.fecha_fin || ''}</td>
+                    <td class="text-end">${formatMoney(pago.valor_contrato)}</td>
+                    <td class="text-end">${formatMoney(pago.valor_mes)}</td>
+                    <td class="text-end">${formatMoney(pago.valorAdDi)}</td>
+                    <td class="text-end ${saldoClass}">${pago.vigencia}</td>
                     <td>${formatDate(pago.created_at)}</td>
                 </tr>
             `;
@@ -154,6 +154,7 @@ function initializeTable(pagosData) {
     try {
         $table.DataTable({
             responsive: true,
+            dom: 'Bfrtip',
             language: {
                 "decimal": "",
                 "emptyTable": "No hay pagos disponibles",
@@ -254,17 +255,17 @@ function setupModalButtons() {
         const id_pago = $(this).data('id-pago');
         if (id_pago) {
             try {
-                const response = await PagoService.get_pago_by_id(id_pago);
-                const pago = response.data || response;
+                // const response = await PagoService.get_pago_by_id(id_pago);
+                // const pago = response.data || response;
                 
-                document.getElementById('edit_id_pago').value = pago.id_pago;
-                document.getElementById('edit_id_contrato').value = pago.id_contrato;
-                document.getElementById('edit_mes').value = pago.mes;
-                document.getElementById('edit_valor_base').value = pago.valor_base;
-                document.getElementById('edit_ajuste').value = pago.ajuste;
-                document.getElementById('edit_valor_pagado').value = pago.valor_pagado;
+                // document.getElementById('edit_id_pago').value = pago.id_pago;
+                // document.getElementById('edit_id_contrato').value = pago.id_contrato;
+                // document.getElementById('edit_mes').value = pago.mes;
+                // document.getElementById('edit_valor_base').value = pago.valor_base;
+                // document.getElementById('edit_ajuste').value = pago.ajuste;
+                // document.getElementById('edit_valor_pagado').value = pago.valor_pagado;
                 
-                calcularSaldoEdicion();
+                // calcularSaldoEdicion();
             } catch (error) {
                 console.error("Error cargando pago:", error);
             }
@@ -340,13 +341,13 @@ async function handleUpdateSubmit(event) {
     };
     
     try {
-        await PagoService.update_pago(id_pago, data);
+        // await PagoService.update_pago(id_pago, data);
         
-        const modal = bootstrap.Modal.getInstance(document.getElementById("ModalEditarPago"));
-        if (modal) modal.hide();
+        // const modal = bootstrap.Modal.getInstance(document.getElementById("ModalEditarPago"));
+        // if (modal) modal.hide();
         
-        alert("Pago actualizado exitosamente");
-        await initPago();
+        // alert("Pago actualizado exitosamente");
+        // await initPago();
     } catch (error) {
         console.error("Error:", error);
         alert("Error al actualizar pago");
@@ -362,13 +363,13 @@ async function handleDeleteSubmit(event) {
     if (!confirm("¿Está seguro de eliminar este pago?")) return;
     
     try {
-        await PagoService.delete_pago(id_pago);
+        // await PagoService.delete_pago(id_pago);
         
-        const modal = bootstrap.Modal.getInstance(document.getElementById("ModalEliminarPago"));
-        if (modal) modal.hide();
+        // const modal = bootstrap.Modal.getInstance(document.getElementById("ModalEliminarPago"));
+        // if (modal) modal.hide();
         
-        alert("Pago eliminado exitosamente");
-        await initPago();
+        // alert("Pago eliminado exitosamente");
+        // await initPago();
     } catch (error) {
         console.error("Error:", error);
         alert("Error al eliminar pago");
