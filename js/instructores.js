@@ -546,7 +546,7 @@ function renderTable() {
       <tr>
         <!-- Columna 0: CONTRATO (botón) -->
         <td>
-          <button class="btn btn-success boton-contrato" data-bs-toggle="modal" data-bs-target="#ModalContratoNuevo" data-id="${inst.id_instructor}">
+          <button class="btn btn-primary boton-contrato" data-bs-toggle="modal" data-bs-target="#ModalContratoNuevo" data-id="${inst.id_instructor}">
             📄
           </button>
         </td>
