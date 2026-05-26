@@ -32,7 +32,7 @@ export const ContratoService = {
         
         try {
             // Llamar directamente al endpoint
-            const response = await fetch(`http://localhost:8000/informe/contrato/${id}`);
+            const response = await fetch(`https://instru.onrender.com/informe/contrato/${id}`);
             
             if (!response.ok) {
                 throw new Error(`Error ${response.status}`);
