@@ -42,7 +42,9 @@ export async function init() {
         valor_mes: "Valor Mensual",
         fecha_inicio: "Fecha Inicio",
         fecha_fin: "Fecha Fin",
-        estado: "Estado"
+        estado: "Estado",
+        nombre_area: "Area de formacion",
+        nombre_programa: "Programa de formacion"
 
       };
 
@@ -174,16 +176,8 @@ export async function init() {
           text: '<i class="bi bi-file-earmark-excel"></i> Excel',
           className: 'btn btn-success btn-sm',
           title: 'Instructores',
-
-          action: function (e, dt, node, config) {
-            console.log('Botón Excel clickeado');
-
-            columns = [7, 8, 9, 10, 11, 12, 13];
-            config.exportOptions.columns = columns;
-            oldExportAction.call(this, e, dt, node, config);
-          },
           exportOptions: {
-            columns: columns,
+            columns: [1,2,3,4,6,7,8,9,10,11,12,13],
             format: {
               body: function (data, type, row, meta) {
                 if (meta.col === 0) {
