@@ -29,7 +29,11 @@ export async function initSupervisor() {
     }
 
     // Inicializar DataTable
-    $('#dataTable').DataTable();
+    $('#dataTable').DataTable(
+        {
+            responsive:true
+        }
+    );
 
     console.log(document.querySelector(".cuerpoTabla"));
 
