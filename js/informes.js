@@ -126,6 +126,7 @@ const cargarInstructores = async () => {
                 }
 
                 dataTable = $('#dataTableInforme').DataTable({
+                    responsive: true,
                     language: {
                         sProcessing: "Procesando...",
                         sLengthMenu: "Mostrar _MENU_ registros",
