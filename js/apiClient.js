@@ -1,7 +1,7 @@
 // apiClient.js
 // Cliente HTTP para comunicación con el backend FastAPI
 
-const API_BASE_URL = 'http://localhost:8000';
+const API_BASE_URL = 'https://instru.onrender.com/';
 
 /**
  * Realiza peticiones HTTP al backend
