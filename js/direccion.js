@@ -158,7 +158,7 @@ function renderTable() {
         <td>${dir.telefono || ''}</td>
 
         <!-- Columna 5: Correo -->
-        <td>${dir.correo || ''}</td>
+        <td>${dir.correo_personal || ''}</td>
         
         <!-- Columna 6: ACCIONES -->
         <td>

@@ -570,6 +570,10 @@ function renderTable() {
             <i class="bi bi-repeat"></i>
           </button>
         </td>
+
+        <th class="d-none">${inst.nombre_area}</th>
+        <th class="d-none">${inst.nombre_programa}</th>
+
         
         <!-- COLUMNAS OCULTAS PARA EXPORTACIÓN (6-13) -->
         <td class="contrato-numero">${contrato.numero_contrato || ''}</td>
