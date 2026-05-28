@@ -18,7 +18,10 @@ export async function initSupervisor() {
                 <td>${inst.id_supervisor}</td>
                 <td>${inst.nombre}</td>
                 <td>${inst.cedula}</td>
-                <td><button class="btn btn-primary">+</button></td>
+                <td>
+                    <button class="btn btn-danger"><i class="bi bi-trash"></i></button>
+                    <button class="btn btn-warning"><i class="bi bi-repeat"></i></button>
+                </td>
             </tr>
         `;
     });
