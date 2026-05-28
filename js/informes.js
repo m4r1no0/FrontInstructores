@@ -3,6 +3,7 @@ import { ContratoService } from './contrato.service.js';
 
 let instructoresGlobal = [];
 let dataTable = null;
+
 export const initInforme = () => {
     cargarInstructores();
     console.log('🚀 Inicializando página de informes...');
@@ -31,12 +32,8 @@ export const initInforme = () => {
     console.log('✅ Evento de descarga configurado correctamente');
 };
 
-
 let enProceso = new Set();
 
-/**
- * Función reutilizable para generar documentos (Informe / Acta)
- */
 const manejarGeneracion = async (event, { button, servicio, texto }) => {
     event.preventDefault();
 
@@ -49,7 +46,6 @@ const manejarGeneracion = async (event, { button, servicio, texto }) => {
         return;
     }
 
-    // Evitar múltiples ejecuciones para el mismo instructor
     if (enProceso.has(idInstructor)) return;
     enProceso.add(idInstructor);
 
@@ -58,11 +54,12 @@ const manejarGeneracion = async (event, { button, servicio, texto }) => {
         button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generando...';
 
         const resultado = await servicio(idInstructor);
-
         console.log(`✅ Resultado ${texto}:`, resultado);
 
         if (resultado.success) {
             alert(`${texto} generado correctamente`);
+        } else {
+            alert(`Error al generar ${texto}: ${resultado.message || 'Error desconocido'}`);
         }
 
     } catch (error) {
@@ -76,11 +73,12 @@ const manejarGeneracion = async (event, { button, servicio, texto }) => {
     }
 };
 
-
 const cargarInstructores = async () => {
     try {
         let response = await ContratoService.get_contrato_instructor();
         instructoresGlobal = response.data;
+        
+        console.log('📊 Datos recibidos:', instructoresGlobal); // Depuración
 
         const cuerpoTable = document.querySelector('.tablaInstrutoresInforme');
 
@@ -88,7 +86,14 @@ const cargarInstructores = async () => {
             cuerpoTable.innerHTML = '';
 
             if (instructoresGlobal && instructoresGlobal.length > 0) {
-                instructoresGlobal.forEach(item => {
+                // Filtrar instructores que tienen contrato (opcional)
+                const instructoresConContrato = instructoresGlobal.filter(
+                    item => item.numero_contrato && item.numero_contrato !== '-'
+                );
+                
+                console.log('📊 Instructores con contrato:', instructoresConContrato.length);
+
+                instructoresConContrato.forEach(item => {
                     const fila = cuerpoTable.insertRow();
 
                     fila.insertCell(0).innerHTML = item.id_instructor || '-';
@@ -102,11 +107,13 @@ const cargarInstructores = async () => {
 
                     fila.insertCell(6).innerHTML = `
                         <button class="btn btn-primary btn-sm btn-generar-informe" 
-                                data-id="${item.id_instructor}">
+                                data-id="${item.id_contrato}"
+                                data-contrato="${item.id_contrato}">
                             <i class="fas fa-file-word"></i> Generar Informe
                         </button>
                         <button class="btn btn-primary btn-sm btn-generar-acta" 
-                                data-id="${item.id_instructor}">
+                                data-id="${item.id_contrato}"
+                                data-contrato="${item.id_contrato}">
                             <i class="fas fa-file-word"></i> Generar Acta
                         </button>
                     `;
@@ -116,17 +123,17 @@ const cargarInstructores = async () => {
                 const celda = fila.insertCell(0);
                 celda.colSpan = 7;
                 celda.className = 'text-center';
-                celda.innerHTML = '<i class="fas fa-info-circle"></i> No hay instructores registrados';
+                celda.innerHTML = '<i class="fas fa-info-circle"></i> No hay instructores con contrato registrados';
             }
 
-            // DataTable
+            // Inicializar DataTable
             if (typeof $ !== 'undefined' && $.fn.DataTable) {
                 if (dataTable) {
                     dataTable.destroy();
                 }
 
                 dataTable = $('#dataTableInforme').DataTable({
-                    responsive: true,
+                    responsive: true,  // ← CORREGIDO: Falta la coma
                     language: {
                         sProcessing: "Procesando...",
                         sLengthMenu: "Mostrar _MENU_ registros",
@@ -151,5 +158,6 @@ const cargarInstructores = async () => {
 
     } catch (error) {
         console.error('❌ Error al cargar instructores:', error);
+        alert('Error al cargar la lista de instructores');
     }
 };
