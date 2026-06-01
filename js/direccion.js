@@ -172,10 +172,10 @@ function renderTable() {
         <td>${dir.correo_personal || '-'}</td>
         <td>
           <button class="btn btn-danger btn-sm botonEliminar" data-id="${dir.id_direccion}">
-            <i class="bi bi-trash"></i> Eliminar
+            <i class="bi bi-trash"></i>
           </button>
           <button class="btn btn-warning btn-sm botonActualizar" data-id="${dir.id_direccion}">
-            <i class="bi bi-pencil"></i> Actualizar
+            <i class="bi bi-pencil"></i>
           </button>
         </td>
       </tr>
