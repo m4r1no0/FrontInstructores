@@ -349,14 +349,33 @@ function renderSupervisorSelectActualizar() {
   const selectActualizar = document.querySelector('#selectActualizar');
   if (!selectActualizar) return;
 
+  // ✅ Limpiar antes de llenar (ya lo tienes)
   selectActualizar.innerHTML = '<option value="">Seleccione supervisor</option>';
 
+  // ✅ Verificar que instructoresGlobal esté definido y sea un array
+  if (!instructoresGlobal || !Array.isArray(instructoresGlobal)) {
+    console.warn('instructoresGlobal no está disponible o no es un array');
+    return;
+  }
+
+  // ✅ Usar un Set para evitar duplicados
+  const supervisoresUnicos = new Map();
+  
   instructoresGlobal.forEach(supervisor => {
+    if (supervisor && supervisor.id_supervisor && !supervisoresUnicos.has(supervisor.id_supervisor)) {
+      supervisoresUnicos.set(supervisor.id_supervisor, supervisor);
+    }
+  });
+
+  // Llenar con supervisores únicos
+  supervisoresUnicos.forEach(supervisor => {
     const option = document.createElement("option");
     option.value = supervisor.id_supervisor;
     option.textContent = supervisor.nombre;
     selectActualizar.appendChild(option);
   });
+  
+  console.log(`Select llenado con ${supervisoresUnicos.size} supervisores únicos`);
 }
 
 async function recargarTabla() {
@@ -687,17 +706,17 @@ function handleTableClick(event) {
     return;
   }
 }
-
 async function openEditModal(id) {
   const modalElement = document.getElementById('ModalActualizar');
-  modalInstance = bootstrap.Modal.getOrCreateInstance(modalElement);
+  
+  // ✅ Declarar la variable primero
+  let modalInstance = bootstrap.Modal.getOrCreateInstance(modalElement);
 
   try {
     const instructor = await InstructorService.get_user_by_id(id);
 
-    // 🔥 GUARDAR ID REAL
+    // Guardar ID real
     document.getElementById('idInstructorActualizar').value = instructor.id_instructor;
-
     document.getElementById('nombreActualizar').value = instructor.nombres;
     document.getElementById('apellidoActualizar').value = instructor.apellidos;
     document.getElementById('tipo_documentoActualizar').value = instructor.tipo_documento;
@@ -711,7 +730,6 @@ async function openEditModal(id) {
     console.error("Error:", error);
   }
 }
-
 async function handleUpdateSubmit(event) {
   event.preventDefault();
 
