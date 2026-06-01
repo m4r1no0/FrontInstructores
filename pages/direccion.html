@@ -53,3 +53,45 @@
         </div>
     </div>
 </div>
+
+
+<!-- Modal de Agregar Dirección -->
+<div class="modal fade" id="ModalAgregarDireccion" tabindex="-1" aria-labelledby="modalAgregarLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="formAgregarDireccion">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalAgregarLabel">Agregar Dirección</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <input type="hidden" id="id_instructor_agregar">
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="municipio_agregar" class="form-label">Municipio *</label>
+                            <input type="text" class="form-control" id="municipio_agregar" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="barrio_agregar" class="form-label">Barrio</label>
+                            <input type="text" class="form-control" id="barrio_agregar">
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="complemento_agregar" class="form-label">Complemento</label>
+                            <input type="text" class="form-control" id="complemento_agregar" placeholder="Calle, casa, apartamento, etc.">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Dirección</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

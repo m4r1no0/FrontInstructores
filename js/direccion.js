@@ -163,6 +163,9 @@ function renderTable() {
   }
   
   direccionesGlobal.forEach(dir => {
+    // Verificar si tiene dirección
+    const tieneDireccion = dir.id_direccion && dir.id_direccion !== 0;
+    
     tabla.innerHTML += `
       <tr>
         <td>${dir.nombre || dir.instructor_nombre || '-'}</td>
@@ -171,19 +174,47 @@ function renderTable() {
         <td>${dir.telefono || '-'}</td>
         <td>${dir.correo_personal || '-'}</td>
         <td>
-          <button class="btn btn-danger btn-sm botonEliminar" data-id="${dir.id_direccion}">
-            <i class="bi bi-trash"></i>
-          </button>
-          <button class="btn btn-warning btn-sm botonActualizar" data-id="${dir.id_direccion}">
-            <i class="bi bi-pencil"></i>
-          </button>
+          ${!tieneDireccion ? `
+            <button class="btn btn-success btn-sm btn-agregar" 
+                    data-id="${dir.id_instructor}"
+                    data-bs-toggle="modal" 
+                    data-bs-target="#ModalAgregarDireccion"
+                    title="Agregar dirección">
+              <i class="bi bi-plus-circle"></i> Agregar
+            </button>
+          ` : `
+            <button class="btn btn-warning btn-sm botonActualizar" 
+                    data-id="${dir.id_direccion}"
+                    data-bs-toggle="modal" 
+                    data-bs-target="#ModalActualizarDireccion"
+                    title="Actualizar dirección">
+              <i class="bi bi-pencil"></i> Editar
+            </button>
+            <button class="btn btn-danger btn-sm botonEliminar" 
+                    data-id="${dir.id_direccion}"
+                    title="Eliminar dirección">
+              <i class="bi bi-trash"></i> Eliminar
+            </button>
+          `}
         </td>
       </tr>
     `;
   });
 }
 
+// ============================================
+// MANEJADOR DE CLICKS EN LA TABLA
+// ============================================
 function handleTableClick(event) {
+  // Botón AGREGAR
+  const agregarButton = event.target.closest('.btn-agregar');
+  if (agregarButton) {
+    const idInstructor = agregarButton.dataset.id;
+    console.log("Click agregar para instructor ID:", idInstructor);
+    abrirModalAgregar(idInstructor);
+    return;
+  }
+
   // Botón ACTUALIZAR
   const editButton = event.target.closest('.botonActualizar');
   if (editButton) {
@@ -207,10 +238,11 @@ async function openEditModal(id) {
   
   if (!modalElement) {
     console.error('Modal element not found');
+    Swal.fire('Error', 'Modal no encontrado', 'error');
     return;
   }
 
-  // ✅ Usar variable global (sin let)
+  // ✅ Usar variable global
   modalInstance = bootstrap.Modal.getOrCreateInstance(modalElement);
 
   try {
@@ -245,7 +277,6 @@ async function handleUpdateSubmit(event) {
     complemento: document.getElementById('complementoActualizar').value
   };
 
-  // Mostrar loading
   Swal.fire({
     title: 'Actualizando...',
     text: 'Por favor espere',
@@ -258,7 +289,6 @@ async function handleUpdateSubmit(event) {
   try {
     await DireccionService.update_direccion(id, updatedData);
     
-    // ✅ Cerrar modal usando variable global
     if (modalInstance) {
       modalInstance.hide();
       setTimeout(() => {
@@ -270,16 +300,13 @@ async function handleUpdateSubmit(event) {
     }
     
     await recargarTabla();
-    
     Swal.fire('¡Actualizado!', 'Dirección actualizada correctamente', 'success');
     
   } catch (error) {
     console.error("Error:", error);
-    
     if (modalInstance) {
       modalInstance.hide();
     }
-    
     Swal.fire('Error', error.message || 'No se pudo actualizar la dirección', 'error');
   }
 }
@@ -348,75 +375,37 @@ async function recargarTabla() {
           text: '<i class="bi bi-file-earmark-excel"></i> Excel',
           className: 'btn btn-success btn-sm',
           title: 'Direcciones',
-          exportOptions: {
-            columns: [0, 1, 2, 3, 4],
-            format: {
-              body: function (data, type, row, meta) {
-                return data.replace(/<[^>]*>/g, '').trim();
-              }
-            }
-          }
+          exportOptions: { columns: [0, 1, 2, 3, 4] }
         },
         {
           extend: 'pdf',
           text: '<i class="bi bi-file-earmark-pdf"></i> PDF',
           className: 'btn btn-danger btn-sm',
           title: 'Direcciones',
-          exportOptions: {
-            columns: [0, 1, 2, 3, 4],
-            format: {
-              body: function (data, type, row, meta) {
-                return data.replace(/<[^>]*>/g, '').trim();
-              }
-            }
-          },
           orientation: 'landscape',
-          pageSize: 'A4'
+          pageSize: 'A4',
+          exportOptions: { columns: [0, 1, 2, 3, 4] }
         },
         {
           extend: 'csv',
           text: '<i class="bi bi-file-earmark-spreadsheet"></i> CSV',
           className: 'btn btn-primary btn-sm',
           title: 'Direcciones',
-          exportOptions: {
-            columns: [0, 1, 2, 3, 4],
-            format: {
-              body: function (data, type, row, meta) {
-                return data.replace(/<[^>]*>/g, '').trim();
-              }
-            }
-          }
+          exportOptions: { columns: [0, 1, 2, 3, 4] }
         },
         {
           extend: 'print',
           text: '<i class="bi bi-printer"></i> Imprimir',
           className: 'btn btn-info btn-sm',
           title: 'Direcciones',
-          exportOptions: {
-            columns: [0, 1, 2, 3, 4]
-          }
+          exportOptions: { columns: [0, 1, 2, 3, 4] }
         },
         {
           extend: 'copy',
           text: '<i class="bi bi-files"></i> Copiar',
           className: 'btn btn-secondary btn-sm',
           title: 'Direcciones',
-          exportOptions: {
-            columns: [0, 1, 2, 3, 4],
-            format: {
-              body: function (data, type, row, meta) {
-                return data.replace(/<[^>]*>/g, '').trim();
-              }
-            }
-          }
-        }
-      ],
-      columnDefs: [
-        {
-          targets: 0,
-          visible: true,
-          orderable: true,
-          searchable: true
+          exportOptions: { columns: [0, 1, 2, 3, 4] }
         }
       ],
       language: {
@@ -442,3 +431,170 @@ async function recargarTabla() {
     Swal.fire('Error', 'No se pudo recargar los datos', 'error');
   }
 }
+
+// ============================================
+// ABRIR MODAL AGREGAR CON ID INSTRUCTOR
+// ============================================
+async function abrirModalAgregar(idInstructor) {
+  console.log("Abriendo modal agregar para instructor ID:", idInstructor);
+  
+  if (!idInstructor || idInstructor === 'undefined') {
+    console.error('ID de instructor inválido:', idInstructor);
+    Swal.fire('Error', 'ID de instructor inválido', 'error');
+    return;
+  }
+  
+  const modalElement = document.getElementById('ModalAgregarDireccion');
+  
+  if (!modalElement) {
+    console.error('Modal element not found');
+    Swal.fire('Error', 'Modal no encontrado', 'error');
+    return;
+  }
+  
+  try {
+    const idInstructorInput = document.getElementById('id_instructor_agregar');
+    if (idInstructorInput) {
+      idInstructorInput.value = idInstructor;
+    }
+    
+    const municipioInput = document.getElementById('municipio_agregar');
+    const complementoInput = document.getElementById('complemento_agregar');
+    
+    if (municipioInput) municipioInput.value = '';
+    if (complementoInput) complementoInput.value = '';
+    
+    const modal = new bootstrap.Modal(modalElement);
+    modal.show();
+    
+  } catch (error) {
+    console.error("Error al abrir modal:", error);
+    Swal.fire('Error', 'No se pudo abrir el modal', 'error');
+  }
+}
+
+// ============================================
+// INICIALIZAR FORMULARIO DE AGREGAR
+// ============================================
+function initFormularioAgregar() {
+  console.log("=== INICIALIZANDO FORMULARIO DE AGREGAR ===");
+  
+  const modalElement = document.getElementById('ModalAgregarDireccion');
+  const form = document.getElementById('formAgregarDireccion');
+  const btnGuardar = form ? form.querySelector('button[type="submit"]') : null;
+  
+  console.log("Modal encontrado:", !!modalElement);
+  console.log("Formulario encontrado:", !!form);
+  console.log("Botón guardar encontrado:", !!btnGuardar);
+  
+  console.log("✅ Inicializando formulario de agregar dirección");
+  
+  // ✅ Usar click en el botón en lugar de submit del formulario
+  btnGuardar.addEventListener('click', async (e) => {
+    console.log("=== CLICK EN BOTÓN GUARDAR ===");
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const id_instructor = document.getElementById('id_instructor_agregar').value;
+    const municipio = document.getElementById('municipio_agregar').value.trim();
+    const complemento = document.getElementById('complemento_agregar').value.trim();
+    
+    console.log("ID Instructor:", id_instructor);
+    console.log("Municipio:", municipio);
+    
+    if (!id_instructor) {
+      Swal.fire('Error', 'No se ha seleccionado un instructor', 'error');
+      return;
+    }
+    
+    if (!municipio) {
+      Swal.fire('Error', 'El municipio es obligatorio', 'error');
+      return;
+    }
+    
+    const data = {
+      id_instructor: parseInt(id_instructor),
+      municipio: municipio,
+      complemento: complemento || null
+    };
+    
+    console.log("DATOS A ENVIAR:", data);
+    
+    // Deshabilitar botón
+    btnGuardar.disabled = true;
+    btnGuardar.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Guardando...';
+    
+    Swal.fire({
+      title: 'Guardando...',
+      text: 'Por favor espere',
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
+    
+    try {
+      console.log("📤 LLAMANDO A create_direccion...");
+      const resultado = await DireccionService.create_direccion(data);
+      console.log("✅ RESULTADO:", resultado);
+      
+      // Cerrar modal
+      const modal = bootstrap.Modal.getInstance(modalElement);
+      modal.hide();
+      
+      // Limpiar formulario
+      form.reset();
+      document.getElementById('id_instructor_agregar').value = '';
+      
+      Swal.fire('Éxito', 'Dirección agregada correctamente', 'success');
+      
+      // Recargar tabla
+      await recargarTabla();
+      
+    } catch (error) {
+      console.error("❌ ERROR:", error);
+      Swal.fire('Error', error.message || 'No se pudo agregar la dirección', 'error');
+      
+    } finally {
+      // Rehabilitar botón
+      btnGuardar.disabled = false;
+      btnGuardar.innerHTML = 'Guardar Dirección';
+    }
+  });
+  
+  // Limpiar al cerrar modal
+  modalElement.addEventListener('hidden.bs.modal', () => {
+    console.log("Modal cerrado - Limpiando formulario");
+    form.reset();
+    document.getElementById('id_instructor_agregar').value = '';
+  });
+  
+  console.log("✅ Evento click agregado al botón guardar");
+}
+
+// ============================================
+// INICIALIZAR FORMULARIO DE ACTUALIZAR
+// ============================================
+function initFormularioActualizar() {
+  const form = document.getElementById('formActualizarDireccion');
+  if (!form) {
+    console.error("Formulario 'formActualizarDireccion' no encontrado");
+    return;
+  }
+  
+  form.addEventListener('submit', handleUpdateSubmit);
+}
+
+// ============================================
+// INICIALIZACIÓN PRINCIPAL
+// ============================================
+document.addEventListener('DOMContentLoaded', () => {
+  console.log("DOM cargado - Inicializando direcciones");
+  initFormularioActualizar();
+  initFormularioAgregar();
+  
+  if (document.querySelector(".cuerpoTablaDireccion")) {
+    initDireccion();
+  }
+});
