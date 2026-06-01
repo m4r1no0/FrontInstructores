@@ -36,7 +36,13 @@ export const InstructorService = {
 
   get_all_instructores_paginated: (page = 1, size = 10) => {
     return request(`/instructores?page=${page}&size=${size}`)
-  }
+  },
+
+  delete_instructor_by_id:(id) => {
+    return request(`/instructores/delete/${id}`, {
+      method: 'DELETE',
+    });
+  } 
 
 }
 

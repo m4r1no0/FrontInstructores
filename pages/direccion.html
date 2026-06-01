@@ -1,19 +1,55 @@
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-bordered" id="dataTableDireccion" width="100%" cellspacing="0">
-                <thead>
-                    <tr>
-                        <th>Nombre Instructor</th>
-                        <th>Municipio</th>
-                        <th>Complemento</th>
-                        <th>Telefono</th>
-                        <th>Correo</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody class="cuerpoTablaDireccion">
-                </tbody>
-            </table>
+<div class="card-body">
+    <div class="table-responsive">
+        <table class="table table-bordered" id="dataTableDireccion" width="100%" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Nombre Instructor</th>
+                    <th>Municipio</th>
+                    <th>Complemento</th>
+                    <th>Teléfono</th>
+                    <th>Correo</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody class="cuerpoTablaDireccion">
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal de Actualizar Dirección -->
+<div class="modal fade" id="ModalActualizarDireccion" tabindex="-1" aria-labelledby="modalActualizarLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="formActualizarDireccion">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalActualizarLabel">Actualizar Dirección</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <input type="hidden" id="id_direccion">
+                    
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label for="municipioActualizar" class="form-label">Municipio</label>
+                            <input type="text" class="form-control" id="municipioActualizar" required>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="complementoActualizar" class="form-label">Complemento</label>
+                            <input type="text" class="form-control" id="complementoActualizar">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                </div>
+            </form>
         </div>
     </div>
- 
+</div>

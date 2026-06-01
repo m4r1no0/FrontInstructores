@@ -1,8 +1,8 @@
-// main.js actualizado
+// main.js actualizado (versión con initDireccion)
 import { init } from "./instructores.js";
 import { initSupervisor } from "./supervisor.js";
 import { initContrato } from "./contrato.js";
-import { initDireccion } from "./direccion.js";
+import { initDireccion } from "./direccion.js";  // ✅ Si exportas initDireccion
 import { initInforme } from "./informes.js";
 import { initContacto } from "./contacto.js";
 import { initPoliza } from "./poliza.js";
@@ -14,22 +14,19 @@ console.log("=== MAIN.JS CARGADO ===");
 // Mapa de inicializadores por página
 const inicializadores = {
     'contrato.html': initContrato,
-    'informes.html': initInforme, // 👈 Agregar el inicializador para informes
+    'informes.html': initInforme,
     'tabla.html': () => {
         init();
-        // initSupervisor();
-        // initContrato();
-        // initDireccion(); // 👈 Agregar el inicializador para pólizas
     },
     'supervisor.html': initSupervisor,
-    'direccion.html': initDireccion,
+    'direccion.html': initDireccion,  // ✅ Usa initDireccion directamente
     'contacto.html': initContacto,
     'poliza.html': initPoliza,
     'pagos.html': initPago,
     'area_formacion.html': initAreaFormacion
 };
 
-document.addEventListener("click",   function (e) {
+document.addEventListener("click", function (e) {
     const enlace = e.target.closest("[data-page]");
 
     if (enlace) {
@@ -66,4 +63,3 @@ document.addEventListener("click",   function (e) {
             });
     }
 });
-

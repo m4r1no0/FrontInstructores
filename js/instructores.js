@@ -1,10 +1,9 @@
 // js/instructor.js
 import { InstructorService } from './instructor.service.js';
 
-
-
 let instructoresGlobal = [];
 let filtrado = [];
+let modalInstance = null;  // ✅ VARIABLE GLOBAL para el modal de actualización
 
 export async function init() {
   const tabla = document.querySelector(".cuerpoTabla");
@@ -112,7 +111,7 @@ export async function init() {
             <td>${primerContrato.valorAdDi || ''}</td>
             <td>0</td>
             <td>0</td>
-          </tr>
+           </tr>
         `;
       }
 
@@ -123,7 +122,7 @@ export async function init() {
             <td>${primerContrato.crp || ''}</td>
             <td>${primerContrato.rubro || ''}</td>
             <td>${primerContrato.dependencia || ''}</td>
-          </tr>
+           </tr>
         `;
       }
 
@@ -135,7 +134,7 @@ export async function init() {
             <td>${primerContrato.estado || ''}</td>
             <td>${primerContrato.fecha_inicio || ''}</td>
             <td>${primerContrato.fecha_fin || ''}</td>
-          </tr>
+           </tr>
         `;
       }
     } else {
@@ -163,8 +162,6 @@ export async function init() {
       $('#dataTableInstru').DataTable().destroy();
     }
 
-    var oldExportAction = $.fn.dataTable.ext.buttons.excelHtml5.action;
-    let columns;
     // 🔵 INICIALIZAR DATATABLE CON BOTONES
     $('#dataTableInstru').DataTable({
       responsive: true,
@@ -316,7 +313,7 @@ export async function init() {
       formActualizar.addEventListener('submit', handleUpdateSubmit);
     }
 
-    // 🔵 Form crear - CORREGIDO: el id correcto es 'formInstructor'
+    // 🔵 Form crear
     const formCrear = document.getElementById('formInstructor');
     if (formCrear) {
       formCrear.removeEventListener('submit', handleCreateInstructorSubmit);
@@ -349,16 +346,13 @@ function renderSupervisorSelectActualizar() {
   const selectActualizar = document.querySelector('#selectActualizar');
   if (!selectActualizar) return;
 
-  // ✅ Limpiar antes de llenar (ya lo tienes)
   selectActualizar.innerHTML = '<option value="">Seleccione supervisor</option>';
 
-  // ✅ Verificar que instructoresGlobal esté definido y sea un array
   if (!instructoresGlobal || !Array.isArray(instructoresGlobal)) {
     console.warn('instructoresGlobal no está disponible o no es un array');
     return;
   }
 
-  // ✅ Usar un Set para evitar duplicados
   const supervisoresUnicos = new Map();
   
   instructoresGlobal.forEach(supervisor => {
@@ -367,7 +361,6 @@ function renderSupervisorSelectActualizar() {
     }
   });
 
-  // Llenar con supervisores únicos
   supervisoresUnicos.forEach(supervisor => {
     const option = document.createElement("option");
     option.value = supervisor.id_supervisor;
@@ -382,21 +375,17 @@ async function recargarTabla() {
   console.log("🔄 Recargando tabla de instructores...");
 
   try {
-    // Recargar instructores
     const response = await InstructorService.get_all_instructores_paginated(1, 200);
     instructoresGlobal = response.data;
     console.log(`✅ Instructores cargados: ${instructoresGlobal.length}`);
 
-    // Destruir DataTable si existe
     if ($.fn.DataTable.isDataTable('#dataTableInstru')) {
       $('#dataTableInstru').DataTable().destroy();
       console.log("🗑️ DataTable anterior destruida");
     }
 
-    // Volver a renderizar el tbody con los nuevos datos
     renderTable();
 
-    // Reinicializar DataTable con la configuración completa
     $('#dataTableInstru').DataTable({
       responsive: true,
       autoWidth: false,
@@ -411,16 +400,12 @@ async function recargarTabla() {
             columns: [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13],
             format: {
               body: function (data, type, row, meta) {
-                if (meta.col === 0) {
-                  return 'Ver Contrato';
-                }
+                if (meta.col === 0) return 'Ver Contrato';
                 if (meta.col === 3) {
                   const match = data.match(/\d+/);
                   return match ? match[0] : '';
                 }
-                if (meta.col === 5) {
-                  return '';
-                }
+                if (meta.col === 5) return '';
                 return data.replace(/<[^>]*>/g, '').trim();
               }
             }
@@ -435,16 +420,12 @@ async function recargarTabla() {
             columns: [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13],
             format: {
               body: function (data, type, row, meta) {
-                if (meta.col === 0) {
-                  return 'Ver Contrato';
-                }
+                if (meta.col === 0) return 'Ver Contrato';
                 if (meta.col === 3) {
                   const match = data.match(/\d+/);
                   return match ? match[0] : '';
                 }
-                if (meta.col === 5) {
-                  return '';
-                }
+                if (meta.col === 5) return '';
                 return data.replace(/<[^>]*>/g, '').trim();
               }
             }
@@ -461,16 +442,12 @@ async function recargarTabla() {
             columns: [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13],
             format: {
               body: function (data, type, row, meta) {
-                if (meta.col === 0) {
-                  return 'Ver Contrato';
-                }
+                if (meta.col === 0) return 'Ver Contrato';
                 if (meta.col === 3) {
                   const match = data.match(/\d+/);
                   return match ? match[0] : '';
                 }
-                if (meta.col === 5) {
-                  return '';
-                }
+                if (meta.col === 5) return '';
                 return data.replace(/<[^>]*>/g, '').trim();
               }
             }
@@ -494,16 +471,12 @@ async function recargarTabla() {
             columns: [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13],
             format: {
               body: function (data, type, row, meta) {
-                if (meta.col === 0) {
-                  return 'Ver Contrato';
-                }
+                if (meta.col === 0) return 'Ver Contrato';
                 if (meta.col === 3) {
                   const match = data.match(/\d+/);
                   return match ? match[0] : '';
                 }
-                if (meta.col === 5) {
-                  return '';
-                }
+                if (meta.col === 5) return '';
                 return data.replace(/<[^>]*>/g, '').trim();
               }
             }
@@ -557,30 +530,24 @@ function renderTable() {
 
     tabla.innerHTML += `
       <tr>
-        <!-- Columna 0: CONTRATO (botón) -->
         <td>
           <button class="btn btn-primary boton-contrato" data-bs-toggle="modal" data-bs-target="#ModalContratoNuevo" data-id="${inst.id_instructor}">
             📄
           </button>
         </td>
         
-        <!-- Columna 1: NOMBRES -->
         <td>${inst.instructor_nombre}</td>
         
-        <!-- Columna 2: TIPO DOC -->
         <td>${inst.tipo_documento || ''}</td>
         
-        <!-- Columna 3: DOCUMENTO -->
         <td>
           <button class="btn btn-fecha" data-bs-toggle="modal" data-bs-target="#ModalFecha" data-documento="${inst.numero_documento || ''}">
             ${inst.numero_documento || ''}
           </button>
         </td>
         
-        <!-- Columna 4: SUPERVISOR -->
         <td>${supervisor ? supervisor.nombre : ''}</td>
         
-        <!-- Columna 5: ACCIONES -->
         <td>
           <button class="btn btn-danger botonEliminar" data-id="${inst.id_instructor}">
             <i class="bi bi-trash"></i>
@@ -592,9 +559,7 @@ function renderTable() {
 
         <th class="d-none">${inst.nombre_area}</th>
         <th class="d-none">${inst.nombre_programa}</th>
-
         
-        <!-- COLUMNAS OCULTAS PARA EXPORTACIÓN (6-13) -->
         <td class="contrato-numero">${contrato.numero_contrato || ''}</td>
         <td class="contrato-crp">${contrato.crp || ''}</td>
         <td class="d-none contrato-cdp">${contrato.cdp || ''}</td>
@@ -609,13 +574,12 @@ function renderTable() {
 }
 
 function handleTableClick(event) {
-  // 🔵 Botón CONTRATO
+  // Botón CONTRATO
   const botonContrato = event.target.closest('.boton-contrato');
   if (botonContrato) {
     const instructorId = botonContrato.dataset.id;
     const contrato = instructoresGlobal.find(c => c.id_instructor == instructorId);
 
-    // Actualizar modales con los datos del contrato seleccionado
     const cuerpoContratoDos = document.querySelector('.cuerpoContratoDos');
     const cuerpoFechaContrato = document.querySelector('.cuerpoFechaContrato');
     const cuerpoContrato = document.querySelector('.cuerpoContrato');
@@ -629,7 +593,7 @@ function handleTableClick(event) {
             <td>${contrato.valorAdDi || ''}</td>
             <td>0</td>
             <td>0</td>
-          </tr>
+           </tr>
         `;
       }
 
@@ -640,7 +604,7 @@ function handleTableClick(event) {
             <td>${contrato.crp || ''}</td>
             <td>${contrato.rubro || ''}</td>
             <td>${contrato.dependencia || ''}</td>
-          </tr>
+           </tr>
         `;
       }
 
@@ -651,11 +615,10 @@ function handleTableClick(event) {
             <td>${contrato.estado || ''}</td>
             <td>${contrato.fecha_inicio || ''}</td>
             <td>${contrato.fecha_fin || ''}</td>
-          </tr>
+           </tr>
         `;
       }
     } else {
-      // Si no hay contrato, mostrar vacío
       if (cuerpoContratoDos) {
         cuerpoContratoDos.innerHTML = '<tr><td colspan="5">No hay contrato para este instructor</td></tr>';
       }
@@ -669,7 +632,7 @@ function handleTableClick(event) {
     return;
   }
 
-  // 🔵 Botón FECHA
+  // Botón FECHA
   const fechaButton = event.target.closest('.btn-fecha');
   if (fechaButton) {
     const numeroDocumento = fechaButton.dataset.documento;
@@ -686,36 +649,44 @@ function handleTableClick(event) {
           <td>${instructor.numero_documento}</td>
           <td>${instructor.fecha_nacimiento}</td>
           <td>${instructor.fecha_expedicion}</td>
-        </tr>
+         </tr>
       `;
     }
     return;
   }
 
-  // 🔵 Botón ACTUALIZAR
+  // Botón ACTUALIZAR
   const editButton = event.target.closest('.botonActualizar');
   if (editButton) {
     openEditModal(editButton.dataset.id);
     return;
   }
 
-  // 🔵 Botón ELIMINAR
+  // Botón ELIMINAR
   const deleteButton = event.target.closest('.botonEliminar');
   if (deleteButton) {
     eliminarInstructor(deleteButton.dataset.id);
     return;
   }
 }
+
+// ============================================
+// FUNCIÓN openEditModal (CORREGIDA)
+// ============================================
 async function openEditModal(id) {
   const modalElement = document.getElementById('ModalActualizar');
   
-  // ✅ Declarar la variable primero
-  let modalInstance = bootstrap.Modal.getOrCreateInstance(modalElement);
+  if (!modalElement) {
+    console.error('Modal element not found');
+    return;
+  }
+
+  // ✅ Usar variable global (sin let)
+  modalInstance = bootstrap.Modal.getOrCreateInstance(modalElement);
 
   try {
     const instructor = await InstructorService.get_user_by_id(id);
 
-    // Guardar ID real
     document.getElementById('idInstructorActualizar').value = instructor.id_instructor;
     document.getElementById('nombreActualizar').value = instructor.nombres;
     document.getElementById('apellidoActualizar').value = instructor.apellidos;
@@ -728,12 +699,22 @@ async function openEditModal(id) {
     modalInstance.show();
   } catch (error) {
     console.error("Error:", error);
+    Swal.fire('Error', 'No se pudo cargar el instructor', 'error');
   }
 }
+
+// ============================================
+// FUNCIÓN handleUpdateSubmit (CORREGIDA)
+// ============================================
 async function handleUpdateSubmit(event) {
   event.preventDefault();
 
   const id = document.getElementById('idInstructorActualizar').value;
+
+  if (!id) {
+    Swal.fire('Error', 'ID de instructor no encontrado', 'error');
+    return;
+  }
 
   const updatedData = {
     nombres: document.getElementById('nombreActualizar').value,
@@ -745,17 +726,46 @@ async function handleUpdateSubmit(event) {
     id_supervisor: document.getElementById('selectActualizar').value
   };
 
+  // Mostrar loading
+  Swal.fire({
+    title: 'Actualizando...',
+    text: 'Por favor espere',
+    allowOutsideClick: false,
+    didOpen: () => {
+      Swal.showLoading();
+    }
+  });
+
   try {
     await InstructorService.update_user_by_id(id, updatedData);
-    modalInstance.hide();
+    
+    // ✅ Cerrar modal usando variable global
+    if (modalInstance) {
+      modalInstance.hide();
+      setTimeout(() => {
+        if (modalInstance) {
+          modalInstance.dispose();
+          modalInstance = null;
+        }
+      }, 300);
+    }
+    
     await recargarTabla();
+    
+    Swal.fire('¡Actualizado!', 'Instructor actualizado correctamente', 'success');
+    
   } catch (error) {
     console.error("Error:", error);
-    modalInstance.hide();
+    
+    if (modalInstance) {
+      modalInstance.hide();
+    }
+    
+    Swal.fire('Error', error.message || 'No se pudo actualizar el instructor', 'error');
   }
 }
 
-// 🔵 FUNCIÓN CORREGIDA PARA CREAR INSTRUCTOR
+// FUNCIÓN PARA CREAR INSTRUCTOR
 async function handleCreateInstructorSubmit(event) {
   event.preventDefault();
   console.log("📝 Enviando formulario de creación de instructor...");
@@ -770,10 +780,9 @@ async function handleCreateInstructorSubmit(event) {
     id_supervisor: document.getElementById('selectSupervisor').value
   };
 
-  // Validar campos requeridos
   if (!newData.nombres || !newData.apellidos || !newData.numero_documento) {
     console.error("❌ Campos requeridos faltantes");
-    alert("Por favor complete todos los campos requeridos");
+    Swal.fire('Error', 'Por favor complete todos los campos requeridos', 'error');
     return;
   }
 
@@ -782,7 +791,6 @@ async function handleCreateInstructorSubmit(event) {
     await InstructorService.create_instructor(newData);
     console.log("✅ Instructor creado exitosamente");
 
-    // Cerrar modal
     const modalElement = document.getElementById("ModalAgregar");
     if (modalElement) {
       const modal = bootstrap.Modal.getInstance(modalElement);
@@ -791,52 +799,55 @@ async function handleCreateInstructorSubmit(event) {
       }
     }
 
-    // Limpiar formulario
     event.target.reset();
-
-    // 🔥 IMPORTANTE: Recargar los datos globales y la tabla
     await recargarDatosCompletos();
+
+    Swal.fire('Creado', 'Instructor creado correctamente', 'success');
 
   } catch (error) {
     console.error("❌ Error al crear instructor:", error);
-    alert("Error al crear el instructor. Por favor verifique los datos e intente nuevamente.");
+    Swal.fire('Error', 'No se pudo crear el instructor', 'error');
   }
 }
 
 async function eliminarInstructor(id) {
-  const confirmacion = confirm("¿Está seguro de eliminar este instructor?");
-  if (!confirmacion) return;
+  const result = await Swal.fire({
+    title: '¿Está seguro?',
+    text: 'Esta acción no se puede deshacer',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: 'Sí, eliminar',
+    cancelButtonText: 'Cancelar'
+  });
+
+  if (!result.isConfirmed) return;
 
   try {
-    await InstructorService.delete_instructor(id);
+    await InstructorService.delete_instructor_by_id(id);
     console.log("✅ Instructor eliminado");
-    await init();
+    await recargarDatosCompletos();
+    Swal.fire('Eliminado', 'Instructor eliminado correctamente', 'success');
   } catch (error) {
     console.error("Error al eliminar:", error);
-    alert("Error al eliminar el instructor");
+    Swal.fire('Error', 'No se pudo eliminar el instructor', 'error');
   }
 }
 
-// Función para recargar todos los datos globales y actualizar la tabla
 async function recargarDatosCompletos() {
   console.log("🔄 Recargando datos completos...");
 
   try {
-    // Recargar instructores
     const response = await InstructorService.get_all_instructores_paginated(1, 200);
     instructoresGlobal = response.data;
 
-
-    // 🔥 IMPORTANTE: Destruir el DataTable actual
     if ($.fn.DataTable.isDataTable('#dataTableInstru')) {
       $('#dataTableInstru').DataTable().destroy();
       console.log("🗑️ DataTable destruida");
     }
 
-    // Volver a renderizar la tabla con los nuevos datos
     renderTable();
-
-    // Reinicializar DataTable con la misma configuración
     reinicializarDataTable();
 
     console.log("✅ Tabla recargada exitosamente");
@@ -846,7 +857,6 @@ async function recargarDatosCompletos() {
   }
 }
 
-// Función para reinicializar DataTable
 function reinicializarDataTable() {
   console.log("🔄 Reinicializando DataTable...");
 
@@ -956,7 +966,7 @@ function reinicializarDataTable() {
       }
     ],
     language: {
-      lengthMenu: 'Mostrar _MENU_ registro por pág ',
+      lengthMenu: 'Mostrar _MENU_ registros por página',
       zeroRecords: 'No se encontraron resultados',
       info: 'Mostrando _START_ a _END_ de _TOTAL_ registros',
       infoEmpty: 'Mostrando 0 a 0 de 0 registros',
