@@ -17,3 +17,74 @@
         </div>
     </div>
  
+    <!-- MODAL ACTUALIZAR CONTACTO -->
+    <div class="modal fade" id="ModalActualizarContacto" tabindex="-1" aria-labelledby="ModalActualizarContactoLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ModalActualizarContactoLabel">Actualizar Contacto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="formActualizarContacto">
+                    <div class="modal-body">
+                        <input type="hidden" id="id_contacto" name="id_contacto">
+                        
+                        <div class="mb-3">
+                            <label for="correo_personalActualizar" class="form-label">Correo Personal</label>
+                            <input type="email" class="form-control" id="correo_personalActualizar" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="correo_institucionalActualizar" class="form-label">Correo Institucional</label>
+                            <input type="email" class="form-control" id="correo_institucionalActualizar">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="telefonoActualizar" class="form-label">Teléfono</label>
+                            <input type="tel" class="form-control" id="telefonoActualizar">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL AGREGAR CONTACTO -->
+    <div class="modal fade" id="ModalAgregarContacto" tabindex="-1" aria-labelledby="ModalAgregarContactoLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ModalAgregarContactoLabel">Agregar Contacto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="formAgregarContacto">
+                    <div class="modal-body">
+                        <input type="hidden" id="id_instructor_contacto" name="id_instructor_contacto">
+                        
+                        <div class="mb-3">
+                            <label for="correo_personal" class="form-label">Correo Personal *</label>
+                            <input type="email" class="form-control" id="correo_personal" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="correo_institucional" class="form-label">Correo Institucional</label>
+                            <input type="email" class="form-control" id="correo_institucional">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="telefono" class="form-label">Teléfono</label>
+                            <input type="tel" class="form-control" id="telefono">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar Contacto</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
