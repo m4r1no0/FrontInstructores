@@ -27,6 +27,16 @@ export const ContratoService = {
             method: 'DELETE'
         })
     },
+    update_contrato: (id, data) => {
+        return request(`/contrato/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+        });
+    },
+
+
+
     generar_informe_contrato: async (id) => {
         console.log('🔄 Generando informe para ID:', id);
         
