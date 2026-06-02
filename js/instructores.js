@@ -88,66 +88,40 @@ export async function init() {
       .getElementById("btnDescargarExcel")
       .addEventListener("click", exportarContratosExcel);
 
-
-
     // 🔵 LLENAR MODALES DE CONTRATO
     const cuerpoContratoDos = document.querySelector('.cuerpoContratoDos');
     const cuerpoFechaContrato = document.querySelector('.cuerpoFechaContrato');
     const cuerpoContrato = document.querySelector('.cuerpoContrato');
 
     // Limpiar contenido anterior
-    if (cuerpoContratoDos) cuerpoContratoDos.innerHTML = '';
-    if (cuerpoFechaContrato) cuerpoFechaContrato.innerHTML = '';
-    if (cuerpoContrato) cuerpoContrato.innerHTML = '';
+    if (cuerpoContratoDos) limpiarTabla(cuerpoContratoDos);
+    if (cuerpoFechaContrato) limpiarTabla(cuerpoFechaContrato);
+    if (cuerpoContrato) limpiarTabla(cuerpoContrato);
 
     // Llenar con el primer contrato o mostrar vacío
     if (instructoresGlobal && instructoresGlobal.length > 0) {
       const primerContrato = instructoresGlobal[0];
 
       if (cuerpoContratoDos) {
-        cuerpoContratoDos.innerHTML = `
-          <tr>
-            <td>${primerContrato.valor_contrato || ''}</td>
-            <td>${primerContrato.valor_mes || ''}</td>
-            <td>${primerContrato.valorAdDi || ''}</td>
-            <td>0</td>
-            <td>0</td>
-           </tr>
-        `;
+        llenarTablaContratoDos(cuerpoContratoDos, primerContrato);
       }
 
       if (cuerpoContrato) {
-        cuerpoContrato.innerHTML = `
-          <tr>
-            <td>${primerContrato.cdp || ''}</td>
-            <td>${primerContrato.crp || ''}</td>
-            <td>${primerContrato.rubro || ''}</td>
-            <td>${primerContrato.dependencia || ''}</td>
-           </tr>
-        `;
+        llenarTablaContrato(cuerpoContrato, primerContrato);
       }
 
       if (cuerpoFechaContrato) {
-        cuerpoFechaContrato.innerHTML = `
-          <tr>
-            <td>${primerContrato.id_instructor}</td>
-            <td>${primerContrato.numero_contrato || ''}</td>
-            <td>${primerContrato.estado || ''}</td>
-            <td>${primerContrato.fecha_inicio || ''}</td>
-            <td>${primerContrato.fecha_fin || ''}</td>
-           </tr>
-        `;
+        llenarTablaFechaContrato(cuerpoFechaContrato, primerContrato);
       }
     } else {
-      // Mostrar filas vacías si no hay contratos
       if (cuerpoContratoDos) {
-        cuerpoContratoDos.innerHTML = '<tr><td colspan="5">No hay contratos disponibles</td></tr>';
+        mostrarMensajeSinDatos(cuerpoContratoDos, 5);
       }
       if (cuerpoContrato) {
-        cuerpoContrato.innerHTML = '<tr><td colspan="4">No hay contratos disponibles</td></tr>';
+        mostrarMensajeSinDatos(cuerpoContrato, 4);
       }
       if (cuerpoFechaContrato) {
-        cuerpoFechaContrato.innerHTML = '<tr><td colspan="5">No hay contratos disponibles</td></tr>';
+        mostrarMensajeSinDatos(cuerpoFechaContrato, 5);
       }
     }
 
@@ -328,6 +302,100 @@ export async function init() {
   } catch (error) {
     console.error("Error cargando instructores:", error);
   }
+}
+
+// ============================================
+// FUNCIONES AUXILIARES PARA LIMPIAR Y LLENAR TABLAS SIN INNERHTML
+// ============================================
+
+function limpiarTabla(tbody) {
+  while (tbody.firstChild) {
+    tbody.removeChild(tbody.firstChild);
+  }
+}
+
+function mostrarMensajeSinDatos(tbody, colspan) {
+  const row = document.createElement('tr');
+  const cell = document.createElement('td');
+  cell.colSpan = colspan;
+  cell.textContent = 'No hay contratos disponibles';
+  cell.style.textAlign = 'center';
+  row.appendChild(cell);
+  tbody.appendChild(row);
+}
+
+function llenarTablaContratoDos(tbody, contrato) {
+  const row = document.createElement('tr');
+  
+  const cellValorContrato = document.createElement('td');
+  cellValorContrato.textContent = contrato.valor_contrato || '';
+  row.appendChild(cellValorContrato);
+  
+  const cellValorMes = document.createElement('td');
+  cellValorMes.textContent = contrato.valor_mes || '';
+  row.appendChild(cellValorMes);
+  
+  const cellValorAdDi = document.createElement('td');
+  cellValorAdDi.textContent = contrato.valorAdDi || '';
+  row.appendChild(cellValorAdDi);
+  
+  const cellCero1 = document.createElement('td');
+  cellCero1.textContent = '0';
+  row.appendChild(cellCero1);
+  
+  const cellCero2 = document.createElement('td');
+  cellCero2.textContent = '0';
+  row.appendChild(cellCero2);
+  
+  tbody.appendChild(row);
+}
+
+function llenarTablaContrato(tbody, contrato) {
+  const row = document.createElement('tr');
+  
+  const cellCdp = document.createElement('td');
+  cellCdp.textContent = contrato.cdp || '';
+  row.appendChild(cellCdp);
+  
+  const cellCrp = document.createElement('td');
+  cellCrp.textContent = contrato.crp || '';
+  row.appendChild(cellCrp);
+  
+  const cellRubro = document.createElement('td');
+  cellRubro.textContent = contrato.rubro || '';
+  row.appendChild(cellRubro);
+  
+  const cellDependencia = document.createElement('td');
+  cellDependencia.textContent = contrato.dependencia || '';
+  row.appendChild(cellDependencia);
+  
+  tbody.appendChild(row);
+}
+
+function llenarTablaFechaContrato(tbody, contrato) {
+  const row = document.createElement('tr');
+  
+  const cellIdInstructor = document.createElement('td');
+  cellIdInstructor.textContent = contrato.id_instructor;
+  row.appendChild(cellIdInstructor);
+  
+  const cellNumeroContrato = document.createElement('td');
+  cellNumeroContrato.textContent = contrato.numero_contrato || '';
+  row.appendChild(cellNumeroContrato);
+  
+  const cellEstado = document.createElement('td');
+  cellEstado.textContent = contrato.estado || '';
+  row.appendChild(cellEstado);
+  
+  const cellFechaInicio = document.createElement('td');
+  cellFechaInicio.textContent = contrato.fecha_inicio || '';
+  row.appendChild(cellFechaInicio);
+  
+  const cellFechaFin = document.createElement('td');
+  cellFechaFin.textContent = contrato.fecha_fin || '';
+  row.appendChild(cellFechaFin);
+  
+  tbody.appendChild(row);
 }
 
 function renderSupervisorSelect() {
@@ -519,10 +587,13 @@ async function recargarTabla() {
 }
 
 function renderTable() {
-  const tabla = document.querySelector(".cuerpoTabla");
-  if (!tabla) return;
+  const tbody = document.querySelector(".cuerpoTabla");
+  if (!tbody) return;
 
-  tabla.innerHTML = "";
+  // Limpiar tbody
+  while (tbody.firstChild) {
+    tbody.removeChild(tbody.firstChild);
+  }
 
   instructoresGlobal.forEach(inst => {
     const supervisor = instructoresGlobal.find(
@@ -531,48 +602,119 @@ function renderTable() {
 
     const contrato = instructoresGlobal.find(c => c.id_instructor == inst.id_instructor) || {};
 
-    tabla.innerHTML += `
-      <tr>
-        <td>
-          <button class="btn btn-primary boton-contrato" data-bs-toggle="modal" data-bs-target="#ModalContratoNuevo" data-id="${inst.id_instructor}">
-            📄
-          </button>
-        </td>
-        
-        <td>${inst.instructor_nombre}</td>
-        
-        <td>${inst.tipo_documento || ''}</td>
-        
-        <td>
-          <button class="btn btn-fecha" data-bs-toggle="modal" data-bs-target="#ModalFecha" data-documento="${inst.numero_documento || ''}">
-            ${inst.numero_documento || ''}
-          </button>
-        </td>
-        
-        <td>${supervisor ? supervisor.nombre : ''}</td>
-        
-        <td>
-          <button class="btn btn-danger botonEliminar" data-id="${inst.id_instructor}">
-            <i class="bi bi-trash"></i>
-          </button>
-          <button class="btn btn-warning botonActualizar" data-id="${inst.id_instructor}">
-            <i class="bi bi-repeat"></i>
-          </button>
-        </td>
+    // Crear fila
+    const row = document.createElement('tr');
 
-        <th class="d-none">${inst.nombre_area}</th>
-        <th class="d-none">${inst.nombre_programa}</th>
-        
-        <td class="contrato-numero">${contrato.numero_contrato || ''}</td>
-        <td class="contrato-crp">${contrato.crp || ''}</td>
-        <td class="d-none contrato-cdp">${contrato.cdp || ''}</td>
-        <td class="d-none contrato-rubro">${contrato.rubro || ''}</td>
-        <td class="d-none contrato-dependencia">${contrato.dependencia || ''}</td>
-        <td class="d-none contrato-fecha-inicio">${contrato.fecha_inicio || ''}</td>
-        <td class="d-none contrato-fecha-fin">${contrato.fecha_fin || ''}</td>
-        <td class="d-none contrato-valor">${contrato.valor_contrato || ''}</td>
-      </tr>
-    `;
+    // Columna 0: Botón CONTRATO
+    const cellBoton = document.createElement('td');
+    const botonContrato = document.createElement('button');
+    botonContrato.className = 'btn btn-primary boton-contrato';
+    botonContrato.setAttribute('data-bs-toggle', 'modal');
+    botonContrato.setAttribute('data-bs-target', '#ModalContratoNuevo');
+    botonContrato.setAttribute('data-id', inst.id_instructor);
+    botonContrato.textContent = '📄';
+    cellBoton.appendChild(botonContrato);
+    row.appendChild(cellBoton);
+
+    // Columna 1: NOMBRES
+    const cellNombre = document.createElement('td');
+    cellNombre.textContent = inst.instructor_nombre;
+    row.appendChild(cellNombre);
+
+    // Columna 2: TIPO DOCUMENTO
+    const cellTipoDoc = document.createElement('td');
+    cellTipoDoc.textContent = inst.tipo_documento || '';
+    row.appendChild(cellTipoDoc);
+
+    // Columna 3: DOCUMENTO (con botón)
+    const cellDocumento = document.createElement('td');
+    const botonFecha = document.createElement('button');
+    botonFecha.className = 'btn btn-fecha';
+    botonFecha.setAttribute('data-bs-toggle', 'modal');
+    botonFecha.setAttribute('data-bs-target', '#ModalFecha');
+    botonFecha.setAttribute('data-documento', inst.numero_documento || '');
+    botonFecha.textContent = inst.numero_documento || '';
+    cellDocumento.appendChild(botonFecha);
+    row.appendChild(cellDocumento);
+
+    // Columna 4: SUPERVISOR
+    const cellSupervisor = document.createElement('td');
+    cellSupervisor.textContent = supervisor ? supervisor.nombre : '';
+    row.appendChild(cellSupervisor);
+
+    // Columna 5: ACCIONES
+    const cellAcciones = document.createElement('td');
+    
+    const botonEliminar = document.createElement('button');
+    botonEliminar.className = 'btn btn-danger botonEliminar';
+    botonEliminar.setAttribute('data-id', inst.id_instructor);
+    const iconTrash = document.createElement('i');
+    iconTrash.className = 'bi bi-trash';
+    botonEliminar.appendChild(iconTrash);
+    
+    const botonActualizar = document.createElement('button');
+    botonActualizar.className = 'btn btn-warning botonActualizar';
+    botonActualizar.setAttribute('data-id', inst.id_instructor);
+    const iconRepeat = document.createElement('i');
+    iconRepeat.className = 'bi bi-repeat';
+    botonActualizar.appendChild(iconRepeat);
+    
+    cellAcciones.appendChild(botonEliminar);
+    cellAcciones.appendChild(botonActualizar);
+    row.appendChild(cellAcciones);
+
+    // Columnas ocultas (d-none)
+    const cellArea = document.createElement('th');
+    cellArea.className = 'd-none';
+    cellArea.textContent = inst.nombre_area;
+    row.appendChild(cellArea);
+    
+    const cellPrograma = document.createElement('th');
+    cellPrograma.className = 'd-none';
+    cellPrograma.textContent = inst.nombre_programa;
+    row.appendChild(cellPrograma);
+    
+    const cellNumeroContrato = document.createElement('td');
+    cellNumeroContrato.className = 'contrato-numero';
+    cellNumeroContrato.textContent = contrato.numero_contrato || '';
+    row.appendChild(cellNumeroContrato);
+    
+    const cellCrp = document.createElement('td');
+    cellCrp.className = 'contrato-crp';
+    cellCrp.textContent = contrato.crp || '';
+    row.appendChild(cellCrp);
+    
+    const cellCdp = document.createElement('td');
+    cellCdp.className = 'd-none contrato-cdp';
+    cellCdp.textContent = contrato.cdp || '';
+    row.appendChild(cellCdp);
+    
+    const cellRubro = document.createElement('td');
+    cellRubro.className = 'd-none contrato-rubro';
+    cellRubro.textContent = contrato.rubro || '';
+    row.appendChild(cellRubro);
+    
+    const cellDependencia = document.createElement('td');
+    cellDependencia.className = 'd-none contrato-dependencia';
+    cellDependencia.textContent = contrato.dependencia || '';
+    row.appendChild(cellDependencia);
+    
+    const cellFechaInicio = document.createElement('td');
+    cellFechaInicio.className = 'd-none contrato-fecha-inicio';
+    cellFechaInicio.textContent = contrato.fecha_inicio || '';
+    row.appendChild(cellFechaInicio);
+    
+    const cellFechaFin = document.createElement('td');
+    cellFechaFin.className = 'd-none contrato-fecha-fin';
+    cellFechaFin.textContent = contrato.fecha_fin || '';
+    row.appendChild(cellFechaFin);
+    
+    const cellValor = document.createElement('td');
+    cellValor.className = 'd-none contrato-valor';
+    cellValor.textContent = contrato.valor_contrato || '';
+    row.appendChild(cellValor);
+
+    tbody.appendChild(row);
   });
 }
 
@@ -587,49 +729,29 @@ function handleTableClick(event) {
     const cuerpoFechaContrato = document.querySelector('.cuerpoFechaContrato');
     const cuerpoContrato = document.querySelector('.cuerpoContrato');
 
+    if (cuerpoContratoDos) limpiarTabla(cuerpoContratoDos);
+    if (cuerpoContrato) limpiarTabla(cuerpoContrato);
+    if (cuerpoFechaContrato) limpiarTabla(cuerpoFechaContrato);
+
     if (contrato) {
       if (cuerpoContratoDos) {
-        cuerpoContratoDos.innerHTML = `
-          <tr>
-            <td>${contrato.valor_contrato || ''}</td>
-            <td>${contrato.valor_mes || ''}</td>
-            <td>${contrato.valorAdDi || ''}</td>
-            <td>0</td>
-            <td>0</td>
-           </tr>
-        `;
+        llenarTablaContratoDos(cuerpoContratoDos, contrato);
       }
-
       if (cuerpoContrato) {
-        cuerpoContrato.innerHTML = `
-          <tr>
-            <td>${contrato.cdp || ''}</td>
-            <td>${contrato.crp || ''}</td>
-            <td>${contrato.rubro || ''}</td>
-            <td>${contrato.dependencia || ''}</td>
-           </tr>
-        `;
+        llenarTablaContrato(cuerpoContrato, contrato);
       }
-
       if (cuerpoFechaContrato) {
-        cuerpoFechaContrato.innerHTML = `
-          <tr>
-            <td>${contrato.numero_contrato || ''}</td>
-            <td>${contrato.estado || ''}</td>
-            <td>${contrato.fecha_inicio || ''}</td>
-            <td>${contrato.fecha_fin || ''}</td>
-           </tr>
-        `;
+        llenarTablaFechaContrato(cuerpoFechaContrato, contrato);
       }
     } else {
       if (cuerpoContratoDos) {
-        cuerpoContratoDos.innerHTML = '<tr><td colspan="5">No hay contrato para este instructor</td></tr>';
+        mostrarMensajeSinDatos(cuerpoContratoDos, 5);
       }
       if (cuerpoContrato) {
-        cuerpoContrato.innerHTML = '<tr><td colspan="4">No hay contrato para este instructor</td></tr>';
+        mostrarMensajeSinDatos(cuerpoContrato, 4);
       }
       if (cuerpoFechaContrato) {
-        cuerpoFechaContrato.innerHTML = '<tr><td colspan="5">No hay contrato para este instructor</td></tr>';
+        mostrarMensajeSinDatos(cuerpoFechaContrato, 5);
       }
     }
     return;
@@ -646,14 +768,24 @@ function handleTableClick(event) {
 
     const cuerpoFecha = document.querySelector('.cuerpoFecha');
 
+    if (cuerpoFecha) limpiarTabla(cuerpoFecha);
+
     if (instructor && cuerpoFecha) {
-      cuerpoFecha.innerHTML = `
-        <tr>
-          <td>${instructor.numero_documento}</td>
-          <td>${instructor.fecha_nacimiento}</td>
-          <td>${instructor.fecha_expedicion}</td>
-         </tr>
-      `;
+      const row = document.createElement('tr');
+      
+      const cellDocumento = document.createElement('td');
+      cellDocumento.textContent = instructor.numero_documento;
+      row.appendChild(cellDocumento);
+      
+      const cellFechaNac = document.createElement('td');
+      cellFechaNac.textContent = instructor.fecha_nacimiento;
+      row.appendChild(cellFechaNac);
+      
+      const cellFechaExp = document.createElement('td');
+      cellFechaExp.textContent = instructor.fecha_expedicion;
+      row.appendChild(cellFechaExp);
+      
+      cuerpoFecha.appendChild(row);
     }
     return;
   }
@@ -674,7 +806,7 @@ function handleTableClick(event) {
 }
 
 // ============================================
-// FUNCIÓN openEditModal (CORREGIDA)
+// FUNCIÓN openEditModal
 // ============================================
 async function openEditModal(id) {
   const modalElement = document.getElementById('ModalActualizar');
@@ -707,7 +839,7 @@ async function openEditModal(id) {
 }
 
 // ============================================
-// FUNCIÓN handleUpdateSubmit (CORREGIDA)
+// FUNCIÓN handleUpdateSubmit
 // ============================================
 async function handleUpdateSubmit(event) {
   event.preventDefault();
