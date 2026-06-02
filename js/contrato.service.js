@@ -23,7 +23,7 @@ export const ContratoService = {
     },
 
     delete_contrato:(id) =>{
-        return request (`/contrato/${id}`,{
+        return request (`/contrato/delete/${id}`,{
             method: 'DELETE'
         })
     },
