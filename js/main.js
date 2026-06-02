@@ -1,8 +1,8 @@
-// main.js actualizado (versión con initDireccion)
-import { init } from "./instructores.js";
+// main.js (REFACTORIZADO)
+import { init as initInstructores } from "./instructores.js";
 import { initSupervisor } from "./supervisor.js";
 import { initContrato } from "./contrato.js";
-import { initDireccion } from "./direccion.js";  // ✅ Si exportas initDireccion
+import { initDireccion } from "./direccion.js";
 import { initInforme } from "./informes.js";
 import { initContacto } from "./contacto.js";
 import { initPoliza } from "./poliza.js";
@@ -15,51 +15,76 @@ console.log("=== MAIN.JS CARGADO ===");
 const inicializadores = {
     'contrato.html': initContrato,
     'informes.html': initInforme,
-    'tabla.html': () => {
-        init();
-    },
+    'tabla.html': initInstructores,
     'supervisor.html': initSupervisor,
-    'direccion.html': initDireccion,  // ✅ Usa initDireccion directamente
+    'direccion.html': initDireccion,
     'contacto.html': initContacto,
     'poliza.html': initPoliza,
     'pagos.html': initPago,
     'area_formacion.html': initAreaFormacion
 };
 
-document.addEventListener("click", function (e) {
+// Estado global simple para evitar dobles inicializaciones
+let paginaActual = null;
+
+document.addEventListener("click", async function (e) {
     const enlace = e.target.closest("[data-page]");
 
-    if (enlace) {
-        e.preventDefault();
-        const pagina = enlace.dataset.page;
-        console.log("Click en página:", pagina);
+    if (!enlace) return;
 
-        fetch(pagina)
-            .then(res => res.text())
-            .then(html => {
-                document.getElementById("contenido").innerHTML = html;
-                console.log("Contenido actualizado:", pagina);
-                
-                // Esperar a que el DOM se actualice
-                setTimeout(() => {
-                    // Extraer solo el nombre del archivo de la ruta
-                    const nombreArchivo = pagina.split('/').pop();
-                    console.log("Nombre archivo:", nombreArchivo);
-                    
-                    // Buscar el inicializador correspondiente
-                    const inicializador = inicializadores[nombreArchivo];
-                    
-                    if (inicializador) {
-                        console.log(`>>> Ejecutando inicializador para ${pagina}`);
-                        inicializador();
-                    } else {
-                        console.log(`No hay inicializador definido para: ${pagina}`);
-                        console.log("Inicializadores disponibles:", Object.keys(inicializadores));
-                    }
-                }, 100);
-            })
-            .catch(error => {
-                console.error("Error cargando página:", error);
-            });
+    e.preventDefault();
+
+    const pagina = enlace.dataset.page;
+
+    if (!pagina) return;
+
+    console.log("📄 Click en página:", pagina);
+
+    try {
+        const res = await fetch(pagina);
+        const html = await res.text();
+
+        const contenedor = document.getElementById("contenido");
+
+        if (!contenedor) {
+            console.error("❌ No existe #contenido");
+            return;
+        }
+
+        // 🔥 Limpiar contenido anterior
+        contenedor.innerHTML = "";
+
+        // 🔥 Insertar nuevo HTML
+        contenedor.innerHTML = html;
+
+        console.log("✅ Página cargada:", pagina);
+
+        const nombreArchivo = pagina.split('/').pop();
+
+        // Evitar doble init de la misma página
+        if (paginaActual === nombreArchivo) {
+            console.log("⚠️ Misma página ya inicializada, se omite");
+            return;
+        }
+
+        paginaActual = nombreArchivo;
+
+        const inicializador = inicializadores[nombreArchivo];
+
+        if (!inicializador) {
+            console.log("⚠️ No hay inicializador para:", nombreArchivo);
+            return;
+        }
+
+        // 🔥 IMPORTANTE: ejecutar después del render completo del DOM
+        requestAnimationFrame(() => {
+            setTimeout(() => {
+                console.log(`🚀 Ejecutando init de: ${nombreArchivo}`);
+                inicializador();
+            }, 50);
+        });
+
+    } catch (error) {
+        console.error("❌ Error cargando página:", error);
     }
 });
