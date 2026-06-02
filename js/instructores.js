@@ -33,6 +33,7 @@ export async function init() {
         numero_documento: "Documento",
         tipo_documento: "Tipo Documento",
         numero_contrato: "Contrato",
+        nombre: "Supervisor",
         cdp: "CDP",
         crp: "CRP",
         rubro: "Rubro",
@@ -166,6 +167,7 @@ export async function init() {
     $('#dataTableInstru').DataTable({
       responsive: true,
       autoWidth: false,
+      deferRender: true,
       dom: 'lBfrtip',
       buttons: [
         {
@@ -389,6 +391,7 @@ async function recargarTabla() {
     $('#dataTableInstru').DataTable({
       responsive: true,
       autoWidth: false,
+      deferRender: true,
       dom: 'lBfrtip',
       buttons: [
         {
@@ -863,6 +866,7 @@ function reinicializarDataTable() {
   $('#dataTableInstru').DataTable({
     responsive: true,
     autoWidth: false,
+    deferRender: true,
     dom: 'lBfrtip',
     buttons: [
       {
