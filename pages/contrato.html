@@ -93,73 +93,73 @@
         </div>
     </div>
 
-    <!-- MODAL ACTUALIZAR CONTRATO -->
-    <div class="modal fade" id="ModalActualizarContrato" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Actualizar Contrato</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form id="formActualizarContrato">
-                    <div class="modal-body">
-                        <input type="hidden" id="id_contrato_update" name="id_contrato_update">
-                        
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="numero_contratoActualizar" class="form-label">Número Contrato</label>
-                                <input type="text" class="form-control" id="numero_contratoActualizar">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="crpActualizar" class="form-label">CRP</label>
-                                <input type="text" class="form-control" id="crpActualizar">
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="cdpActualizar" class="form-label">CDP</label>
-                                <input type="text" class="form-control" id="cdpActualizar">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="rubroActualizar" class="form-label">Rubro</label>
-                                <input type="text" class="form-control" id="rubroActualizar">
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="dependenciaActualizar" class="form-label">Dependencia</label>
-                                <input type="text" class="form-control" id="dependenciaActualizar">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="fecha_inicioActualizar" class="form-label">Fecha Inicio</label>
-                                <input type="date" class="form-control" id="fecha_inicioActualizar">
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="fecha_finActualizar" class="form-label">Fecha Fin</label>
-                                <input type="date" class="form-control" id="fecha_finActualizar">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="valor_contratoActualizar" class="form-label">Valor Contrato</label>
-                                <input type="number" class="form-control" id="valor_contratoActualizar" step="0.01">
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="valor_mesActualizar" class="form-label">Valor Mensual</label>
-                                <input type="number" class="form-control" id="valor_mesActualizar" step="0.01">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-                    </div>
-                </form>
+<!-- MODAL ACTUALIZAR CONTRATO - CORREGIDO -->
+<div class="modal fade" id="ModalActualizarContrato" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Actualizar Contrato</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+            <form id="formActualizarContrato">
+                <div class="modal-body">
+                    <input type="hidden" id="id_contrato_update" name="id_contrato_update">
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="numero_contrato_actualizar" class="form-label">Número Contrato</label>
+                            <input type="text" class="form-control" id="numero_contrato_actualizar">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="crp_actualizar" class="form-label">CRP</label>
+                            <input type="text" class="form-control" id="crp_actualizar">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="cdp_actualizar" class="form-label">CDP</label>
+                            <input type="text" class="form-control" id="cdp_actualizar">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="rubro_actualizar" class="form-label">Rubro</label>
+                            <input type="text" class="form-control" id="rubro_actualizar">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="dependencia_actualizar" class="form-label">Dependencia</label>
+                            <input type="text" class="form-control" id="dependencia_actualizar">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="fecha_inicio_actualizar" class="form-label">Fecha Inicio</label>
+                            <input type="date" class="form-control" id="fecha_inicio_actualizar">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="fecha_fin_actualizar" class="form-label">Fecha Fin</label>
+                            <input type="date" class="form-control" id="fecha_fin_actualizar">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="valor_contrato_actualizar" class="form-label">Valor Contrato</label>
+                            <input type="number" class="form-control" id="valor_contrato_actualizar" step="0.01">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="valor_mes_actualizar" class="form-label">Valor Mensual</label>
+                            <input type="number" class="form-control" id="valor_mes_actualizar" step="0.01">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                </div>
+            </form>
         </div>
     </div>
+</div>
 
     <!-- MODAL ELIMINAR CONTRATO -->
     <div class="modal fade" id="ModalEliminarContrato" tabindex="-1" aria-hidden="true">

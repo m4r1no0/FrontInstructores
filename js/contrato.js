@@ -434,9 +434,16 @@ async function handleCreateSubmit(event) {
 }
 
 // ============================================
-// FUNCIÓN openEditModal (ACTUALIZAR)
+// FUNCIÓN openEditModal (ACTUALIZAR) - CORREGIDA
 // ============================================
 async function openEditModal(id) {
+    const idNumber = parseInt(id);
+    
+    if (isNaN(idNumber)) {
+        Swal.fire('Error', 'ID de contrato inválido', 'error');
+        return;
+    }
+    
     const modalElement = document.getElementById('ModalActualizarContrato');
     
     if (!modalElement) {
@@ -458,19 +465,34 @@ async function openEditModal(id) {
     });
 
     try {
-        const response = await ContratoService.get_contrato_by_id(id);
+        const response = await ContratoService.get_contrato_by_id(idNumber);
         const contrato = response?.data ?? response;
         
+        console.log("Contrato cargado:", contrato);
+        
         document.getElementById('id_contrato_update').value = contrato.id_contrato;
-        document.getElementById('numero_contratoActualizar').value = contrato.numero_contrato || '';
-        document.getElementById('crpActualizar').value = contrato.crp || '';
-        document.getElementById('cdpActualizar').value = contrato.cdp || '';
-        document.getElementById('rubroActualizar').value = contrato.rubro || '';
-        document.getElementById('dependenciaActualizar').value = contrato.dependencia || '';
-        document.getElementById('fecha_inicioActualizar').value = contrato.fecha_inicio || '';
-        document.getElementById('fecha_finActualizar').value = contrato.fecha_fin || '';
-        document.getElementById('valor_contratoActualizar').value = contrato.valor_contrato || '';
-        document.getElementById('valor_mesActualizar').value = contrato.valor_mes || '';
+        document.getElementById('numero_contrato_actualizar').value = contrato.numero_contrato || '';
+        document.getElementById('crp_actualizar').value = contrato.crp || '';
+        document.getElementById('cdp_actualizar').value = contrato.cdp || '';
+        document.getElementById('rubro_actualizar').value = contrato.rubro || '';
+        document.getElementById('dependencia_actualizar').value = contrato.dependencia || '';
+        
+        if (contrato.fecha_inicio) {
+            const fechaInicio = new Date(contrato.fecha_inicio);
+            document.getElementById('fecha_inicio_actualizar').value = fechaInicio.toISOString().split('T')[0];
+        } else {
+            document.getElementById('fecha_inicio_actualizar').value = '';
+        }
+        
+        if (contrato.fecha_fin) {
+            const fechaFin = new Date(contrato.fecha_fin);
+            document.getElementById('fecha_fin_actualizar').value = fechaFin.toISOString().split('T')[0];
+        } else {
+            document.getElementById('fecha_fin_actualizar').value = '';
+        }
+        
+        document.getElementById('valor_contrato_actualizar').value = contrato.valor_contrato || '';
+        document.getElementById('valor_mes_actualizar').value = contrato.valor_mes || '';
 
         Swal.close();
         modalInstance.show();
@@ -483,29 +505,33 @@ async function openEditModal(id) {
 }
 
 // ============================================
-// FUNCIÓN handleUpdateSubmit
+// FUNCIÓN handleUpdateSubmit - CORREGIDA
 // ============================================
 async function handleUpdateSubmit(event) {
     event.preventDefault();
 
-    const id = document.getElementById('id_contrato_update').value;
-
-    if (!id) {
+    let id = document.getElementById('id_contrato_update').value;
+    
+    id = parseInt(id);
+    
+    if (isNaN(id)) {
         Swal.fire('Error', 'ID de contrato no encontrado', 'error');
         return;
     }
 
     const updatedData = {
-        numero_contrato: document.getElementById('numero_contratoActualizar').value,
-        crp: document.getElementById('crpActualizar').value,
-        cdp: document.getElementById('cdpActualizar').value,
-        rubro: document.getElementById('rubroActualizar').value,
-        dependencia: document.getElementById('dependenciaActualizar').value,
-        fecha_inicio: document.getElementById('fecha_inicioActualizar').value,
-        fecha_fin: document.getElementById('fecha_finActualizar').value,
-        valor_contrato: parseFloat(document.getElementById('valor_contratoActualizar').value) || 0,
-        valor_mes: parseFloat(document.getElementById('valor_mesActualizar').value) || 0
+        numero_contrato: document.getElementById('numero_contrato_actualizar').value,
+        crp: document.getElementById('crp_actualizar').value,
+        cdp: document.getElementById('cdp_actualizar').value,
+        rubro: document.getElementById('rubro_actualizar').value,
+        dependencia: document.getElementById('dependencia_actualizar').value,
+        fecha_inicio: document.getElementById('fecha_inicio_actualizar').value || null,
+        fecha_fin: document.getElementById('fecha_fin_actualizar').value || null,
+        valor_contrato: parseFloat(document.getElementById('valor_contrato_actualizar').value) || 0,
+        valor_mes: parseFloat(document.getElementById('valor_mes_actualizar').value) || 0
     };
+
+    console.log("Datos a actualizar:", updatedData);
 
     // Confirmar actualización
     const result = await Swal.fire({
@@ -570,9 +596,21 @@ async function handleUpdateSubmit(event) {
 }
 
 // ============================================
-// FUNCIÓN eliminarContrato
+// FUNCIÓN eliminarContrato - CORREGIDA
 // ============================================
 async function eliminarContrato(id) {
+    const idNumber = parseInt(id);
+    
+    if (isNaN(idNumber)) {
+        Swal.fire({
+            title: 'Error',
+            text: 'ID de contrato inválido',
+            icon: 'error',
+            confirmButtonText: 'Cerrar'
+        });
+        return;
+    }
+
     const result = await Swal.fire({
         title: '¿Está seguro?',
         text: 'Esta acción no se puede deshacer',
@@ -596,7 +634,8 @@ async function eliminarContrato(id) {
     });
 
     try {
-        await ContratoService.delete_contrato(id);
+        await ContratoService.delete_contrato(idNumber);
+        
         await recargar();
         
         Swal.fire({
@@ -687,13 +726,13 @@ function setupDeleteFormHandler() {
 }
 
 // =============================
-// MANEJAR ENVÍO DEL FORMULARIO DE ELIMINACIÓN
+// MANEJAR ENVÍO DEL FORMULARIO DE ELIMINACIÓN - CORREGIDO
 // =============================
 async function handleDeleteSubmit(event) {
     event.preventDefault();
 
     const idContratoInput = document.getElementById('id_contrato_eliminar');
-    const id_contrato = idContratoInput ? idContratoInput.value : null;
+    let id_contrato = idContratoInput ? idContratoInput.value : null;
 
     if (!id_contrato || id_contrato === '') {
         Swal.fire({
@@ -701,6 +740,18 @@ async function handleDeleteSubmit(event) {
             text: 'Por favor seleccione un contrato de la tabla primero',
             icon: 'error',
             confirmButtonText: 'Entendido'
+        });
+        return;
+    }
+
+    id_contrato = parseInt(id_contrato);
+    
+    if (isNaN(id_contrato)) {
+        Swal.fire({
+            title: 'Error',
+            text: 'ID de contrato inválido',
+            icon: 'error',
+            confirmButtonText: 'Cerrar'
         });
         return;
     }
@@ -768,6 +819,8 @@ function setupUpdateFormHandler() {
         formActualizar.removeEventListener('submit', handleUpdateSubmit);
         formActualizar.addEventListener('submit', handleUpdateSubmit);
         console.log("✅ Event listener del formulario de actualización configurado");
+    } else {
+        console.log("⚠️ No se encontró el formulario con id 'formActualizarContrato'");
     }
 }
 
