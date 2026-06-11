@@ -28,7 +28,12 @@ export const SupervisorService = {
   },
   get_all_supervisores: () => {
     return request(`/supervisor/`)
-  }
+  },
+  delete_supervisor:(id) =>{
+        return request (`/supervisor/${id}`,{
+            method: 'DELETE'
+        })
+    },
 
 }
 

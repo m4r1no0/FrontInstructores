@@ -91,7 +91,7 @@ function renderTable() {
         row.appendChild(cellNombre);
 
         const cellDocumento = document.createElement('td');
-        cellDocumento.textContent = supervisor.documento || '-';
+        cellDocumento.textContent = supervisor.cedula || '-';
         row.appendChild(cellDocumento);
 
         const cellAcciones = document.createElement('td');
@@ -354,7 +354,7 @@ async function handleUpdateSubmit(event) {
 
     const updatedData = {
         nombre: document.getElementById('nombre_actualizar').value,
-        documento: document.getElementById('documento_actualizar').value
+        cedula: document.getElementById('documento_actualizar').value
     };
 
     const result = await Swal.fire({
