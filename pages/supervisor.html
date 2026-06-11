@@ -1,49 +1,143 @@
-    <div class="card-body">
-        <div>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ModalAgregar">Agregar</button>
-        </div>
-        <div class="table-responsive">
-            <table class="table table-striped table-bordered" id="dataTable" width="100%" cellspacing="0">
-                <thead>
-                    <tr>
-                        <th>id</th>
-                        <th>Nombre</th>
-                        <th>Cedula</th>
-                        <th>acciones</th>
-                    </tr>
-                </thead>
-                <tbody class="cuerpoTabla">
-                    
-                </tbody>
-            </table>
-        </div>
+<div class="card-body">
+    <div>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ModalAgregar">
+            <i class="bi bi-plus-circle"></i> Agregar
+        </button>
     </div>
- 
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered" id="dataTable" width="100%" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Cédula</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody class="cuerpoTabla">
+            </tbody>
+        </table>
+    </div>
+</div>
 
-    <div class="modal fade" id="ModalAgregar" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <form id="formInstructor">
-        <div class="modal-header">
-          <h5 class="modal-title">Agregar Instructor</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-
-        <div class="modal-body">
-            <div class="row">
-                <div class="col">
-                    <div>
-                        <label for="nombre">nombre</label>
-                        <input type="text" name="" id="nombre">
+<!-- ==========================================
+     MODAL AGREGAR INSTRUCTOR
+     ========================================== -->
+<div class="modal fade" id="ModalAgregar" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="formInstructor">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="bi bi-person-plus"></i> Agregar Instructor
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label for="nombre" class="form-label">Nombre Completo *</label>
+                            <input type="text" class="form-control" id="nombre" name="nombre" required>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <label for="cedula" class="form-label">Número de Cédula *</label>
+                            <input type="text" class="form-control" id="cedula" name="cedula" required>
+                        </div>
                     </div>
                 </div>
-            </div>
-
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-          <button type="submit" class="btn btn-primary">Guardar</button>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle"></i> Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save"></i> Guardar
+                    </button>
+                </div>
+            </form>
         </div>
-      </form>
     </div>
-  </div>
+</div>
+
+<!-- ==========================================
+     MODAL EDITAR INSTRUCTOR
+     ========================================== -->
+<div class="modal fade" id="ModalEditar" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="formEditarInstructor">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="bi bi-pencil-square"></i> Editar Instructor
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="id_editar" name="id_editar">
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label for="nombre_editar" class="form-label">Nombre Completo *</label>
+                            <input type="text" class="form-control" id="nombre_editar" name="nombre_editar" required>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <label for="cedula_editar" class="form-label">Número de Cédula *</label>
+                            <input type="text" class="form-control" id="cedula_editar" name="cedula_editar" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle"></i> Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-warning">
+                        <i class="bi bi-pencil"></i> Actualizar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ==========================================
+     MODAL ELIMINAR INSTRUCTOR
+     ========================================== -->
+<div class="modal fade" id="ModalEliminar" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="formEliminarInstructor">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="bi bi-trash"></i> Eliminar Instructor
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="id_eliminar" name="id_eliminar">
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        <strong>¡Advertencia!</strong>
+                        <p>¿Está seguro que desea eliminar este instructor?</p>
+                        <p class="mb-0 text-danger">Esta acción no se puede deshacer.</p>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label for="nombre_eliminar" class="form-label">Nombre Completo</label>
+                            <input type="text" class="form-control" id="nombre_eliminar" name="nombre_eliminar" readonly disabled>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <label for="cedula_eliminar" class="form-label">Número de Cédula</label>
+                            <input type="text" class="form-control" id="cedula_eliminar" name="cedula_eliminar" readonly disabled>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle"></i> Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash"></i> Eliminar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>

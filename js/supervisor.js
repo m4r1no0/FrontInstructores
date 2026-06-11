@@ -19,8 +19,12 @@ export async function initSupervisor() {
                 <td>${inst.nombre}</td>
                 <td>${inst.cedula}</td>
                 <td>
-                    <button class="btn btn-danger"><i class="bi bi-trash"></i></button>
-                    <button class="btn btn-warning"><i class="bi bi-repeat"></i></button>
+                    <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#ModalEliminar" data-id="${inst.id_supervisor}">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                    <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#ModalEditar" data-id="${inst.id_supervisor}">
+                        <i class="bi bi-pencil"></i>
+                    </button>
                 </td>
             </tr>
         `;
