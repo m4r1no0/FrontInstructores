@@ -15,7 +15,8 @@ export async function initAreaFormacion() {
     areas.forEach(inst => {
         tabla.innerHTML += `
             <tr>
-                <td>${inst.id_instructor}</td>
+                <td class="d-none">${inst.id_instructor}</td>
+                <td>${inst.nombre_supervisor}</td>
                 <td>${inst.nombre}</td>
                 <td>${inst.nombre_programa}</td>
                 <td>${inst.nombre_area}</td>
