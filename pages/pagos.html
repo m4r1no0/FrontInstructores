@@ -1,24 +1,27 @@
 <div class="container-fluid">
     <div class="card">
-        <div class="card-header">
-            <h3>Gestión de Pagos</h3>
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h3 class="mb-0">Gestión de Pagos</h3>
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ModalAgregarPago">
                 <i class="bi bi-plus-circle"></i> Registrar Pago
             </button>
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered" id="dataTablePago" width="100%">
-                    <thead>
+                <table class="table table-bordered table-hover" id="dataTablePago" width="100%">
+                    <thead class="table">
                         <tr>
-                            <th>Acciones</th>
+                            <th style="width: 80px;">Acciones</th>
                             <th>Contrato</th>
                             <th>Instructor</th>
                             <th>Fecha Inicio</th>
                             <th>Valor Mes</th>
                             <th>Valor Contrato</th>
+                            <th>Consumido</th>
+                            <th>Meses</th>
                             <th>Pagado</th>
-                            <th>Valor Ad/Di</th>
+                            <th>Saldo</th>
+                            <th>Restante</th>
                             <th>Fecha Fin</th>
                             <th>Vigencia</th>
                         </tr>
@@ -30,54 +33,244 @@
     </div>
 </div>
 
-<!-- Modal AGREGAR PAGO -->
-<div class="modal fade" id="ModalAgregarPago" tabindex="-1">
-    <div class="modal-dialog modal-lg">
+<!-- ======================================== -->
+<!-- MODAL AGREGAR PAGO -->
+<!-- ======================================== -->
+<div class="modal fade" id="ModalAgregarPago" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Registrar Pago</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">
+                    <i class="bi bi-plus-circle"></i> Registrar Nuevo Pago
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <form id="formPago">
                 <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label>Contrato *</label>
-                            <select id="id_contrato" class="form-control" required>
-                                <option value="">Seleccione...</option>
+                    <!-- Selección de Contrato -->
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label class="form-label fw-bold">Contrato *</label>
+                            <select id="id_contrato" class="form-control form-control-lg" required>
+                                <option value="">Seleccione un contrato...</option>
                             </select>
+                            <small class="text-muted">Seleccione un contrato para ver su información</small>
+                        </div>
+                    </div>
+
+                    <!-- Información del Contrato Seleccionado -->
+                    <div class="row mb-4 p-3 bg-light rounded">
+                        <div class="col-md-12">
+                            <h6 class="text-primary mb-3"><i class="bi bi-info-circle"></i> Información del Contrato</h6>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label fw-bold">Valor Contrato</label>
+                            <div id="valor_contrato_info" class="form-control-plaintext bg-white p-2 rounded border">$0</div>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label fw-bold">Valor Mes</label>
+                            <div id="valor_mes_info" class="form-control-plaintext bg-white p-2 rounded border">$0</div>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label fw-bold">Meses Transcurridos</label>
+                            <div id="meses_info" class="form-control-plaintext bg-white p-2 rounded border text-center">0</div>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label fw-bold text-primary">Valor Consumido</label>
+                            <div id="valor_consumido_info" class="form-control-plaintext bg-white p-2 rounded border text-primary fw-bold">$0</div>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label fw-bold text-success">Valor Restante</label>
+                            <div id="valor_restante_info" class="form-control-plaintext bg-white p-2 rounded border text-success fw-bold">$0</div>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label fw-bold text-danger">Saldo Actual</label>
+                            <div id="saldo_info" class="form-control-plaintext bg-white p-2 rounded border text-danger fw-bold">$0</div>
+                        </div>
+                    </div>
+
+                    <!-- Datos del Pago -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h6 class="text-primary mb-3"><i class="bi bi-cash"></i> Datos del Pago</h6>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label>Mes *</label>
+                            <label class="form-label fw-bold">Mes de Pago *</label>
                             <input type="month" id="mes" class="form-control" required>
                         </div>
-                        <div class="col-md-4 mb-3">
-                            <label>Valor Base *</label>
-                            <input type="number" id="valor_base" class="form-control" step="0.01" required>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Fecha de Pago</label>
+                            <input type="date" id="fecha_pago" class="form-control" value="2026-06-22">
                         </div>
                         <div class="col-md-4 mb-3">
-                            <label>Ajuste</label>
+                            <label class="form-label fw-bold">Valor Base *</label>
+                            <input type="number" id="valor_base" class="form-control" step="0.01" required>
+                            <small class="text-muted">Valor consumido calculado automáticamente</small>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label fw-bold">Ajuste</label>
                             <input type="number" id="ajuste" class="form-control" step="0.01" value="0">
                             <small class="text-muted">Positivo = Bono, Negativo = Descuento</small>
                         </div>
                         <div class="col-md-4 mb-3">
-                            <label>Valor Pagado *</label>
+                            <label class="form-label fw-bold">Valor Pagado *</label>
                             <input type="number" id="valor_pagado" class="form-control" step="0.01" required>
+                            <small class="text-muted">Monto que se está pagando</small>
                         </div>
                         <div class="col-md-12 mb-3">
-                            <label>Saldo Calculado</label>
-                            <input type="text" id="saldo_calculado" class="form-control" readonly>
+                            <label class="form-label fw-bold">Saldo Calculado</label>
+                            <input type="text" id="saldo_calculado" class="form-control form-control-lg" readonly style="font-size: 1.2rem;">
+                            <small class="text-muted">Saldo = (Valor Base + Ajuste) - Valor Pagado</small>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Guardar Pago</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle"></i> Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-circle"></i> Guardar Pago
+                    </button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 
-<!-- Modal EDITAR PAGO (similar al de crear) -->
-<!-- Modal ELIMINAR PAGO -->
+<!-- ======================================== -->
+<!-- MODAL EDITAR PAGO -->
+<!-- ======================================== -->
+<div class="modal fade" id="ModalEditarPago" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title">
+                    <i class="bi bi-pencil-square"></i> Editar Pago
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="formEditarPago">
+                <div class="modal-body">
+                    <input type="hidden" id="edit_id_pago">
+                    
+                    <!-- Selección de Contrato -->
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label class="form-label fw-bold">Contrato *</label>
+                            <select id="edit_id_contrato" class="form-control form-control-lg" required>
+                                <option value="">Seleccione un contrato...</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Información del Contrato Seleccionado -->
+                    <div class="row mb-4 p-3 bg-light rounded">
+                        <div class="col-md-12">
+                            <h6 class="text-primary mb-3"><i class="bi bi-info-circle"></i> Información del Contrato</h6>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label fw-bold">Valor Contrato</label>
+                            <div id="edit_valor_contrato_info" class="form-control-plaintext bg-white p-2 rounded border">$0</div>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label fw-bold">Valor Mes</label>
+                            <div id="edit_valor_mes_info" class="form-control-plaintext bg-white p-2 rounded border">$0</div>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label fw-bold">Meses Transcurridos</label>
+                            <div id="edit_meses_info" class="form-control-plaintext bg-white p-2 rounded border text-center">0</div>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label fw-bold text-primary">Valor Consumido</label>
+                            <div id="edit_valor_consumido_info" class="form-control-plaintext bg-white p-2 rounded border text-primary fw-bold">$0</div>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label fw-bold text-success">Valor Restante</label>
+                            <div id="edit_valor_restante_info" class="form-control-plaintext bg-white p-2 rounded border text-success fw-bold">$0</div>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label fw-bold text-danger">Saldo Actual</label>
+                            <div id="edit_saldo_info" class="form-control-plaintext bg-white p-2 rounded border text-danger fw-bold">$0</div>
+                        </div>
+                    </div>
+
+                    <!-- Datos del Pago -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h6 class="text-primary mb-3"><i class="bi bi-cash"></i> Datos del Pago</h6>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Mes de Pago *</label>
+                            <input type="month" id="edit_mes" class="form-control" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Fecha de Pago</label>
+                            <input type="date" id="edit_fecha_pago" class="form-control">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label fw-bold">Valor Base *</label>
+                            <input type="number" id="edit_valor_base" class="form-control" step="0.01" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label fw-bold">Ajuste</label>
+                            <input type="number" id="edit_ajuste" class="form-control" step="0.01" value="0">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label fw-bold">Valor Pagado *</label>
+                            <input type="number" id="edit_valor_pagado" class="form-control" step="0.01" required>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label fw-bold">Saldo Calculado</label>
+                            <input type="text" id="edit_saldo_calculado" class="form-control form-control-lg" readonly style="font-size: 1.2rem;">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle"></i> Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-warning">
+                        <i class="bi bi-check-circle"></i> Actualizar Pago
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ======================================== -->
+<!-- MODAL ELIMINAR PAGO -->
+<!-- ======================================== -->
+<div class="modal fade" id="ModalEliminarPago" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">
+                    <i class="bi bi-exclamation-triangle"></i> Eliminar Pago
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="formEliminarPago">
+                <div class="modal-body">
+                    <input type="hidden" id="id_pago_eliminar">
+                    <div class="text-center py-3">
+                        <i class="bi bi-trash3 text-danger" style="font-size: 4rem;"></i>
+                        <h5 class="mt-3">¿Está seguro de eliminar este pago?</h5>
+                        <p class="text-muted">Esta acción no se puede deshacer y eliminará permanentemente el registro.</p>
+                        <div class="alert alert-warning">
+                            <i class="bi bi-info-circle"></i> Se eliminará el registro de pago seleccionado.
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle"></i> Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash"></i> Sí, Eliminar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

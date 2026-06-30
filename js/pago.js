@@ -5,6 +5,127 @@ import { PagoService } from './pago.service.js';
 let pagosGlobal = [];
 let dataTable = null;
 let modalInstance = null;
+let contratosGlobal = []; // Array para almacenar contratos globalmente
+
+// ============================
+// FUNCIONES DE CÁLCULO DE PAGO
+// ============================
+
+/**
+ * Calcula el pago hasta la fecha actual
+ * @param {Object} contrato - Datos del contrato
+ * @param {number} valorPagado - Valor ya pagado
+ * @returns {Object} Objeto con los cálculos
+ */
+function calcularPagoHastaHoy(contrato, valorPagado = 0) {
+    // Validar que el contrato existe
+    if (!contrato) {
+        return {
+            valorConsumido: 0,
+            valorRestante: 0,
+            valorPagado: 0,
+            saldo: 0,
+            mesesTranscurridos: 0,
+            valorBaseMes: 0,
+            valorContrato: 0,
+            valorBase: 0
+        };
+    }
+
+    const fechaInicio = contrato.fecha_inicio ? new Date(contrato.fecha_inicio) : null;
+    const fechaFin = contrato.fecha_fin ? new Date(contrato.fecha_fin) : null;
+    const hoy = new Date();
+    
+    // Validar fechas
+    if (!fechaInicio || isNaN(fechaInicio.getTime())) {
+        console.warn('Fecha de inicio inválida en el contrato:', contrato);
+        return {
+            valorConsumido: 0,
+            valorRestante: contrato.valor_contrato || 0,
+            valorPagado: valorPagado || 0,
+            saldo: contrato.valor_contrato || 0,
+            mesesTranscurridos: 0,
+            valorBaseMes: contrato.valor_mes || 0,
+            valorContrato: contrato.valor_contrato || 0,
+            valorBase: 0
+        };
+    }
+
+    // Si no hay fecha fin, usar fecha inicio + 1 año por defecto
+    let fechaFinCalculo = fechaFin;
+    if (!fechaFin || isNaN(fechaFin.getTime())) {
+        fechaFinCalculo = new Date(fechaInicio);
+        fechaFinCalculo.setFullYear(fechaFinCalculo.getFullYear() + 1);
+    }
+
+    // Calcular fecha límite (hoy o fecha fin, la que sea menor)
+    const fechaLimite = hoy < fechaFinCalculo ? hoy : fechaFinCalculo;
+    
+    // Calcular meses transcurridos
+    let mesesTranscurridos = 0;
+    
+    // Si la fecha de inicio es mayor a hoy, no hay consumo
+    if (fechaInicio > hoy) {
+        mesesTranscurridos = 0;
+    } else {
+        // Calcular meses completos transcurridos
+        const diffTime = Math.abs(fechaLimite - fechaInicio);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        mesesTranscurridos = Math.floor(diffDays / 30.44); // Promedio de días por mes
+        
+        // Asegurar que no sea mayor al total de meses del contrato
+        if (fechaFinCalculo && !isNaN(fechaFinCalculo.getTime())) {
+            const totalDiffTime = Math.abs(fechaFinCalculo - fechaInicio);
+            const totalDiffDays = Math.ceil(totalDiffTime / (1000 * 60 * 60 * 24));
+            const totalMesesContrato = Math.floor(totalDiffDays / 30.44);
+            if (mesesTranscurridos > totalMesesContrato) {
+                mesesTranscurridos = totalMesesContrato;
+            }
+        }
+    }
+    
+    // Valor base a pagar (meses transcurridos * valor del mes)
+    const valorMes = parseFloat(contrato.valor_mes) || 0;
+    const valorContrato = parseFloat(contrato.valor_contrato) || 0;
+    const valorBase = mesesTranscurridos * valorMes;
+    
+    // Valor consumido (no puede exceder el valor del contrato)
+    let valorConsumido = Math.min(valorBase, valorContrato);
+    
+    // Si el valor mensual es 0, usar valor del contrato
+    if (valorMes === 0 && valorContrato > 0) {
+        const porcentaje = Math.min(mesesTranscurridos / 12, 1);
+        valorConsumido = valorContrato * porcentaje;
+    }
+    
+    // Valor restante
+    const valorRestante = Math.max(valorContrato - valorConsumido, 0);
+    
+    // Calcular saldo (valor a pagar - valor pagado)
+    const valorPagadoNum = parseFloat(valorPagado) || 0;
+    const valorAPagar = valorConsumido;
+    const saldo = valorAPagar - valorPagadoNum;
+    
+    console.log(`📊 Cálculo para contrato ${contrato.numero_contrato || contrato.id_contrato || ''}:`, {
+        mesesTranscurridos,
+        valorBase,
+        valorConsumido,
+        valorRestante,
+        valorPagado: valorPagadoNum,
+        saldo
+    });
+    
+    return {
+        valorConsumido: Math.round(valorConsumido * 100) / 100,
+        valorRestante: Math.round(valorRestante * 100) / 100,
+        valorPagado: Math.round(valorPagadoNum * 100) / 100,
+        saldo: Math.round(saldo * 100) / 100,
+        mesesTranscurridos,
+        valorBaseMes: valorMes,
+        valorContrato: valorContrato,
+        valorBase: Math.round(valorBase * 100) / 100
+    };
+}
 
 // ============================
 // INIT PRINCIPAL
@@ -13,7 +134,10 @@ export async function initPago() {
     console.log("🚀 INIT PAGO");
 
     const tabla = document.querySelector(".cuerpoTablaPago");
-    if (!tabla) return;
+    if (!tabla) {
+        console.warn("⚠️ No se encontró la tabla de pagos");
+        return;
+    }
 
     try {
         Swal.fire({
@@ -25,16 +149,17 @@ export async function initPago() {
             }
         });
 
-        // Cargar contratos para el selector
+        // Cargar contratos primero
         await cargarContratos();
 
+        // Cargar pagos
         const response = await ContratoService.get_contratos_by_instructor();
         const pagosData = response.data || response || [];
         
         pagosGlobal = pagosData;
 
-        console.log("Pagos procesados:", pagosGlobal);
-        console.log("Cantidad de pagos:", pagosGlobal.length);
+        console.log("Pagos procesados:", pagosGlobal.length);
+        console.log("Contratos disponibles:", contratosGlobal.length);
 
         Swal.close();
         renderTable();
@@ -43,13 +168,14 @@ export async function initPago() {
         setupFormHandler();
         setupUpdateFormHandler();
         setupDeleteFormHandler();
+        setupContratoSelectListener();
 
     } catch (error) {
         console.error("❌ Error cargando pagos:", error);
         Swal.close();
         Swal.fire({
             title: 'Error',
-            text: 'No se pudieron cargar los pagos',
+            text: 'No se pudieron cargar los pagos: ' + (error.message || 'Error desconocido'),
             icon: 'error',
             confirmButtonText: 'Reintentar'
         });
@@ -62,34 +188,198 @@ export async function initPago() {
 async function cargarContratos() {
     try {
         const response = await ContratoService.get_contratos_by_instructor();
-        const contratos = response.data || response || [];
+        contratosGlobal = response.data || response || [];
 
+        // Enriquecer contratos con cálculos de pago (sin usar pagosGlobal)
+        const contratosEnriquecidos = contratosGlobal.map(contrato => {
+            // Buscar si existe un pago para este contrato
+            const pagoExistente = pagosGlobal.find(p => p.id_contrato === contrato.id_contrato);
+            const valorPagado = pagoExistente ? parseFloat(pagoExistente.valor_pagado) || 0 : 0;
+            
+            const calculo = calcularPagoHastaHoy(contrato, valorPagado);
+            
+            return {
+                ...contrato,
+                ...calculo
+            };
+        });
+
+        // Llenar select de contratos en el formulario de creación
         const selectContrato = document.getElementById('id_contrato');
-        const selectEditContrato = document.getElementById('edit_id_contrato');
-
         if (selectContrato) {
             selectContrato.innerHTML = '<option value="">Seleccione un contrato...</option>';
-            contratos.forEach(contrato => {
+            contratosEnriquecidos.forEach(contrato => {
                 const option = document.createElement('option');
                 option.value = contrato.id_contrato;
-                option.textContent = `${contrato.numero_contrato} - ${contrato.nombre_completo}`;
+                
+                // Mostrar información relevante
+                const saldo = contrato.saldo || 0;
+                let estado = '';
+                if (saldo > 0) {
+                    estado = '🔴 Deuda: ' + formatMoney(saldo);
+                } else if (saldo < 0) {
+                    estado = '🟢 Sobrepago: ' + formatMoney(Math.abs(saldo));
+                } else {
+                    estado = '⚪ Al día';
+                }
+                
+                option.textContent = `${contrato.numero_contrato || 'N/A'} - ${contrato.nombre_completo || 'Sin nombre'} | ${estado}`;
+                
+                // Guardar datos para cálculos
+                option.dataset.valorContrato = contrato.valor_contrato || 0;
+                option.dataset.valorMes = contrato.valor_mes || 0;
+                option.dataset.mesesTranscurridos = contrato.mesesTranscurridos || 0;
+                option.dataset.valorConsumido = contrato.valorConsumido || 0;
+                option.dataset.valorRestante = contrato.valorRestante || 0;
+                option.dataset.saldo = contrato.saldo || 0;
+                
                 selectContrato.appendChild(option);
             });
+            
+            // Disparar evento change para actualizar campos
+            selectContrato.dispatchEvent(new Event('change'));
         }
 
+        // Llenar select de contratos en el formulario de edición
+        const selectEditContrato = document.getElementById('edit_id_contrato');
         if (selectEditContrato) {
             selectEditContrato.innerHTML = '<option value="">Seleccione un contrato...</option>';
-            contratos.forEach(contrato => {
+            contratosEnriquecidos.forEach(contrato => {
                 const option = document.createElement('option');
                 option.value = contrato.id_contrato;
-                option.textContent = `${contrato.numero_contrato} - ${contrato.nombre_completo}`;
+                
+                const saldo = contrato.saldo || 0;
+                let estado = '';
+                if (saldo > 0) {
+                    estado = 'Deuda: ' + formatMoney(saldo);
+                } else if (saldo < 0) {
+                    estado = 'Sobrepago: ' + formatMoney(Math.abs(saldo));
+                } else {
+                    estado = 'Al día';
+                }
+                
+                option.textContent = `${contrato.numero_contrato || 'N/A'} - ${contrato.nombre_completo || 'Sin nombre'} | ${estado}`;
+                option.dataset.valorContrato = contrato.valor_contrato || 0;
+                option.dataset.valorMes = contrato.valor_mes || 0;
+                option.dataset.mesesTranscurridos = contrato.mesesTranscurridos || 0;
+                option.dataset.valorConsumido = contrato.valorConsumido || 0;
+                option.dataset.valorRestante = contrato.valorRestante || 0;
+                option.dataset.saldo = contrato.saldo || 0;
+                
                 selectEditContrato.appendChild(option);
             });
         }
 
-        console.log("✅ Contratos cargados:", contratos.length);
+        console.log("✅ Contratos cargados y enriquecidos:", contratosEnriquecidos.length);
+        return contratosEnriquecidos;
     } catch (error) {
-        console.error("Error cargando contratos:", error);
+        console.error("❌ Error cargando contratos:", error);
+        throw error;
+    }
+}
+
+// ============================
+// ACTUALIZAR CAMPOS AL SELECCIONAR CONTRATO
+// ============================
+function setupContratoSelectListener() {
+    const selectContrato = document.getElementById('id_contrato');
+    if (selectContrato) {
+        selectContrato.removeEventListener('change', onContratoSelectChange);
+        selectContrato.addEventListener('change', onContratoSelectChange);
+    }
+    
+    const selectEditContrato = document.getElementById('edit_id_contrato');
+    if (selectEditContrato) {
+        selectEditContrato.removeEventListener('change', onEditContratoSelectChange);
+        selectEditContrato.addEventListener('change', onEditContratoSelectChange);
+    }
+}
+
+function onContratoSelectChange(e) {
+    const select = e.target;
+    const selectedOption = select.options[select.selectedIndex];
+    
+    if (!selectedOption || !selectedOption.value) {
+        // Limpiar campos de información
+        limpiarCamposInformacion();
+        return;
+    }
+    
+    // Mostrar información del contrato
+    const valorContrato = parseFloat(selectedOption.dataset.valorContrato) || 0;
+    const valorMes = parseFloat(selectedOption.dataset.valorMes) || 0;
+    const mesesTranscurridos = parseInt(selectedOption.dataset.mesesTranscurridos) || 0;
+    const valorConsumido = parseFloat(selectedOption.dataset.valorConsumido) || 0;
+    const valorRestante = parseFloat(selectedOption.dataset.valorRestante) || 0;
+    const saldo = parseFloat(selectedOption.dataset.saldo) || 0;
+    
+    // Establecer valor base automáticamente
+    const valorBaseField = document.getElementById('valor_base');
+    if (valorBaseField) {
+        valorBaseField.value = valorConsumido.toFixed(2);
+    }
+    
+    // Mostrar información adicional
+    actualizarCamposInformacion(valorContrato, valorMes, mesesTranscurridos, valorConsumido, valorRestante, saldo);
+    
+    // Disparar cálculo de saldo
+    calcularSaldo();
+}
+
+function onEditContratoSelectChange(e) {
+    const select = e.target;
+    const selectedOption = select.options[select.selectedIndex];
+    
+    if (!selectedOption || !selectedOption.value) {
+        document.getElementById('edit_valor_base').value = '';
+        return;
+    }
+    
+    // Establecer valor base automáticamente en edición
+    const valorConsumido = parseFloat(selectedOption.dataset.valorConsumido) || 0;
+    const editValorBase = document.getElementById('edit_valor_base');
+    if (editValorBase) {
+        editValorBase.value = valorConsumido.toFixed(2);
+    }
+    
+    // Disparar cálculo de saldo
+    calcularSaldoEdicion();
+}
+
+function limpiarCamposInformacion() {
+    const campos = ['valor_contrato_info', 'valor_mes_info', 'meses_info', 'valor_consumido_info', 'valor_restante_info', 'saldo_info'];
+    campos.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = '0';
+    });
+}
+
+function actualizarCamposInformacion(valorContrato, valorMes, mesesTranscurridos, valorConsumido, valorRestante, saldo) {
+    const infoContrato = document.getElementById('valor_contrato_info');
+    if (infoContrato) infoContrato.textContent = formatMoney(valorContrato);
+    
+    const infoMes = document.getElementById('valor_mes_info');
+    if (infoMes) infoMes.textContent = formatMoney(valorMes);
+    
+    const infoMeses = document.getElementById('meses_info');
+    if (infoMeses) infoMeses.textContent = mesesTranscurridos;
+    
+    const infoConsumido = document.getElementById('valor_consumido_info');
+    if (infoConsumido) {
+        infoConsumido.textContent = formatMoney(valorConsumido);
+        infoConsumido.style.color = '#0d6efd';
+    }
+    
+    const infoRestante = document.getElementById('valor_restante_info');
+    if (infoRestante) {
+        infoRestante.textContent = formatMoney(valorRestante);
+        infoRestante.style.color = valorRestante > 0 ? '#198754' : (valorRestante < 0 ? '#dc3545' : '#212529');
+    }
+    
+    const infoSaldo = document.getElementById('saldo_info');
+    if (infoSaldo) {
+        infoSaldo.textContent = formatMoney(saldo);
+        infoSaldo.style.color = saldo > 0 ? '#dc3545' : (saldo < 0 ? '#198754' : '#212529');
     }
 }
 
@@ -107,8 +397,29 @@ function calcularSaldo() {
     const saldoField = document.getElementById('saldo_calculado');
     if (saldoField) {
         saldoField.value = formatMoney(saldo);
-        saldoField.style.color = saldo > 0 ? 'red' : (saldo < 0 ? 'green' : 'black');
+        saldoField.style.color = saldo > 0 ? '#dc3545' : (saldo < 0 ? '#198754' : '#212529');
     }
+    
+    // Actualizar información de valor restante si está disponible
+    const selectContrato = document.getElementById('id_contrato');
+    if (selectContrato && selectContrato.selectedIndex > 0) {
+        const selectedOption = selectContrato.options[selectContrato.selectedIndex];
+        const valorContrato = parseFloat(selectedOption.dataset.valorContrato) || 0;
+        const valorRestante = valorContrato - valorAPagar;
+        
+        const infoRestante = document.getElementById('valor_restante_info');
+        if (infoRestante) {
+            infoRestante.textContent = formatMoney(valorRestante);
+            infoRestante.style.color = valorRestante > 0 ? '#198754' : (valorRestante < 0 ? '#dc3545' : '#212529');
+        }
+        
+        const infoSaldo = document.getElementById('saldo_info');
+        if (infoSaldo) {
+            infoSaldo.textContent = formatMoney(saldo);
+            infoSaldo.style.color = saldo > 0 ? '#dc3545' : (saldo < 0 ? '#198754' : '#212529');
+        }
+    }
+    
     return saldo;
 }
 
@@ -123,7 +434,7 @@ function calcularSaldoEdicion() {
     const saldoField = document.getElementById('edit_saldo_calculado');
     if (saldoField) {
         saldoField.value = formatMoney(saldo);
-        saldoField.style.color = saldo > 0 ? 'red' : (saldo < 0 ? 'green' : 'black');
+        saldoField.style.color = saldo > 0 ? '#dc3545' : (saldo < 0 ? '#198754' : '#212529');
     }
 }
 
@@ -139,10 +450,10 @@ function renderTable() {
         tbody.removeChild(tbody.firstChild);
     }
 
-    if (!pagosGlobal.length) {
+    if (!pagosGlobal || !pagosGlobal.length) {
         const row = document.createElement('tr');
         const cell = document.createElement('td');
-        cell.colSpan = 10;
+        cell.colSpan = 12;
         cell.className = 'text-center';
         cell.textContent = 'No hay pagos disponibles';
         row.appendChild(cell);
@@ -152,7 +463,19 @@ function renderTable() {
 
     pagosGlobal.forEach(pago => {
         const row = document.createElement('tr');
-        const saldoClass = pago.saldo > 0 ? 'text-danger' : (pago.saldo < 0 ? 'text-success' : '');
+        
+        // Calcular información de pago
+        const contrato = contratosGlobal.find(c => c.id_contrato === pago.id_contrato) || {};
+        const calculo = calcularPagoHastaHoy({
+            fecha_inicio: pago.fecha_inicio || contrato.fecha_inicio,
+            fecha_fin: pago.fecha_fin || contrato.fecha_fin,
+            valor_mes: pago.valor_mes || contrato.valor_mes,
+            valor_contrato: pago.valor_contrato || contrato.valor_contrato,
+            numero_contrato: pago.numero_contrato || contrato.numero_contrato,
+            id_contrato: pago.id_contrato || contrato.id_contrato
+        }, pago.valor_pagado || 0);
+        
+        const saldoClass = calculo.saldo > 0 ? 'text-danger' : (calculo.saldo < 0 ? 'text-success' : '');
 
         // Columna ACCIONES
         const cellAcciones = document.createElement('td');
@@ -178,51 +501,70 @@ function renderTable() {
 
         // Columna NÚMERO CONTRATO
         const cellNumeroContrato = document.createElement('td');
-        cellNumeroContrato.textContent = pago.numero_contrato || '';
+        cellNumeroContrato.textContent = pago.numero_contrato || contrato.numero_contrato || '';
         row.appendChild(cellNumeroContrato);
 
         // Columna NOMBRE COMPLETO
         const cellNombre = document.createElement('td');
-        cellNombre.textContent = pago.nombre_completo || '';
+        cellNombre.textContent = pago.nombre_completo || contrato.nombre_completo || '';
         row.appendChild(cellNombre);
 
         // Columna FECHA INICIO
         const cellFechaInicio = document.createElement('td');
-        cellFechaInicio.textContent = pago.fecha_inicio || '';
+        cellFechaInicio.textContent = formatDate(pago.fecha_inicio || contrato.fecha_inicio);
         row.appendChild(cellFechaInicio);
 
         // Columna VALOR MES
         const cellValorMes = document.createElement('td');
         cellValorMes.className = 'text-end';
-        cellValorMes.textContent = formatMoney(pago.valor_mes);
+        cellValorMes.textContent = formatMoney(pago.valor_mes || contrato.valor_mes);
         row.appendChild(cellValorMes);
 
         // Columna VALOR CONTRATO
         const cellValorContrato = document.createElement('td');
         cellValorContrato.className = 'text-end';
-        cellValorContrato.textContent = formatMoney(pago.valor_contrato);
+        cellValorContrato.textContent = formatMoney(pago.valor_contrato || contrato.valor_contrato);
         row.appendChild(cellValorContrato);
+
+        // Columna VALOR CONSUMIDO (nuevo)
+        const cellValorConsumido = document.createElement('td');
+        cellValorConsumido.className = 'text-end text-primary';
+        cellValorConsumido.textContent = formatMoney(calculo.valorConsumido);
+        row.appendChild(cellValorConsumido);
+
+        // Columna MESES TRANSCURRIDOS (nuevo)
+        const cellMeses = document.createElement('td');
+        cellMeses.className = 'text-center';
+        cellMeses.textContent = calculo.mesesTranscurridos;
+        row.appendChild(cellMeses);
 
         // Columna VALOR PAGADO
         const cellValorPagado = document.createElement('td');
         cellValorPagado.className = 'text-end';
-        cellValorPagado.textContent = formatMoney(pago.valor_pagado);
+        cellValorPagado.textContent = formatMoney(pago.valor_pagado || 0);
         row.appendChild(cellValorPagado);
 
         // Columna SALDO
         const cellSaldo = document.createElement('td');
         cellSaldo.className = `text-end ${saldoClass}`;
-        cellSaldo.textContent = formatMoney(pago.valorAdDi);
+        cellSaldo.textContent = formatMoney(calculo.saldo);
+        cellSaldo.dataset.saldo = calculo.saldo;
         row.appendChild(cellSaldo);
+
+        // Columna VALOR RESTANTE (nuevo)
+        const cellValorRestante = document.createElement('td');
+        cellValorRestante.className = 'text-end';
+        cellValorRestante.textContent = formatMoney(calculo.valorRestante);
+        row.appendChild(cellValorRestante);
 
         // Columna FECHA FIN
         const cellFechaFin = document.createElement('td');
-        cellFechaFin.textContent = formatDate(pago.fecha_fin);
+        cellFechaFin.textContent = formatDate(pago.fecha_fin || contrato.fecha_fin);
         row.appendChild(cellFechaFin);
 
         // Columna VIGENCIA
         const cellVigencia = document.createElement('td');
-        cellVigencia.textContent = formatDate(pago.vigencia);
+        cellVigencia.textContent = formatDate(pago.vigencia || contrato.vigencia);
         row.appendChild(cellVigencia);
 
         tbody.appendChild(row);
@@ -253,7 +595,7 @@ function reinicializarDataTable() {
                 className: 'btn btn-success btn-sm',
                 title: 'Pagos',
                 exportOptions: {
-                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
                     format: {
                         body: function (data, type, row, meta) {
                             return data.replace(/<[^>]*>/g, '').trim();
@@ -267,7 +609,7 @@ function reinicializarDataTable() {
                 className: 'btn btn-danger btn-sm',
                 title: 'Pagos',
                 exportOptions: {
-                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
                     format: {
                         body: function (data, type, row, meta) {
                             return data.replace(/<[^>]*>/g, '').trim();
@@ -283,7 +625,7 @@ function reinicializarDataTable() {
                 className: 'btn btn-primary btn-sm',
                 title: 'Pagos',
                 exportOptions: {
-                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
                     format: {
                         body: function (data, type, row, meta) {
                             return data.replace(/<[^>]*>/g, '').trim();
@@ -297,7 +639,7 @@ function reinicializarDataTable() {
                 className: 'btn btn-info btn-sm',
                 title: 'Pagos',
                 exportOptions: {
-                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
                 }
             },
             {
@@ -306,7 +648,7 @@ function reinicializarDataTable() {
                 className: 'btn btn-secondary btn-sm',
                 title: 'Pagos',
                 exportOptions: {
-                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
                     format: {
                         body: function (data, type, row, meta) {
                             return data.replace(/<[^>]*>/g, '').trim();
@@ -346,13 +688,15 @@ function bindEvents() {
 function handleClick(e) {
     const edit = e.target.closest(".btn-editar-pago");
     if (edit) {
-        openEditModal(edit.dataset.idPago);
+        const idPago = edit.dataset.idPago || edit.getAttribute('data-id-pago');
+        if (idPago) openEditModal(idPago);
         return;
     }
 
     const del = e.target.closest(".btn-eliminar-pago");
     if (del) {
-        abrirModalEliminar(del.dataset.idPago);
+        const idPago = del.dataset.idPago || del.getAttribute('data-id-pago');
+        if (idPago) abrirModalEliminar(idPago);
         return;
     }
 }
@@ -700,6 +1044,7 @@ function formatDate(dateString) {
     if (!dateString) return 'N/A';
     try {
         const date = new Date(dateString);
+        if (isNaN(date.getTime())) return 'Fecha inválida';
         return date.toLocaleDateString('es-CO');
     } catch {
         return 'Fecha inválida';
@@ -707,7 +1052,7 @@ function formatDate(dateString) {
 }
 
 function formatMoney(amount) {
-    if (!amount && amount !== 0) return '$0';
+    if (amount === undefined || amount === null || isNaN(amount)) return '$0';
     const numero = typeof amount === 'string' ? parseFloat(amount) : amount;
     if (isNaN(numero)) return '$0';
     return new Intl.NumberFormat('es-CO', {
@@ -717,3 +1062,6 @@ function formatMoney(amount) {
         maximumFractionDigits: 0
     }).format(numero);
 }
+
+// Exportar funciones para uso externo si es necesario
+export { calcularPagoHastaHoy, formatMoney, formatDate };
