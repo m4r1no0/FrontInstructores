@@ -1,97 +1,111 @@
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover" id="dataTableContrato" width="100%" cellspacing="0">
-                    <thead>
-                        <tr>
-                            <th>Acciones</th>
-                            <th>ID Instructor</th>
-                            <th>Instructor</th>
-                            <th>Documento</th>
-                            <th>N° Contrato</th>
-                            <th>CRP</th>
-                            <th>CDP</th>
-                            <th>Fecha Inicio</th>
-                            <th>Fecha Fin</th>
-                        </tr>
-                    </thead>
-                    <tbody class="cuerpoTablaContrato">
-                    </tbody>
-                </table>
-            </div>
-        </div>
+<div class="card-body">
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover" id="dataTableContrato" width="100%" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Acciones</th>
+                    <th>ID Instructor</th>
+                    <th>Instructor</th>
+                    <th>Documento</th>
+                    <th>N° Contrato</th>
+                    <th>CRP</th>
+                    <th>CDP</th>
+                    <th>Fecha Inicio</th>
+                    <th>Fecha Fin</th>
+                </tr>
+            </thead>
+            <tbody class="cuerpoTablaContrato">
+            </tbody>
+        </table>
     </div>
+</div>
+</div>
 
-    <!-- MODAL AGREGAR CONTRATO -->
-    <div class="modal fade" id="ModalAgregarContrato" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Agregar Contrato</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form id="formAgregarContrato">
-                    <div class="modal-body">
-                        <input type="hidden" id="id_instructor_agregar" name="id_instructor_agregar">
-                        
-                        <div class="alert alert-info">
-                            <strong>Instructor:</strong> <span id="instructor_nombre_agregar">Cargando...</span>
-                        </div>
-                        
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="numero_contrato_agregar" class="form-label">Número Contrato *</label>
-                                <input type="text" class="form-control" id="numero_contrato_agregar" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="crp_agregar" class="form-label">CRP</label>
-                                <input type="text" class="form-control" id="crp_agregar">
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="cdp_agregar" class="form-label">CDP</label>
-                                <input type="text" class="form-control" id="cdp_agregar">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="rubro_agregar" class="form-label">Rubro</label>
-                                <input type="text" class="form-control" id="rubro_agregar">
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="dependencia_agregar" class="form-label">Dependencia</label>
-                                <input type="text" class="form-control" id="dependencia_agregar">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="fecha_inicio_agregar" class="form-label">Fecha Inicio</label>
-                                <input type="date" class="form-control" id="fecha_inicio_agregar">
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="fecha_fin_agregar" class="form-label">Fecha Fin</label>
-                                <input type="date" class="form-control" id="fecha_fin_agregar">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="valor_contrato_agregar" class="form-label">Valor Contrato</label>
-                                <input type="number" class="form-control" id="valor_contrato_agregar" step="0.01">
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="valor_mes_agregar" class="form-label">Valor Mensual</label>
-                                <input type="number" class="form-control" id="valor_mes_agregar" step="0.01">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-primary">Guardar Contrato</button>
-                    </div>
-                </form>
+<!-- MODAL AGREGAR CONTRATO -->
+<div class="modal fade" id="ModalAgregarContrato" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Agregar Contrato</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+            <form id="formAgregarContrato">
+                <div class="modal-body">
+                    <input type="hidden" id="id_instructor_agregar" name="id_instructor_agregar">
+
+                    <div class="alert alert-info">
+                        <strong>Instructor:</strong> <span id="instructor_nombre_agregar">Cargando...</span>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="numero_contrato_agregar" class="form-label">Número Contrato *</label>
+                            <input type="text" class="form-control" id="numero_contrato_agregar" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="crp_agregar" class="form-label">CRP</label>
+                            <input type="text" class="form-control" id="crp_agregar">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="cdp_agregar" class="form-label">CDP</label>
+                            <input type="text" class="form-control" id="cdp_agregar">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="rubro_agregar" class="form-label">Rubro</label>
+                            <input type="text" class="form-control" id="rubro_agregar">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="dependencia_agregar" class="form-label">Dependencia</label>
+                            <input type="text" class="form-control" id="dependencia_agregar">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="fecha_inicio_agregar" class="form-label">Fecha Inicio</label>
+                            <input type="date" class="form-control" id="fecha_inicio_agregar">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="fecha_fin_agregar" class="form-label">Fecha Fin</label>
+                            <input type="date" class="form-control" id="fecha_fin_agregar">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="valor_contrato_agregar" class="form-label">Valor Contrato</label>
+                            <input type="number" class="form-control" id="valor_contrato_agregar" step="0.01">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label for="valor_mes_agregar" class="form-label">Tipo contrato</label>
+                            <select class="form-control" id="valor_mes_agregar">
+                                <option value="" selected disabled>Seleccione</option>
+                                <option value="1">Dia</option>
+                                <option value="2">Hora</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3 d-none">
+                            <label for="valor_mes_agregar" class="form-label">cantidad horas</label>
+                            <input type="number" class="form-control" id="valor_mes_agregar" step="0.01">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label for="valor_mes_agregar" class="form-label">Valor</label>
+                            <input type="number" class="form-control" id="valor_mes_agregar" step="0.01">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Contrato</button>
+                </div>
+            </form>
         </div>
     </div>
+</div>
 
 <!-- MODAL ACTUALIZAR CONTRATO - CORREGIDO -->
 <div class="modal fade" id="ModalActualizarContrato" tabindex="-1" aria-hidden="true">
@@ -104,7 +118,7 @@
             <form id="formActualizarContrato">
                 <div class="modal-body">
                     <input type="hidden" id="id_contrato_update" name="id_contrato_update">
-                    
+
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="numero_contrato_actualizar" class="form-label">Número Contrato</label>
@@ -161,25 +175,25 @@
     </div>
 </div>
 
-    <!-- MODAL ELIMINAR CONTRATO -->
-    <div class="modal fade" id="ModalEliminarContrato" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Eliminar Contrato</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form id="formEliminarContrato">
-                    <div class="modal-body">
-                        <input type="hidden" id="id_contrato_eliminar" name="id_contrato_eliminar">
-                        <p>¿Está seguro que desea eliminar este contrato?</p>
-                        <p class="text-danger">Esta acción no se puede deshacer.</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-danger">Eliminar</button>
-                    </div>
-                </form>
+<!-- MODAL ELIMINAR CONTRATO -->
+<div class="modal fade" id="ModalEliminarContrato" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Eliminar Contrato</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+            <form id="formEliminarContrato">
+                <div class="modal-body">
+                    <input type="hidden" id="id_contrato_eliminar" name="id_contrato_eliminar">
+                    <p>¿Está seguro que desea eliminar este contrato?</p>
+                    <p class="text-danger">Esta acción no se puede deshacer.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                </div>
+            </form>
         </div>
     </div>
+</div>
