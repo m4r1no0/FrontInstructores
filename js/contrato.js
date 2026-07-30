@@ -4,7 +4,7 @@ import { InstructorService } from './instructor.service.js';
 
 let contratosGlobal = [];
 let dataTable = null;
-let modalInstance = null;  // ✅ VARIABLE GLOBAL para el modal de actualización
+let modalInstance = null;
 let valorJornada = 0;
 
 // ============================
@@ -17,7 +17,6 @@ export async function initContrato() {
     if (!tabla) return;
 
     try {
-        // Mostrar loading
         Swal.fire({
             title: 'Cargando...',
             text: 'Por favor espere',
@@ -29,7 +28,6 @@ export async function initContrato() {
 
         const response = await ContratoService.get_contrato_instructor();
 
-        // Manejar diferentes estructuras de respuesta
         if (response && response.data) {
             contratosGlobal = response.data;
         } else if (Array.isArray(response)) {
@@ -63,13 +61,12 @@ export async function initContrato() {
 }
 
 // ============================
-// RENDER TABLA (SIN INNERHTML)
+// RENDER TABLA
 // ============================
 function renderTable() {
     const tbody = document.querySelector(".cuerpoTablaContrato");
     if (!tbody) return;
 
-    // Limpiar tbody
     while (tbody.firstChild) {
         tbody.removeChild(tbody.firstChild);
     }
@@ -94,7 +91,6 @@ function renderTable() {
         cellAcciones.className = 'text-center';
 
         if (!tieneContrato) {
-            // Botón AGREGAR (cuando no existe contrato)
             const btnAgregar = document.createElement('button');
             btnAgregar.className = 'btn btn-success btn-sm btn-agregar-contrato';
             btnAgregar.setAttribute('data-id', contrato.id_instructor);
@@ -102,14 +98,12 @@ function renderTable() {
             btnAgregar.innerHTML = '<i class="bi bi-plus-circle"></i> Agregar Contrato';
             cellAcciones.appendChild(btnAgregar);
         } else {
-            // Botón EDITAR
             const btnEditar = document.createElement('button');
             btnEditar.className = 'btn btn-warning btn-sm botonActualizar';
             btnEditar.setAttribute('data-id', contrato.id_contrato);
             btnEditar.innerHTML = '<i class="bi bi-pencil"></i> Editar';
             cellAcciones.appendChild(btnEditar);
 
-            // Botón ELIMINAR
             const btnEliminar = document.createElement('button');
             btnEliminar.className = 'btn btn-danger btn-sm botonEliminar';
             btnEliminar.setAttribute('data-id', contrato.id_contrato);
@@ -173,13 +167,11 @@ function reinicializarDataTable() {
     const table = $('#dataTableContrato');
     if (!table.length) return;
 
-    // Destruir instancia anterior si existe
     if (dataTable) {
         dataTable.destroy();
         dataTable = null;
     }
 
-    // Crear nueva instancia
     dataTable = table.DataTable({
         responsive: true,
         autoWidth: false,
@@ -306,12 +298,11 @@ function handleClick(e) {
 }
 
 // ============================
-// MODAL AGREGAR
+// MODAL AGREGAR - CORREGIDA
 // ============================
 function abrirModalAgregar(idInstructor, nombreInstructor) {
     document.getElementById("id_instructor_agregar").value = idInstructor;
 
-    // Mostrar el nombre del instructor en el modal
     const instructorNombreSpan = document.getElementById("instructor_nombre_agregar");
     if (instructorNombreSpan) {
         instructorNombreSpan.textContent = nombreInstructor || `ID: ${idInstructor}`;
@@ -326,69 +317,105 @@ function abrirModalAgregar(idInstructor, nombreInstructor) {
     document.getElementById("fecha_inicio_agregar").value = '';
     document.getElementById("fecha_fin_agregar").value = '';
     document.getElementById("valor_contrato_agregar").value = '';
-
+    
+    // Limpiar campos de horas y valor
+    document.getElementById("cantidadHorasInput").value = '';
+    document.getElementById("cantidadValorInput").value = '';
+    
+    // Resetear campo oculto
+    document.getElementById("valorJornadaInput").value = '0';
 
     const selectTipo = document.getElementById("tipo_contrato_agregar");
 
-    // Función para calcular el valor de la jornada
-    function calcularValorJornada() {
+    // ========================================
+    // FUNCIÓN PARA ACTUALIZAR EL CAMPO OCULTO
+    // ========================================
+    function actualizarValorJornada() {
         const horaElement = document.getElementById("cantidadHorasInput");
         const valorElement = document.getElementById("cantidadValorInput");
+        const campoOculto = document.getElementById("valorJornadaInput");
+        const selectTipo = document.getElementById("tipo_contrato_agregar");
 
-        if (!horaElement || !valorElement) {
-            console.error("Error: Elementos no encontrados");
-            return 0;
+        if (!horaElement || !valorElement || !campoOculto || !selectTipo) {
+            console.error("❌ Elementos no encontrados para calcular");
+            return;
         }
 
-        if (horaElement.value === '') horaElement.value = '0';
-        if (valorElement.value === '') valorElement.value = '0';
-
+        // Obtener valores numéricos
+        const horas = parseFloat(horaElement.value) || 0;
+        const valor = parseFloat(valorElement.value) || 0;
         let valorJornada = 0;
 
-        if (selectTipo.value === '2') {
-            horaElement.classList.add("d-none");
-            valorElement.classList.remove("d-none");
-
-            const horas = parseFloat(horaElement.value) || 0;
-            const valor = parseFloat(valorElement.value) || 0;
-            valorJornada = horas * valor;
-        } else {
-            horaElement.classList.remove("d-none");
-            valorElement.classList.remove("d-none");
-
-            const valor = parseFloat(valorElement.value) || 0;
+        // Calcular según el tipo de contrato
+        if (selectTipo.value === '1') {
+            // Contrato tipo 1: solo el valor (tarifa)
             valorJornada = valor;
+        } else {
+            // Otros tipos: horas * valor
+            valorJornada = horas * valor;
         }
 
-        // Actualizar un campo oculto con el valor calculado
-        const campoOculto = document.getElementById("valorJornadaInput");
-        if (campoOculto) {
-            campoOculto.value = valorJornada;
-        }
+        // Actualizar el campo oculto
+        campoOculto.value = valorJornada;
+        console.log(`🔄 Campo oculto actualizado: ${valorJornada} (Horas: ${horas}, Valor: ${valor}, Tipo: ${selectTipo.value})`);
 
-        return valorJornada;
+        // Mostrar preview si existe
+        const previewElement = document.getElementById("valorJornadaPreview");
+        if (previewElement) {
+            previewElement.textContent = `Valor jornada: $${valorJornada.toFixed(2)}`;
+        }
     }
 
-    // Evento change para el select (solo para mostrar/ocultar campos)
-    selectTipo.addEventListener("change", function () {
-        const horaElement = document.getElementById("cantidadHoras");
-        const valorElement = document.getElementById("cantidadValor");
+    // ========================================
+    // CONFIGURAR EVENTOS INPUT
+    // ========================================
+    const horaInput = document.getElementById("cantidadHorasInput");
+    const valorInput = document.getElementById("cantidadValorInput");
 
-        if (!horaElement || !valorElement) return;
+    // Remover listeners anteriores
+    if (horaInput) {
+        horaInput.removeEventListener('input', actualizarValorJornada);
+        horaInput.addEventListener('input', actualizarValorJornada);
+        console.log("✅ Event listener 'input' agregado a horas");
+    }
 
-        if (selectTipo.value === '1') {
-            horaElement.classList.add("d-none");
-            valorElement.classList.remove("d-none");
-        } else {
-            horaElement.classList.remove("d-none");
-            valorElement.classList.remove("d-none");
-        }
-    });
+    if (valorInput) {
+        valorInput.removeEventListener('input', actualizarValorJornada);
+        valorInput.addEventListener('input', actualizarValorJornada);
+        console.log("✅ Event listener 'input' agregado a valor");
+    }
 
+    // Evento para el select
+    if (selectTipo) {
+        selectTipo.removeEventListener('change', actualizarValorJornada);
+        selectTipo.addEventListener('change', function () {
+            // Mostrar/ocultar campos según el tipo
+            const horaElement = document.getElementById("cantidadHoras");
+            const valorElement = document.getElementById("cantidadValor");
+
+            if (horaElement && valorElement) {
+                if (selectTipo.value === '1') {
+                    horaElement.classList.add("d-none");
+                    valorElement.classList.remove("d-none");
+                } else {
+                    horaElement.classList.remove("d-none");
+                    valorElement.classList.remove("d-none");
+                }
+            }
+
+            // Actualizar el valor
+            actualizarValorJornada();
+        });
+        console.log("✅ Event listener 'change' agregado al select");
+    }
+
+    // Calcular valor inicial
+    actualizarValorJornada();
+
+    // Mostrar modal
     bootstrap.Modal.getOrCreateInstance(
         document.getElementById("ModalAgregarContrato")
     ).show();
-
 }
 
 // ============================
@@ -406,12 +433,62 @@ function setupFormHandler() {
 }
 
 // ============================
-// MANEJAR ENVÍO DEL FORMULARIO DE CREACIÓN
+// FUNCIÓN PARA CALCULAR VALOR JORNADA EN EL SUBMIT
+// ============================
+function calcularValorJornadaSubmit() {
+    const horaElement = document.getElementById("cantidadHorasInput");
+    const valorElement = document.getElementById("cantidadValorInput");
+    const selectTipo = document.getElementById("tipo_contrato_agregar");
+
+    if (!horaElement || !valorElement || !selectTipo) {
+        console.error("❌ Elementos no encontrados para calcular");
+        return 0;
+    }
+
+    const horas = parseFloat(horaElement.value) || 0;
+    const valor = parseFloat(valorElement.value) || 0;
+    let valorJornada = 0;
+
+    if (selectTipo.value === '1') {
+        valorJornada = valor;
+    } else {
+        valorJornada = horas * valor;
+    }
+
+    console.log(`📊 Valor calculado en submit: ${valorJornada}`);
+    return valorJornada;
+}
+
+// ============================
+// MANEJAR ENVÍO DEL FORMULARIO DE CREACIÓN - CORREGIDO
 // ============================
 async function handleCreateSubmit(event) {
     event.preventDefault();
     console.log("📝 Enviando formulario de contrato...");
 
+    // ========================================
+    // PASO 1: CALCULAR Y ACTUALIZAR CAMPO OCULTO
+    // ========================================
+    const valorJornada = calcularValorJornadaSubmit();
+    const campoOculto = document.getElementById("valorJornadaInput");
+    
+    if (campoOculto) {
+        campoOculto.value = valorJornada;
+        console.log("📝 Campo oculto actualizado con:", valorJornada);
+    } else {
+        console.error("❌ Campo oculto 'valorJornadaInput' no encontrado");
+        Swal.fire({
+            title: 'Error',
+            text: 'No se encontró el campo de valor de jornada',
+            icon: 'error',
+            confirmButtonText: 'Cerrar'
+        });
+        return;
+    }
+
+    // ========================================
+    // PASO 2: VALIDAR ID DEL INSTRUCTOR
+    // ========================================
     const idInstructorInput = document.getElementById('id_instructor_agregar');
     const id_instructor = idInstructorInput ? idInstructorInput.value : null;
 
@@ -425,6 +502,9 @@ async function handleCreateSubmit(event) {
         return;
     }
 
+    // ========================================
+    // PASO 3: VALIDAR NÚMERO DE CONTRATO
+    // ========================================
     const numero_contrato = document.getElementById('numero_contrato_agregar')?.value || '';
     if (!numero_contrato) {
         Swal.fire({
@@ -436,6 +516,9 @@ async function handleCreateSubmit(event) {
         return;
     }
 
+    // ========================================
+    // PASO 4: CONSTRUIR DATOS
+    // ========================================
     const newData = {
         id_instructor: parseInt(id_instructor),
         numero_contrato: numero_contrato,
@@ -445,11 +528,16 @@ async function handleCreateSubmit(event) {
         dependencia: document.getElementById('dependencia_agregar')?.value || '',
         fecha_inicio: document.getElementById('fecha_inicio_agregar')?.value || null,
         fecha_fin: document.getElementById('fecha_fin_agregar')?.value || null,
-        valor_contrato: parseFloat(document.getElementById('valor_contrato_agregar').value) || 0,
-        valor_mes: parseFloat(document.getElementById('valorJornadaInput').value) || 0,
+        valor_contrato: parseFloat(document.getElementById('valor_contrato_agregar')?.value) || 0,
+        valor_mes: parseFloat(campoOculto.value) || 0, // <-- USAR EL CAMPO OCULTO
         estado: 'Activo'
     };
 
+    console.log("📦 Datos a enviar:", newData);
+
+    // ========================================
+    // PASO 5: CONFIRMAR Y ENVIAR
+    // ========================================
     Swal.fire({
         title: 'Guardando...',
         text: 'Creando contrato',
@@ -493,7 +581,7 @@ async function handleCreateSubmit(event) {
 }
 
 // ============================================
-// FUNCIÓN openEditModal (ACTUALIZAR) - CORREGIDA
+// FUNCIÓN openEditModal
 // ============================================
 async function openEditModal(id) {
     const idNumber = parseInt(id);
@@ -511,7 +599,6 @@ async function openEditModal(id) {
         return;
     }
 
-    // Usar variable global
     modalInstance = bootstrap.Modal.getOrCreateInstance(modalElement);
 
     Swal.fire({
@@ -564,13 +651,12 @@ async function openEditModal(id) {
 }
 
 // ============================================
-// FUNCIÓN handleUpdateSubmit - CORREGIDA
+// FUNCIÓN handleUpdateSubmit
 // ============================================
 async function handleUpdateSubmit(event) {
     event.preventDefault();
 
     let id = document.getElementById('id_contrato_update').value;
-
     id = parseInt(id);
 
     if (isNaN(id)) {
@@ -592,7 +678,6 @@ async function handleUpdateSubmit(event) {
 
     console.log("Datos a actualizar:", updatedData);
 
-    // Confirmar actualización
     const result = await Swal.fire({
         title: '¿Guardar cambios?',
         text: '¿Está seguro de actualizar este contrato?',
@@ -655,7 +740,7 @@ async function handleUpdateSubmit(event) {
 }
 
 // ============================================
-// FUNCIÓN eliminarContrato - CORREGIDA
+// FUNCIÓN eliminarContrato
 // ============================================
 async function eliminarContrato(id) {
     const idNumber = parseInt(id);
@@ -694,7 +779,6 @@ async function eliminarContrato(id) {
 
     try {
         await ContratoService.delete_contrato(idNumber);
-
         await recargar();
 
         Swal.fire({
@@ -785,7 +869,7 @@ function setupDeleteFormHandler() {
 }
 
 // =============================
-// MANEJAR ENVÍO DEL FORMULARIO DE ELIMINACIÓN - CORREGIDO
+// MANEJAR ENVÍO DEL FORMULARIO DE ELIMINACIÓN
 // =============================
 async function handleDeleteSubmit(event) {
     event.preventDefault();
