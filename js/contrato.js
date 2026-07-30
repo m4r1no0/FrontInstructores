@@ -5,6 +5,7 @@ import { InstructorService } from './instructor.service.js';
 let contratosGlobal = [];
 let dataTable = null;
 let modalInstance = null;  // ✅ VARIABLE GLOBAL para el modal de actualización
+let valorJornada = 0;
 
 // ============================
 // INIT PRINCIPAL
@@ -27,7 +28,7 @@ export async function initContrato() {
         });
 
         const response = await ContratoService.get_contrato_instructor();
-        
+
         // Manejar diferentes estructuras de respuesta
         if (response && response.data) {
             contratosGlobal = response.data;
@@ -91,7 +92,7 @@ function renderTable() {
         // Columna ACCIONES
         const cellAcciones = document.createElement('td');
         cellAcciones.className = 'text-center';
-        
+
         if (!tieneContrato) {
             // Botón AGREGAR (cuando no existe contrato)
             const btnAgregar = document.createElement('button');
@@ -107,7 +108,7 @@ function renderTable() {
             btnEditar.setAttribute('data-id', contrato.id_contrato);
             btnEditar.innerHTML = '<i class="bi bi-pencil"></i> Editar';
             cellAcciones.appendChild(btnEditar);
-            
+
             // Botón ELIMINAR
             const btnEliminar = document.createElement('button');
             btnEliminar.className = 'btn btn-danger btn-sm botonEliminar';
@@ -115,7 +116,7 @@ function renderTable() {
             btnEliminar.innerHTML = '<i class="bi bi-trash"></i> Eliminar';
             cellAcciones.appendChild(btnEliminar);
         }
-        
+
         row.appendChild(cellAcciones);
 
         // Columna ID INSTRUCTOR
@@ -125,9 +126,9 @@ function renderTable() {
 
         // Columna INSTRUCTOR
         const cellInstructor = document.createElement('td');
-        const nombreCompleto = contrato.instructor_nombre || 
-            (contrato.nombres && contrato.apellidos ? `${contrato.nombres} ${contrato.apellidos}` : 
-            contrato.nombre || '-');
+        const nombreCompleto = contrato.instructor_nombre ||
+            (contrato.nombres && contrato.apellidos ? `${contrato.nombres} ${contrato.apellidos}` :
+                contrato.nombre || '-');
         cellInstructor.textContent = nombreCompleto;
         row.appendChild(cellInstructor);
 
@@ -309,13 +310,13 @@ function handleClick(e) {
 // ============================
 function abrirModalAgregar(idInstructor, nombreInstructor) {
     document.getElementById("id_instructor_agregar").value = idInstructor;
-    
+
     // Mostrar el nombre del instructor en el modal
     const instructorNombreSpan = document.getElementById("instructor_nombre_agregar");
     if (instructorNombreSpan) {
         instructorNombreSpan.textContent = nombreInstructor || `ID: ${idInstructor}`;
     }
-    
+
     // Limpiar formulario
     document.getElementById("numero_contrato_agregar").value = '';
     document.getElementById("crp_agregar").value = '';
@@ -325,11 +326,69 @@ function abrirModalAgregar(idInstructor, nombreInstructor) {
     document.getElementById("fecha_inicio_agregar").value = '';
     document.getElementById("fecha_fin_agregar").value = '';
     document.getElementById("valor_contrato_agregar").value = '';
-    document.getElementById("valor_mes_agregar").value = '';
+
+
+    const selectTipo = document.getElementById("tipo_contrato_agregar");
+
+    // Función para calcular el valor de la jornada
+    function calcularValorJornada() {
+        const horaElement = document.getElementById("cantidadHorasInput");
+        const valorElement = document.getElementById("cantidadValorInput");
+
+        if (!horaElement || !valorElement) {
+            console.error("Error: Elementos no encontrados");
+            return 0;
+        }
+
+        if (horaElement.value === '') horaElement.value = '0';
+        if (valorElement.value === '') valorElement.value = '0';
+
+        let valorJornada = 0;
+
+        if (selectTipo.value === '2') {
+            horaElement.classList.add("d-none");
+            valorElement.classList.remove("d-none");
+
+            const horas = parseFloat(horaElement.value) || 0;
+            const valor = parseFloat(valorElement.value) || 0;
+            valorJornada = horas * valor;
+        } else {
+            horaElement.classList.remove("d-none");
+            valorElement.classList.remove("d-none");
+
+            const valor = parseFloat(valorElement.value) || 0;
+            valorJornada = valor;
+        }
+
+        // Actualizar un campo oculto con el valor calculado
+        const campoOculto = document.getElementById("valorJornadaInput");
+        if (campoOculto) {
+            campoOculto.value = valorJornada;
+        }
+
+        return valorJornada;
+    }
+
+    // Evento change para el select (solo para mostrar/ocultar campos)
+    selectTipo.addEventListener("change", function () {
+        const horaElement = document.getElementById("cantidadHoras");
+        const valorElement = document.getElementById("cantidadValor");
+
+        if (!horaElement || !valorElement) return;
+
+        if (selectTipo.value === '1') {
+            horaElement.classList.add("d-none");
+            valorElement.classList.remove("d-none");
+        } else {
+            horaElement.classList.remove("d-none");
+            valorElement.classList.remove("d-none");
+        }
+    });
 
     bootstrap.Modal.getOrCreateInstance(
         document.getElementById("ModalAgregarContrato")
     ).show();
+
 }
 
 // ============================
@@ -387,7 +446,7 @@ async function handleCreateSubmit(event) {
         fecha_inicio: document.getElementById('fecha_inicio_agregar')?.value || null,
         fecha_fin: document.getElementById('fecha_fin_agregar')?.value || null,
         valor_contrato: parseFloat(document.getElementById('valor_contrato_agregar').value) || 0,
-        valor_mes: parseFloat(document.getElementById('valor_mes_agregar').value) || 0,
+        valor_mes: parseFloat(document.getElementById('valorJornadaInput').value) || 0,
         estado: 'Activo'
     };
 
@@ -438,14 +497,14 @@ async function handleCreateSubmit(event) {
 // ============================================
 async function openEditModal(id) {
     const idNumber = parseInt(id);
-    
+
     if (isNaN(idNumber)) {
         Swal.fire('Error', 'ID de contrato inválido', 'error');
         return;
     }
-    
+
     const modalElement = document.getElementById('ModalActualizarContrato');
-    
+
     if (!modalElement) {
         console.error('Modal element not found');
         Swal.fire('Error', 'No se encontró el modal de actualización', 'error');
@@ -467,36 +526,36 @@ async function openEditModal(id) {
     try {
         const response = await ContratoService.get_contrato_by_id(idNumber);
         const contrato = response?.data ?? response;
-        
+
         console.log("Contrato cargado:", contrato);
-        
+
         document.getElementById('id_contrato_update').value = contrato.id_contrato;
         document.getElementById('numero_contrato_actualizar').value = contrato.numero_contrato || '';
         document.getElementById('crp_actualizar').value = contrato.crp || '';
         document.getElementById('cdp_actualizar').value = contrato.cdp || '';
         document.getElementById('rubro_actualizar').value = contrato.rubro || '';
         document.getElementById('dependencia_actualizar').value = contrato.dependencia || '';
-        
+
         if (contrato.fecha_inicio) {
             const fechaInicio = new Date(contrato.fecha_inicio);
             document.getElementById('fecha_inicio_actualizar').value = fechaInicio.toISOString().split('T')[0];
         } else {
             document.getElementById('fecha_inicio_actualizar').value = '';
         }
-        
+
         if (contrato.fecha_fin) {
             const fechaFin = new Date(contrato.fecha_fin);
             document.getElementById('fecha_fin_actualizar').value = fechaFin.toISOString().split('T')[0];
         } else {
             document.getElementById('fecha_fin_actualizar').value = '';
         }
-        
+
         document.getElementById('valor_contrato_actualizar').value = contrato.valor_contrato || '';
         document.getElementById('valor_mes_actualizar').value = contrato.valor_mes || '';
 
         Swal.close();
         modalInstance.show();
-        
+
     } catch (error) {
         console.error("Error:", error);
         Swal.close();
@@ -511,9 +570,9 @@ async function handleUpdateSubmit(event) {
     event.preventDefault();
 
     let id = document.getElementById('id_contrato_update').value;
-    
+
     id = parseInt(id);
-    
+
     if (isNaN(id)) {
         Swal.fire('Error', 'ID de contrato no encontrado', 'error');
         return;
@@ -558,7 +617,7 @@ async function handleUpdateSubmit(event) {
 
     try {
         await ContratoService.update_contrato(id, updatedData);
-        
+
         if (modalInstance) {
             modalInstance.hide();
             setTimeout(() => {
@@ -568,9 +627,9 @@ async function handleUpdateSubmit(event) {
                 }
             }, 300);
         }
-        
+
         await recargar();
-        
+
         Swal.fire({
             title: '¡Actualizado!',
             text: 'Contrato actualizado correctamente',
@@ -578,14 +637,14 @@ async function handleUpdateSubmit(event) {
             timer: 2000,
             showConfirmButton: false
         });
-        
+
     } catch (error) {
         console.error("Error:", error);
-        
+
         if (modalInstance) {
             modalInstance.hide();
         }
-        
+
         Swal.fire({
             title: 'Error',
             text: error.message || 'No se pudo actualizar el contrato',
@@ -600,7 +659,7 @@ async function handleUpdateSubmit(event) {
 // ============================================
 async function eliminarContrato(id) {
     const idNumber = parseInt(id);
-    
+
     if (isNaN(idNumber)) {
         Swal.fire({
             title: 'Error',
@@ -635,9 +694,9 @@ async function eliminarContrato(id) {
 
     try {
         await ContratoService.delete_contrato(idNumber);
-        
+
         await recargar();
-        
+
         Swal.fire({
             title: '¡Eliminado!',
             text: 'Contrato eliminado correctamente',
@@ -645,7 +704,7 @@ async function eliminarContrato(id) {
             timer: 2000,
             showConfirmButton: false
         });
-        
+
     } catch (error) {
         console.error("Error al eliminar:", error);
         Swal.fire({
@@ -674,7 +733,7 @@ async function recargar() {
         });
 
         const response = await ContratoService.get_contrato_instructor();
-        
+
         if (response && response.data) {
             contratosGlobal = response.data;
         } else if (Array.isArray(response)) {
@@ -745,7 +804,7 @@ async function handleDeleteSubmit(event) {
     }
 
     id_contrato = parseInt(id_contrato);
-    
+
     if (isNaN(id_contrato)) {
         Swal.fire({
             title: 'Error',
@@ -829,7 +888,7 @@ function setupUpdateFormHandler() {
 // =============================
 function setupModificacionHandler() {
     const SelectTipoModificacion = document.getElementById('tipo_modificacion');
-    
+
     if (!SelectTipoModificacion) {
         console.log('⚠️ No existe el elemento con id="tipo_modificacion"');
         return;
@@ -864,7 +923,7 @@ async function cargarInstructoresCesion() {
         const instructores = response.data;
 
         selectNuevoInstructor.innerHTML = '<option value="">Seleccione un nuevo instructor</option>';
-        
+
         instructores.forEach(instructor => {
             if (!instructor.numero_contrato) {
                 const option = document.createElement('option');

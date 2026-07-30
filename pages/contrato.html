@@ -79,22 +79,26 @@
                     </div>
                     <div class="row">
                         <div class="col">
-                            <label for="valor_mes_agregar" class="form-label">Tipo contrato</label>
-                            <select class="form-control" id="valor_mes_agregar">
+                            <label for="tipo_contrato_agregar" class="form-label">Tipo contrato</label>
+                            <select class="form-control" id="tipo_contrato_agregar">
                                 <option value="" selected disabled>Seleccione</option>
-                                <option value="1">Dia</option>
+                                <option value="1">Mes</option>
                                 <option value="2">Hora</option>
                             </select>
                         </div>
-                        <div class="col-md-6 mb-3 d-none">
-                            <label for="valor_mes_agregar" class="form-label">cantidad horas</label>
-                            <input type="number" class="form-control" id="valor_mes_agregar" step="0.01">
+                        <div id="cantidadHoras" class="col-md-6 mb-3 d-none">
+                            <label for="cantidadHoras" class="form-label">cantidad horas</label>
+                            <input type="number" class="form-control" id="cantidadHorasInput" value="0" step="0.01">
                         </div>
                     </div>
                     <div class="row">
+                        <div id="cantidadValor" class="col d-none">
+                            <label for="cantidadValor" class="form-label">Valor</label>
+                            <input type="number" class="form-control" id="cantidadValorInput" value="0" step="0.01">
+                        </div>
                         <div class="col">
-                            <label for="valor_mes_agregar" class="form-label">Valor</label>
-                            <input type="number" class="form-control" id="valor_mes_agregar" step="0.01">
+                             <!-- Campo oculto para guardar el valor calculado -->
+                        <input type="hidden" id="valorJornadaInput" name="valorJornada" value="0">
                         </div>
                     </div>
                 </div>
