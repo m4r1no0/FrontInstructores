@@ -663,24 +663,22 @@ function renderTable() {
     cellAcciones.appendChild(botonActualizar);
     row.appendChild(cellAcciones);
 
-    // Columnas ocultas (d-none)
-    const cellArea = document.createElement('th');
-    cellArea.className = 'd-none';
+    // Columna de área de formación
+    const cellArea = document.createElement('td');
     cellArea.textContent = inst.nombre_area;
     row.appendChild(cellArea);
     
-    const cellPrograma = document.createElement('th');
-    cellPrograma.className = 'd-none';
+    const cellPrograma = document.createElement('td');
     cellPrograma.textContent = inst.nombre_programa;
     row.appendChild(cellPrograma);
     
     const cellNumeroContrato = document.createElement('td');
-    cellNumeroContrato.className = 'contrato-numero';
+    cellNumeroContrato.className = 'd-none contrato-numero';
     cellNumeroContrato.textContent = contrato.numero_contrato || '';
     row.appendChild(cellNumeroContrato);
     
     const cellCrp = document.createElement('td');
-    cellCrp.className = 'contrato-crp';
+    cellCrp.className = 'd-none contrato-crp';
     cellCrp.textContent = contrato.crp || '';
     row.appendChild(cellCrp);
     

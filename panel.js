@@ -4,7 +4,7 @@ const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
 const currentRole = (currentUser?.nombre_rol || "").toLowerCase();
 
 // Servicio de Dashboard integrado
-const API_BASE_URL = "https://instru.onrender.com/";
+const API_BASE_URL = "https://localhost:8000/";
 
 class DashboardService {
   constructor() {

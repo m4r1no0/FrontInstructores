@@ -1,6 +1,5 @@
 // js/pago.js
 import { ContratoService } from './contrato.service.js';
-import { PagoService } from './pago.service.js';
 
 let pagosGlobal = [];
 let dataTable = null;
@@ -155,6 +154,7 @@ export async function initPago() {
         // Cargar pagos
         const response = await ContratoService.get_contratos_by_instructor();
         const pagosData = response.data || response || [];
+
         
         pagosGlobal = pagosData;
 
@@ -962,30 +962,6 @@ async function handleDeleteSubmit(event) {
             Swal.showLoading();
         }
     });
-
-    try {
-        await PagoService.delete_pago(id_pago);
-
-        const modalElement = document.getElementById("ModalEliminarPago");
-        if (modalElement) {
-            const modal = bootstrap.Modal.getInstance(modalElement);
-            if (modal) modal.hide();
-        }
-
-        await recargar();
-
-        Swal.fire({
-            title: '¡Eliminado!',
-            text: 'Pago eliminado correctamente',
-            icon: 'success',
-            timer: 2000,
-            showConfirmButton: false
-        });
-
-    } catch (error) {
-        console.error("Error al eliminar pago:", error);
-        Swal.fire('Error', error.message || 'No se pudo eliminar el pago', 'error');
-    }
 }
 
 // ============================
